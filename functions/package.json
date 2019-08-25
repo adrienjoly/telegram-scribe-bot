@@ -5,7 +5,7 @@
     "build": "tsc",
     "serve": "npm run build && firebase serve --only functions",
     "shell": "npm run build && firebase functions:shell",
-    "start": "npm run shell",
+    "start": "npm run build && node lib/start.js",
     "deploy": "firebase deploy --only functions",
     "deploy:setup": "firebase login && echo \"Don't forget to specify your Firebase app id in .firebaserc, cf README.md\"",
     "deploy:test": "source .env && curl -X POST -H \"Content-Type:application/json\" ${ROUTER_URL} -d '{}'",
