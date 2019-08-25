@@ -40,7 +40,7 @@ After making any change to your bot, don't forget to deploy again it using `$ np
 
 You can troubleshoot your bot using [your firebase console](https://console.firebase.google.com).
 
-You can also run and test the bot/webhook locally using `$ npm run serve`, but it would be much more complicated to bind it to Telegram's API.
+You can also run and test the bot/webhook locally using `$ npm start` or `$ npm run serve`, but it would be much more complicated to bind it to Telegram's API.
 
 ## ToDo / Next steps
 
