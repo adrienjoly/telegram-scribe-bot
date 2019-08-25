@@ -1,7 +1,7 @@
 import * as express from 'express'
 import * as cors from 'cors'
 
-const app = express()
+export const app = express()
 
 // Automatically allow cross-origin requests
 app.use(cors({ origin: true }))
@@ -37,4 +37,14 @@ app.post('/', async (req, res) => {
   return res.status(400).send({ status: 'not a telegram message' })
 })
 
-export default app;
+export const startApp = ({ port }: { port: Number }) => new Promise((resolve, reject) => {
+  try {
+    const server = app.listen(port, () => resolve({
+      destroy: () => server.close()
+    }))
+  } catch (err) {
+    reject(err)
+  }
+})
+
+export default app

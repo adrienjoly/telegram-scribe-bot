@@ -4,22 +4,42 @@ A (work-in-progress) chat-bot that can add comments to Trello cards, from any Te
 
 Note: the first version of this bot was developed by following the steps provided in [Serverless Telegram Bot with Firebase - Francisco Gutiérrez - Medium](https://medium.com/@pikilon/serverless-telegram-bot-with-firebase-d11d07579d8a).
 
+## Clone and Install
+
+To get started, you just need `git`, NodeJS and to follow these instructions:
+
+```sh
+$ git clone https://github.com/adrienjoly/telegram-scribe-bot.git
+$ cd telegram-scribe-bot
+$ cd functions
+$ npm install
+```
+
+## Test locally (optional)
+
+Before binding the chat-bot to Telegram, you can test it locally (still from the `functions` sub-folder):
+
+```sh
+$ npm start
+
+# ... then, in a separate terminal:
+$ npm test
+```
+
 ## Setup
 
 Follow these steps to setup your own "scribe" bot, connect it to your own Trello board and deploy it to your own Firebase account.
 
 1. Clone the project
-  - `$ git clone https://github.com/adrienjoly/telegram-scribe-bot.git`
-  - `$ cd telegram-scribe-bot`
-  - `$ cd functions`
-  - `$ npm install` (to install the Node.js dependencies)
-  - `$ cp .env.example .env` (we will set your Firebase, Telegram and Trello credentials in this confidential file, in later steps)
+  - See the [Clone and Install](#clone-and-install) section above
 
 2. Create a Firebase project (still from the `functions` sub-folder)
   - Go to [your firebase console](https://console.firebase.google.com)
   - Add a new project
   - In the `.firebaserc` file, replace `telegram-scribe-bot` by the id of that project
   - `$ npm run deploy:setup` (to login to your Firebase account)
+  - `$ cp .env.example .env` (we will set your Firebase, Telegram and Trello credentials in this confidential file, in later steps)
+
 
 3. Create a Telegram bot
   - In your Telegram app, start a conversation with [@BotFather](https://telegram.me/BotFather)
