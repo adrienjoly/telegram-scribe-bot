@@ -16,7 +16,7 @@ Follow these steps to setup your own "scribe" bot, connect it to your own Trello
   - `$ cp .env.example .env` (we will set your Firebase, Telegram and Trello credentials in this confidential file, in later steps)
 
 2. Create a Firebase project (still from the `functions` sub-folder)
-  - `$ npm run setup:firebase` (to login to your Firebase account)
+  - `$ npm run deploy:setup` (to login to your Firebase account)
   - Go to [your firebase console](https://console.firebase.google.com)
   - Add a new project
   - In the `.firebaserc` file, replace `telegram-scribe-bot` by the id of that project
@@ -27,7 +27,7 @@ Follow these steps to setup your own "scribe" bot, connect it to your own Trello
   - In the `.env` file, replace the default `BOT_TOKEN` value by the Secret Token provided by that bot
   - Also, take note of the name of your bot (ends with `bot`), we'll need it later
 
-4. Deploy and bind the bot to Telegram
+4. Deploy and bind the bot to Telegram (still from the `functions` sub-folder)
   - `$ npm run deploy` (will upload the source code to your Firebase project)
   - In the `.env` file, replace the default `ROUTER_URL` value by the one printed when deploying (previous step), it must end with `/router/`
 
@@ -36,7 +36,14 @@ Follow these steps to setup your own "scribe" bot, connect it to your own Trello
   - Send "hello"
   - The bot should reply with your name
 
+After making any change to your bot, don't forget to deploy again it using `$ npm run deploy`.
+
+You can troubleshoot your bot using [your firebase console](https://console.firebase.google.com).
+
+You can also run and test the bot/webhook locally using `$ npm run serve`, but it would be much more complicated to bind it to Telegram's API.
+
 ## ToDo / Next steps
 
 - Actually connect the bot to a Trello board
 - Make setup easier and faster, e.g. by automatizing some of the steps
+- Provide tests that can work locally
