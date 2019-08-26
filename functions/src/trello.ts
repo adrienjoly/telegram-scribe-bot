@@ -11,3 +11,6 @@ export class Trello {
     return new TrelloNodeAPI(apiKey, userToken)
   }
 }
+
+// API reference: https://developers.trello.com/reference
+// lib reference: https://github.com/bhushankumarl/trello-node-api/wiki/Members-TypeScript
