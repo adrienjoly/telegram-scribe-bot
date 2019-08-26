@@ -8,6 +8,13 @@ const allocatePort = (() => {
   return () => current++
 })()
 
+const postJSON = (url, json) =>
+  fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(json),
+  })
+
 describe('app', () => {
   it('responds to GET /', async () => {
     const port = allocatePort()
@@ -21,9 +28,7 @@ describe('app', () => {
   it('responds 400 to invalid telegram message', async () => {
     const port = allocatePort()
     const server = await startApp({ port })
-    const res = await fetch(`http://localhost:${port}/`, {
-      method: 'POST',
-      body: '',
+    const res = await postJSON(`http://localhost:${port}/`, {})
     })
     assert.equal(res.status, 400)
     assert.equal(await res.text(), '{"status":"not a telegram message"}')
@@ -37,11 +42,7 @@ describe('app', () => {
       chat: { id: 1 },
       from: { first_name: 'test_name' },
     }
-    const res = await fetch(`http://localhost:${port}/`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message }),
-    })
+    const res = await postJSON(`http://localhost:${port}/`, { message })
     assert.equal(res.status, 200)
     assert.equal(
       await res.text(),
