@@ -12,7 +12,8 @@
     "deploy:test": "source ../.env && curl -X POST -H \"Content-Type:application/json\" ${ROUTER_URL} -d '{}'",
     "webhook:bind": "source ../.env && curl https://api.telegram.org/bot${BOT_TOKEN}/setWebhook?url=${ROUTER_URL}",
     "webhook:test": "source ../.env && curl https://api.telegram.org/bot${BOT_TOKEN}/getWebhookInfo",
-    "logs": "firebase functions:log"
+    "logs": "firebase functions:log",
+    "trello:test": "source ../.env && curl -LI \"https://api.trello.com/1/members/me/boards?key=${TRELLO_API_KEY}&token=${TRELLO_USER_TOKEN}\" -s | grep HTTP"
   },
   "engines": {
     "node": "8"
