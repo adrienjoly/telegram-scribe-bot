@@ -70,4 +70,3 @@ You can also run and test the bot/webhook locally using `$ npm start` or `$ npm 
 - Actually connect the bot to a Trello board
 - Send required env vars to Firebase using [`firebase functions:config:set`](https://firebase.google.com/docs/cli/#project_aliases)
 - Make setup easier and faster, e.g. by automatizing some of the steps
-- Provide tests that can work locally
