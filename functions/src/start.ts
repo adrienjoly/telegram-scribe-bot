@@ -1,5 +1,15 @@
-import app from './app'
+// This file is intended to run the app on a development/local environment
 
-const { PORT = 8000 } = process.env
+import { makeApp } from './app'
 
-app.listen(PORT, () => console.log(`Listening on http://localhost:${PORT}`))
+require('dotenv').config({ path: '../.env' }) // load environment variables
+
+const { PORT = 8000, TELEGRAM_USER_ID } = process.env
+
+const options = {
+  onlyFromUserId: TELEGRAM_USER_ID ? parseInt(TELEGRAM_USER_ID, 10) : undefined,
+}
+
+makeApp(options).listen(PORT, () =>
+  console.log(`Listening on http://localhost:${PORT}`)
+)

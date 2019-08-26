@@ -1,12 +1,7 @@
 const expect = require('expect')
 const fetch = require('node-fetch')
 
-const { startApp } = require('./../lib/app')
-
-require('dotenv').config({ path: '../.env' }) // load environment variables
-
-const { TELEGRAM_USER_ID } = process.env
-const telegramSenderId = TELEGRAM_USER_ID ? parseInt(TELEGRAM_USER_ID, 10) : 0
+const { makeApp, startApp } = require('./../lib/app')
 
 const allocatePort = (() => {
   let current = 8081
@@ -44,10 +39,7 @@ describe('app', () => {
     const server = await startApp({ port })
     const message = {
       chat: { id: 1 },
-      from: {
-        id: telegramSenderId,
-        first_name: 'test_name',
-      },
+      from: { first_name: 'test_name' },
     }
     const res = await postJSON(`http://localhost:${port}/`, { message })
     expect(res.status).toEqual(200)
@@ -57,14 +49,15 @@ describe('app', () => {
 
   it('responds 403 to telegram message from other user', async () => {
     const port = allocatePort()
+    const onlyFromUserId = 1
     const message = {
       chat: { id: 1 },
       from: {
-        id: telegramSenderId + 1,
+        id: onlyFromUserId + 1, // this message is not sent by the expected user
         first_name: 'test_name',
       },
     }
-    const server = await startApp({ port })
+    const server = await startApp({ port, app: makeApp({ onlyFromUserId }) })
     const res = await postJSON(`http://localhost:${port}/`, { message })
     expect(res.status).toEqual(403)
     expect(await res.json()).toHaveProperty(
