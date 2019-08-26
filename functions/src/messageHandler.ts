@@ -11,6 +11,9 @@ export function parseMessage(container: any) {
 }
 
 export function processMessage({ message }: { message: TelegramMessage }) {
+  const { TELEGRAM_USER_ID } = process.env
+  if (TELEGRAM_USER_ID && message.from.id !== parseInt(TELEGRAM_USER_ID, 10))
+    throw new Error('this sender is not allowed')
   return {
     method: 'sendMessage',
     chat_id: message.chat.id,

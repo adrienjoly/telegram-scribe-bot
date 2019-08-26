@@ -20,7 +20,9 @@ app.post('/', async (req, res) => {
     const responsePayload = await processMessage({ message })
     res.status(200).send(responsePayload)
   } catch (err) {
-    res.status(400).send({ status: err.message })
+    res
+      .status(err.message.match(/not allowed/) ? 403 : 400)
+      .send({ status: err.message })
   }
 })
 
