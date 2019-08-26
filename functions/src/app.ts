@@ -16,6 +16,7 @@ app.post('/', async (req, res) => {
     the message receive will be in this
     https://core.telegram.org/bots/api#update
   */
+  console.log('received body:', typeof req.body, req.body)
   const isTelegramMessage = req.body
                           && req.body.message
                           && req.body.message.chat
