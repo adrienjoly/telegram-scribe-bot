@@ -68,6 +68,8 @@ Follow these steps to setup your own "scribe" bot, connect it to your own Trello
 - Copy your Trello API Key (from [trello.com/app-key](https://trello.com/app-key)) and paste it as the value of the `TRELLO_API_KEY` variable, in your `.env` file
 - Manually generate a Token (a link is provided on [trello.com/app-key](https://trello.com/app-key), below the Trello API Key) and paste it as the value of the `TRELLO_USER_TOKEN` variable, still in your `.env` file
 - Run `$ npm run trello:test` to make sure that these credentials give access to Trello's API
+- Run `$ npm run trello:boards` to display the list of the Trello boards you have access to
+- Copy the 24-characters-long identifier of the Trello board that you want your bot to edit, and paste it as the value of the `TRELLO_BOARD_ID` variable of your `.env` file
 
 After making any change to your bot, don't forget to deploy again it using `$ npm run deploy`.
 
