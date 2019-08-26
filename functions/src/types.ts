@@ -3,6 +3,7 @@ export type TelegramChat = {
 }
 
 export type TelegramUser = {
+  id: Number
   first_name: String
 }
 
