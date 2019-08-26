@@ -1,4 +1,4 @@
-const assert = require('assert')
+const expect = require('expect')
 const fetch = require('node-fetch')
 
 const { startApp } = require('./../lib/app')
@@ -20,8 +20,8 @@ describe('app', () => {
     const port = allocatePort()
     const server = await startApp({ port })
     const res = await fetch(`http://localhost:${port}/`)
-    assert.equal(res.status, 200)
-    assert.equal(await res.text(), '{"ok":true}')
+    expect(res.status).toEqual(200)
+    expect(await res.json()).toHaveProperty('ok', true)
     server.destroy()
   })
 
@@ -29,9 +29,8 @@ describe('app', () => {
     const port = allocatePort()
     const server = await startApp({ port })
     const res = await postJSON(`http://localhost:${port}/`, {})
-    })
-    assert.equal(res.status, 400)
-    assert.equal(await res.text(), '{"status":"not a telegram message"}')
+    expect(res.status).toEqual(400)
+    expect(await res.json()).toHaveProperty('status', 'not a telegram message')
     server.destroy()
   })
 
@@ -43,11 +42,8 @@ describe('app', () => {
       from: { first_name: 'test_name' },
     }
     const res = await postJSON(`http://localhost:${port}/`, { message })
-    assert.equal(res.status, 200)
-    assert.equal(
-      await res.text(),
-      '{"method":"sendMessage","chat_id":1,"text":"Hello test_name"}'
-    )
+    expect(res.status).toEqual(200)
+    expect(await res.json()).toHaveProperty('text', 'Hello test_name')
     server.destroy()
   })
 })
