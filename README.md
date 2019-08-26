@@ -79,6 +79,6 @@ You can also run and test the bot/webhook locally using `$ npm start` or `$ npm 
 
 ## ToDo / Next steps
 
+- Send required env vars to Firebase using [`firebase functions:config:set`](https://firebase.google.com/docs/cli/#project_aliases) => document TELEGRAM_USER_ID and support it in production
 - Actually connect the bot to a Trello board
-- Send required env vars to Firebase using [`firebase functions:config:set`](https://firebase.google.com/docs/cli/#project_aliases)
 - Make setup easier and faster, e.g. by automatizing some of the steps
