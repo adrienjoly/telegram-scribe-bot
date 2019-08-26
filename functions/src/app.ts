@@ -18,12 +18,13 @@ app.post('/', async (req, res) => {
     the message receive will be in this
     https://core.telegram.org/bots/api#update
   */
-  const isTelegramMessage = req.body
-                          && req.body.message
-                          && req.body.message.chat
-                          && req.body.message.chat.id
-                          && req.body.message.from
-                          && req.body.message.from.first_name
+  const isTelegramMessage =
+    req.body &&
+    req.body.message &&
+    req.body.message.chat &&
+    req.body.message.chat.id &&
+    req.body.message.from &&
+    req.body.message.from.first_name
 
   if (isTelegramMessage) {
     const chat_id = req.body.message.chat.id
@@ -32,21 +33,24 @@ app.post('/', async (req, res) => {
     return res.status(200).send({
       method: 'sendMessage',
       chat_id,
-      text: `Hello ${first_name}`
+      text: `Hello ${first_name}`,
     })
   }
 
   return res.status(400).send({ status: 'not a telegram message' })
 })
 
-export const startApp = ({ port }: { port: Number }) => new Promise((resolve, reject) => {
-  try {
-    const server = app.listen(port, () => resolve({
-      destroy: () => server.close()
-    }))
-  } catch (err) {
-    reject(err)
-  }
-})
+export const startApp = ({ port }: { port: Number }) =>
+  new Promise((resolve, reject) => {
+    try {
+      const server = app.listen(port, () =>
+        resolve({
+          destroy: () => server.close(),
+        })
+      )
+    } catch (err) {
+      reject(err)
+    }
+  })
 
 export default app

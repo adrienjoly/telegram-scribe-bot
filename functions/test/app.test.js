@@ -21,7 +21,10 @@ describe('app', () => {
   it('responds 400 to invalid telegram message', async () => {
     const port = allocatePort()
     const server = await startApp({ port })
-    const res = await fetch(`http://localhost:${port}/`, { method: 'POST', body: '' })
+    const res = await fetch(`http://localhost:${port}/`, {
+      method: 'POST',
+      body: '',
+    })
     assert.equal(res.status, 400)
     assert.equal(await res.text(), '{"status":"not a telegram message"}')
     server.destroy()
@@ -40,7 +43,10 @@ describe('app', () => {
       body: JSON.stringify({ message }),
     })
     assert.equal(res.status, 200)
-    assert.equal(await res.text(), '{"method":"sendMessage","chat_id":1,"text":"Hello test_name"}')
+    assert.equal(
+      await res.text(),
+      '{"method":"sendMessage","chat_id":1,"text":"Hello test_name"}'
+    )
     server.destroy()
   })
 })
