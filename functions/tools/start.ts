@@ -1,6 +1,6 @@
 // This file is intended to run the app on a development/local environment
 
-import { makeApp } from './app'
+import { makeApp } from '../src/app'
 
 require('dotenv').config({ path: '../.env' }) // load environment variables
 
