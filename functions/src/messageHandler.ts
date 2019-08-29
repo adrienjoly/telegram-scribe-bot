@@ -30,7 +30,7 @@ export async function processMessage(
   return {
     method: 'sendMessage',
     chat_id: message.chat.id,
-    text: `Hello ${message.from.first_name}, ${boards[0]}`,
+    text: `Hello ${message.from.first_name}, ${boards[0].name}`,
   }
 }
 
