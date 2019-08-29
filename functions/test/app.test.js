@@ -1,7 +1,7 @@
 const expect = require('expect')
 const fetch = require('node-fetch')
 
-const { makeApp, startApp } = require('./../lib/app')
+const { makeApp, startApp } = require('./../lib/src/app')
 
 const allocatePort = (() => {
   let current = 8081
@@ -43,7 +43,8 @@ describe('app', () => {
     }
     const res = await postJSON(`http://localhost:${port}/`, { message })
     expect(res.status).toEqual(200)
-    expect(await res.json()).toHaveProperty('text', 'Hello test_name')
+    const payload = await res.json()
+    expect(payload.text).toMatch(/Hello test_name/)
     server.destroy()
   })
 
