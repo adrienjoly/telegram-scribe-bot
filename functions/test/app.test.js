@@ -78,7 +78,7 @@ describe('app', () => {
     server.destroy()
   })
 
-  it('responds 500 if failing to connect to trello', async () => {
+  it('responds with error if failing to connect to trello', async () => {
     const port = allocatePort()
     const message = {
       chat: { id: 1 },
@@ -89,9 +89,9 @@ describe('app', () => {
       options: { ...options, trelloApiKey: 'incorrect' },
     })
     const res = await postJSON(`http://localhost:${port}/`, { message })
-    expect(res.status).toEqual(500)
+    expect(res.status).toEqual(200)
     const payload = await res.json()
-    expect(payload.status).toEqual('invalid key')
+    expect(payload.text).toMatch('invalid key')
     server.destroy()
   })
 })

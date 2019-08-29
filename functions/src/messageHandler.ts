@@ -24,13 +24,20 @@ export async function processMessage(
   if (options.onlyFromUserId && message.from.id !== options.onlyFromUserId)
     throw new Error('this sender is not allowed')
 
-  const trello = new Trello(options.trelloApiKey, options.trelloUserToken)
-  const boards = await trello.member.searchBoards('me')
+  let text
+  try {
+    const trello = new Trello(options.trelloApiKey, options.trelloUserToken)
+    const boards = await trello.member.searchBoards('me')
+    text = `Hello ${message.from.first_name}, ${boards[0].name}`
+  } catch (err) {
+    text = `Error while contacting Trello: ${err.message}`
+    console.error(text)
+  }
 
   return {
     method: 'sendMessage',
     chat_id: message.chat.id,
-    text: `Hello ${message.from.first_name}, ${boards[0].name}`,
+    text,
   }
 }
 
