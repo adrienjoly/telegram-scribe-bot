@@ -70,6 +70,7 @@ Follow these steps to setup your own "scribe" bot, connect it to your own Trello
 - Run `$ npm run trello:test` to make sure that these credentials give access to Trello's API
 - Run `$ npm run trello:boards` to display the list of the Trello boards you have access to
 - Copy the 24-characters-long identifier of the Trello board that you want your bot to edit, and paste it as the value of the `TRELLO_BOARD_ID` variable of your `.env` file
+- Run `$ npm run deploy:config` to upload your environment variables to the cloud function
 
 After making any change to your bot, don't forget to deploy again it using `$ npm run deploy`.
 
@@ -77,8 +78,11 @@ You can troubleshoot your bot using [your firebase console](https://console.fire
 
 You can also run and test the bot/webhook locally using `$ npm start` or `$ npm run serve`, but it would be much more complicated to bind it to Telegram's API.
 
+## Options
+
+Set `TELEGRAM_USER_ID` in your `.env` file and call `$ npm run deploy:config` again if you want the bot to only respond to that Telegram user identifier.
+
 ## ToDo / Next steps
 
-- Send required env vars to Firebase using [`firebase functions:config:set`](https://firebase.google.com/docs/cli/#project_aliases) => document TELEGRAM_USER_ID and support it in production
-- Actually connect the bot to a Trello board
+- Actually add a comment to a Trello card
 - Make setup easier and faster, e.g. by automatizing some of the steps
