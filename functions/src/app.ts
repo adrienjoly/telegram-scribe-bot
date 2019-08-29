@@ -1,9 +1,13 @@
 import * as express from 'express'
 import * as cors from 'cors'
 import { TelegramMessage } from './types'
-import { parseMessage, processMessage } from './messageHandler'
+import {
+  parseMessage,
+  processMessage,
+  MessageHandlerOptions,
+} from './messageHandler'
 
-export function makeApp({ onlyFromUserId }: { onlyFromUserId?: number } = {}) {
+export function makeApp(options: MessageHandlerOptions) {
   const app = express()
 
   app.use(express.json()) // Firebase already does that, but it's required for tests
@@ -18,7 +22,7 @@ export function makeApp({ onlyFromUserId }: { onlyFromUserId?: number } = {}) {
   app.post('/', async (req, res) => {
     try {
       const message: TelegramMessage = parseMessage(req.body) // can throw 'not a telegram message'
-      const responsePayload = await processMessage(message, { onlyFromUserId })
+      const responsePayload = await processMessage(message, options)
       res.status(200).send(responsePayload)
     } catch (err) {
       res
@@ -32,13 +36,13 @@ export function makeApp({ onlyFromUserId }: { onlyFromUserId?: number } = {}) {
 
 type StarterParams = {
   port: number
-  app?: express.Application
+  options: MessageHandlerOptions
 }
 
-export const startApp = ({ port, app = makeApp() }: StarterParams) =>
+export const startApp = ({ port, options }: StarterParams) =>
   new Promise((resolve, reject) => {
     try {
-      const server = app.listen(port, () =>
+      const server = makeApp(options).listen(port, () =>
         resolve({
           destroy: () => server.close(),
         })

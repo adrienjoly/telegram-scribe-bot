@@ -8,6 +8,8 @@ const { PORT = 8000, TELEGRAM_USER_ID } = process.env
 
 const options = {
   onlyFromUserId: TELEGRAM_USER_ID ? parseInt(TELEGRAM_USER_ID, 10) : undefined,
+  trelloApiKey: process.env.TRELLO_API_KEY || '',
+  trelloUserToken: process.env.TRELLO_USER_TOKEN || '',
 }
 
 makeApp(options).listen(PORT, () =>

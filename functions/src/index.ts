@@ -9,9 +9,9 @@ const options = {
   onlyFromUserId: config.telegram.userid
     ? parseInt(config.telegram.userid, 10)
     : undefined,
+  trelloApiKey: config.trello.apikey,
+  trelloUserToken: config.trello.usertoken,
 }
-
-console.info('starting with options', options)
 
 const app = makeApp(options)
 

@@ -1,7 +1,13 @@
+require('dotenv').config({ path: '../.env' }) // load environment variables
 const expect = require('expect')
 const fetch = require('node-fetch')
 
-const { makeApp, startApp } = require('./../lib/src/app')
+const { startApp } = require('./../lib/src/app')
+
+const options = {
+  trelloApiKey: process.env.TRELLO_API_KEY,
+  trelloUserToken: process.env.TRELLO_USER_TOKEN,
+}
 
 const allocatePort = (() => {
   let current = 8081
@@ -18,7 +24,7 @@ const postJSON = (url, json) =>
 describe('app', () => {
   it('responds to GET /', async () => {
     const port = allocatePort()
-    const server = await startApp({ port })
+    const server = await startApp({ port, options })
     const res = await fetch(`http://localhost:${port}/`)
     expect(res.status).toEqual(200)
     expect(await res.json()).toHaveProperty('ok', true)
@@ -27,7 +33,7 @@ describe('app', () => {
 
   it('responds 400 to invalid telegram message', async () => {
     const port = allocatePort()
-    const server = await startApp({ port })
+    const server = await startApp({ port, options })
     const res = await postJSON(`http://localhost:${port}/`, {})
     expect(res.status).toEqual(400)
     expect(await res.json()).toHaveProperty('status', 'not a telegram message')
@@ -36,14 +42,15 @@ describe('app', () => {
 
   it('responds to valid telegram message', async () => {
     const port = allocatePort()
-    const server = await startApp({ port })
+    const server = await startApp({ port, options })
     const message = {
       chat: { id: 1 },
       from: { first_name: 'test_name' },
     }
     const res = await postJSON(`http://localhost:${port}/`, { message })
-    expect(res.status).toEqual(200)
     const payload = await res.json()
+    expect(payload.status).toBeUndefined()
+    expect(res.status).toEqual(200)
     expect(payload.text).toMatch(/Hello test_name/)
     server.destroy()
   })
@@ -58,7 +65,10 @@ describe('app', () => {
         first_name: 'test_name',
       },
     }
-    const server = await startApp({ port, app: makeApp({ onlyFromUserId }) })
+    const server = await startApp({
+      port,
+      options: { ...options, onlyFromUserId },
+    })
     const res = await postJSON(`http://localhost:${port}/`, { message })
     expect(res.status).toEqual(403)
     expect(await res.json()).toHaveProperty(
