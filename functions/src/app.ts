@@ -7,6 +7,11 @@ import {
   MessageHandlerOptions,
 } from './messageHandler'
 
+const errorCodes: { [s: string]: number } = {
+  'not a telegram message': 400,
+  'this sender is not allowed': 403,
+}
+
 export function makeApp(options: MessageHandlerOptions) {
   const app = express()
 
@@ -25,9 +30,7 @@ export function makeApp(options: MessageHandlerOptions) {
       const responsePayload = await processMessage(message, options)
       res.status(200).send(responsePayload)
     } catch (err) {
-      res
-        .status(err.message.match(/not allowed/) ? 403 : 400)
-        .send({ status: err.message })
+      res.status(errorCodes[err.message] || 500).send({ status: err.message })
     }
   })
 
