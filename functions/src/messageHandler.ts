@@ -23,7 +23,7 @@ export function processMessage(
   return {
     method: 'sendMessage',
     chat_id: message.chat.id,
-    text: `Hello ${message.from.first_name}`,
+    text: `Hello ${message.from.first_name}, ${options.onlyFromUserId}`,
   }
 }
 

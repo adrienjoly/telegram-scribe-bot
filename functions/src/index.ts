@@ -3,11 +3,15 @@
 import * as functions from 'firebase-functions'
 import { makeApp } from './app'
 
-const { TELEGRAM_USER_ID } = process.env
+const config = functions.config()
 
 const options = {
-  onlyFromUserId: TELEGRAM_USER_ID ? parseInt(TELEGRAM_USER_ID, 10) : undefined,
+  onlyFromUserId: config.telegram.userid
+    ? parseInt(config.telegram.userid, 10)
+    : undefined,
 }
+
+console.info('starting with options', options)
 
 const app = makeApp(options)
 
