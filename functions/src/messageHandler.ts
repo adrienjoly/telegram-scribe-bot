@@ -37,7 +37,7 @@ export async function processMessage(
     if (options.ticktickEmail && options.ticktickPassword) {
       const ticktick = new Ticktick(options.ticktickEmail, options.ticktickPassword)
       await ticktick.connect()
-      const desc = `Sent from Telegram-scribe-bot, on ${new Date(message.date)}`
+      const desc = `Sent from Telegram-scribe-bot, on ${new Date(message.date * 1000)}`
       // note: user's location can be requested, cf https://tutorials.botsfloor.com/request-and-handle-phone-number-and-location-with-telegram-bot-api-e90004c0c87e
       await ticktick.addTask(message.text, desc)
       text = '✅  Sent to Ticktick'
