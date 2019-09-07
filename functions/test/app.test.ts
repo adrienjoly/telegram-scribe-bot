@@ -1,8 +1,7 @@
 require('dotenv').config({ path: `${__dirname}/../../.env` }) // load environment variables
-const expect = require('expect')
-const fetch = require('node-fetch')
-
-const { startApp } = require('./../lib/src/app')
+import * as expect from 'expect'
+import fetch from 'node-fetch'
+import { startApp } from './../lib/src/app'
 
 const options = {
   trelloApiKey: process.env.TRELLO_API_KEY,

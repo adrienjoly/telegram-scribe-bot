@@ -1,6 +1,7 @@
 require('dotenv').config({ path: `${__dirname}/../../.env` }) // load environment variables
-const expect = require('expect')
-const { Trello } = require('./../lib/src/Trello')
+import * as expect from 'expect'
+import { Trello } from './../lib/src/Trello'
+
 const { TRELLO_API_KEY, TRELLO_USER_TOKEN } = process.env
 
 const trello = new Trello(TRELLO_API_KEY, TRELLO_USER_TOKEN)
