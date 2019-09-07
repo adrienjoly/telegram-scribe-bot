@@ -18,5 +18,6 @@ export type TelegramMessage = {
   chat: TelegramChat
   from: TelegramUser
   text: string
-  location: TelegramLocation
+  date: number // Date the message was sent in Unix time
+  location: TelegramLocation // if the user has explicitely shared their location
 }
