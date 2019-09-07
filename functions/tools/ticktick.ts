@@ -3,8 +3,6 @@ import { Ticktick } from './../src/Ticktick'
 
 const { TICKTICK_EMAIL, TICKTICK_PASSWORD } = process.env
 
-console.log(`${__dirname}/../../.env`)
-
 const main = async () => {
   const ticktick = new Ticktick(
     TICKTICK_EMAIL as string,
