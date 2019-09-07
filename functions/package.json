@@ -14,6 +14,7 @@
     "webhook:bind": "source ../.env && curl https://api.telegram.org/bot${BOT_TOKEN}/setWebhook?url=${ROUTER_URL}",
     "webhook:test": "source ../.env && curl https://api.telegram.org/bot${BOT_TOKEN}/getWebhookInfo",
     "logs": "firebase functions:log",
+    "ticktick:test": "ts-node tools/ticktick.ts",
     "trello:test": "source ../.env && curl -LI \"https://api.trello.com/1/members/me/boards?key=${TRELLO_API_KEY}&token=${TRELLO_USER_TOKEN}\" -s | grep HTTP",
     "trello:boards": "npm run build && source ../.env && node tools/trello-boards.js"
   },
@@ -36,6 +37,7 @@
     "firebase-tools": "^7.2.4",
     "mocha": "^6.1.4",
     "node-fetch": "^2.6.0",
+    "ts-node": "^8.3.0",
     "tslint": "^5.12.0",
     "typescript": "^3.2.2"
   },

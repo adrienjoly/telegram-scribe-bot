@@ -2,7 +2,4 @@
 lib/**/*.js
 lib/**/*.js.map
 
-# Typescript v1 declaration files
-typings/
-
 node_modules/
