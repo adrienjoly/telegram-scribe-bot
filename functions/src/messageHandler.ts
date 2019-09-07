@@ -37,7 +37,9 @@ export async function processMessage(
     if (options.ticktickEmail && options.ticktickPassword) {
       const ticktick = new Ticktick(options.ticktickEmail, options.ticktickPassword)
       await ticktick.connect()
-      await ticktick.addTask(message.text)
+      const location = JSON.stringify(message.location)
+      const desc = `Sent from Telegram-scribe-bot, ${new Date()}, at location: ${location}`
+      await ticktick.addTask(message.text, desc)
       text = '✅  Sent to Ticktick'
     } else {
       text = 'Not sent to any service.'
