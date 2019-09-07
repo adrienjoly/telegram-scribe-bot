@@ -16,8 +16,8 @@ export type MessageHandlerOptions = {
   onlyFromUserId?: number
   trelloApiKey?: string
   trelloUserToken?: string
-  ticktickEmail: string
-  ticktickPassword: string
+  ticktickEmail?: string
+  ticktickPassword?: string
 }
 
 export async function processMessage(
@@ -34,10 +34,14 @@ export async function processMessage(
     const boards = await trello.member.searchBoards('me')
     text = `Hello ${message.from.first_name}, ${boards[0].name}`
     */
-    const ticktick = new Ticktick(options.ticktickEmail, options.ticktickPassword)
-    await ticktick.connect()
-    await ticktick.addTask(message.text)
-    text = '✅  Sent to Ticktick'
+    if (options.ticktickEmail && options.ticktickPassword) {
+      const ticktick = new Ticktick(options.ticktickEmail, options.ticktickPassword)
+      await ticktick.connect()
+      await ticktick.addTask(message.text)
+      text = '✅  Sent to Ticktick'
+    } else {
+      text = 'Not sent to any service.'
+    }
   } catch (err) {
     text = `Error while processing: ${err.message}`
     console.error(text)
