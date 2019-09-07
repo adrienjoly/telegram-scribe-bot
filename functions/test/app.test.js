@@ -1,4 +1,4 @@
-require('dotenv').config({ path: '../.env' }) // load environment variables
+require('dotenv').config({ path: `${__dirname}/../../.env` }) // load environment variables
 const expect = require('expect')
 const fetch = require('node-fetch')
 
