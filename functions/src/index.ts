@@ -11,6 +11,8 @@ const options = {
     : undefined,
   trelloApiKey: config.trello.apikey,
   trelloUserToken: config.trello.usertoken,
+  ticktickEmail: config.ticktick.email,
+  ticktickPassword: config.ticktick.password,
 }
 
 const app = makeApp(options)

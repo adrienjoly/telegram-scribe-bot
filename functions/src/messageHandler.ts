@@ -1,5 +1,6 @@
 import { TelegramMessage } from './types'
-import { Trello } from './Trello'
+import { Ticktick } from './Ticktick'
+// import { Trello } from './Trello'
 
 export function parseMessage(container: any) {
   try {
@@ -13,8 +14,10 @@ export function parseMessage(container: any) {
 
 export type MessageHandlerOptions = {
   onlyFromUserId?: number
-  trelloApiKey: string
-  trelloUserToken: string
+  trelloApiKey?: string
+  trelloUserToken?: string
+  ticktickEmail: string
+  ticktickPassword: string
 }
 
 export async function processMessage(
@@ -26,11 +29,17 @@ export async function processMessage(
 
   let text
   try {
+    /*
     const trello = new Trello(options.trelloApiKey, options.trelloUserToken)
     const boards = await trello.member.searchBoards('me')
     text = `Hello ${message.from.first_name}, ${boards[0].name}`
+    */
+    const ticktick = new Ticktick(options.ticktickEmail, options.ticktickPassword)
+    await ticktick.connect()
+    await ticktick.addTask(message.text)
+    text = '✅  Sent to Ticktick'
   } catch (err) {
-    text = `Error while contacting Trello: ${err.message}`
+    text = `Error while processing: ${err.message}`
     console.error(text)
   }
 
