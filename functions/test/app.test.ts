@@ -50,7 +50,7 @@ describe('app', () => {
     const payload = await res.json()
     expect(payload.status).toBeUndefined()
     expect(res.status).toEqual(200)
-    expect(payload.text).toMatch(/Hello test_name/)
+    expect(payload.text).toMatch(/Not sent to any service/)
     server.destroy()
   })
 
@@ -76,7 +76,7 @@ describe('app', () => {
     )
     server.destroy()
   })
-
+  /*
   it('responds with error if failing to connect to trello', async () => {
     const port = allocatePort()
     const message = {
@@ -93,4 +93,5 @@ describe('app', () => {
     expect(payload.text).toMatch('invalid key')
     server.destroy()
   })
+  */
 })
