@@ -1,6 +1,16 @@
 # `telegram-scribe-bot`
 
-A (work-in-progress) chat-bot that can add comments to Trello cards, from any Telegram client.
+A (work-in-progress) chat-bot that can add comments to Trello cards, your TickTick todo-list and your Diigo bookmarks, from any Telegram client.
+
+**Is this yet another chatbot or virtual assistant supposedly supported by AI?** No. It's actually pretty dumb. Think of it more like a terminal, or like MacOS' Spotlight feature: it uses Telegram as a way to save text to other services, through their API. That's it.
+
+**Why rely on Telegram?** Sending data from a mobile terminal to a server is far from trivial. For instance, your internet connection may be unstable (or unexistent) at the time when you want to save something. In that case, you'd expect your message to be automatically re-sent as soon as your internet connectivity is back. Telegram provides that out of the box! ✨
+
+**Supported (and planned) automations**
+
+- Log a note as comment in a Trello card, for journaling. (WIP)
+- Save a bookmark to a web page in Diigo, with or without tags and description. (WIP)
+- Add a task to TickTick.
 
 Note: the first version of this bot was developed by following the steps provided in [Serverless Telegram Bot with Firebase - Francisco Gutiérrez - Medium](https://medium.com/@pikilon/serverless-telegram-bot-with-firebase-d11d07579d8a).
 
