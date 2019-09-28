@@ -94,5 +94,14 @@ Set `TELEGRAM_USER_ID` in your `.env` file and call `$ npm run deploy:config` ag
 
 ## ToDo / Next steps
 
-- Actually add a comment to a Trello card
 - Make setup easier and faster, e.g. by automatizing some of the steps
+- ideas of "command" use cases to implement:
+  - `/note <card>` will add a comment to the specified Trello card
+  - `/today` will add a ToDo/task to TickTick, due today
+  - `/someday` will add a ToDo/task to TickTick's inbox, for sorting
+  - `/convert` units of measure into others (e.g. timezones, sizes, currencies, data formats...)
+  - `/issue <repo>` will create a github issue on the provided repo
+  - `/bk <url> [desc] [#tag]>` will create a Diigo bookmark to that URL
+- ideas of "request" use cases to implement:
+  - when waking up: invite to keep a note of the dream you were having
+  - before going to sleep: invite to keep a note of how was your day (i.e. mood) and of what you did that day (i.e. journal), possibly with a photo to illustrate it
