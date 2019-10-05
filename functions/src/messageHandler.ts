@@ -27,6 +27,8 @@ export async function processMessage(
   if (options.onlyFromUserId && message.from.id !== options.onlyFromUserId)
     throw new Error('this sender is not allowed')
 
+  console.log('received message from Telegram:', message);
+
   let text
   try {
     /*
@@ -34,7 +36,9 @@ export async function processMessage(
     const boards = await trello.member.searchBoards('me')
     text = `Hello ${message.from.first_name}, ${boards[0].name}`
     */
-    if (options.ticktickEmail && options.ticktickPassword) {
+    if (message.entities.length) {
+      
+    } else if (options.ticktickEmail && options.ticktickPassword) {
       const ticktick = new Ticktick(options.ticktickEmail, options.ticktickPassword)
       await ticktick.connect()
       const desc = `Sent from Telegram-scribe-bot, on ${new Date(message.date * 1000)}`
