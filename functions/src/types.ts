@@ -14,10 +14,19 @@ export type TelegramLocation = {
   latitude: number
 }
 
+export type MessageEntity = {
+  type:	string // can be mention (@username), hashtag, cashtag, bot_command, url, email, phone_number, bold (bold text), italic (italic text), code (monowidth string), pre (monowidth block), text_link (for clickable text URLs), text_mention (for users without usernames)
+  offset: number // Integer	Offset in UTF-16 code units to the start of the entity
+  length: number // Integer	Length of the entity in UTF-16 code units
+  url: string // (Optional) For “text_link” only, url that will be opened after user taps on the text
+  user: TelegramUser // (Optional) For “text_mention” only, the mentioned user
+}
+
 export type TelegramMessage = {
   chat: TelegramChat
   from: TelegramUser
   text: string
   date: number // Date the message was sent in Unix time
   location: TelegramLocation // if the user has explicitely shared their location
+  entities: MessageEntity[]
 }
