@@ -77,6 +77,8 @@ export async function processMessage(
     console.error(text, err, err.stack)
   }
 
+  console.log(`=> ${text}`)
+
   return {
     method: 'sendMessage',
     chat_id: message.chat.id,
