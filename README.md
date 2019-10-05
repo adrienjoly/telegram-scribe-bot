@@ -102,6 +102,7 @@ Set `TELEGRAM_USER_ID` in your `.env` file and call `$ npm run deploy:config` ag
   - `/convert` units of measure into others (e.g. timezones, sizes, currencies, data formats...)
   - `/issue <repo>` will create a github issue on the provided repo
   - `/bk <url> [desc] [#tag]>` will create a Diigo bookmark to that URL
+  - `/met "<person name>" [@place] [#tag] [desc]` will create or update a Google Contact
 - ideas of "request" use cases to implement:
   - when waking up: invite to keep a note of the dream you were having
   - before going to sleep: invite to keep a note of how was your day (i.e. mood) and of what you did that day (i.e. journal), possibly with a photo to illustrate it
