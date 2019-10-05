@@ -84,6 +84,22 @@ Follow these steps to setup your own "scribe" bot, connect it to your own Trello
 
 After making any change to your bot, don't forget to deploy again it using `$ npm run deploy`.
 
+In order to bind `#tags` to some of your Trello cards, specify them as below, anywhere in the comment of those cards:
+
+```
+telegram-scribe-bot:addCommentsFromTaggedNotes(#tag1,#tag2,...)
+```
+
+For instance, if you have a card in which you want to store your `#diary` notes as comments, add the following line to the description of that card:
+
+```
+telegram-scribe-bot:addCommentsFromTaggedNotes(#diary)
+```
+
+After doing that, the following chat message will add a comment to that card:
+
+> /note #diary I had a great day today!
+
 You can troubleshoot your bot using [your firebase console](https://console.firebase.google.com).
 
 You can also run and test the bot/webhook locally using `$ npm start` or `$ npm run serve`, but it would be much more complicated to bind it to Telegram's API.
