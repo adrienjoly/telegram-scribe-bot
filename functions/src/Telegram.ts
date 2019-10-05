@@ -54,7 +54,8 @@ export type ParsedMessageEntities = {
 
 export function parseEntities(
   message: TelegramMessage,
-  supportedTypes = ['bot_command', 'hashtag']
+  supportedTypes = ['bot_command', 'hashtag'],
+  inlineTypes = ['hashtag'] // types of entities to leave in the `rest` return value
 ): ParsedMessageEntities {
   const entities = message.entities.filter(({ type }) => supportedTypes.includes(type))
   // add a `text` property in each supported entity
@@ -64,6 +65,7 @@ export function parseEntities(
   }))
   // remove parsed entities from the message's text => return the rest
   const rest = message.entities
+    .filter(({ type }) => !inlineTypes.includes(type)) // do not remove inlineTypes entities
     .sort((a, b) => b.offset - a.offset) // we'll remove from the end to the beginning of the string, to keep the offsets valid
     .reduce((text, entity) => {
       return text.substr(0, entity.offset) + text.substr(entity.offset + entity.length)
