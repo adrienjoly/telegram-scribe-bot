@@ -10,7 +10,9 @@ export type MessageHandlerOptions = {
   ticktickPassword?: string
 }
 
-const commandHandlers: { [key: string]: Function } = {
+type CommandHandler = (message: ParsedMessageEntities, options: MessageHandlerOptions) => Promise<{ text: string }>
+
+const commandHandlers: { [key: string]: CommandHandler } = {
   '/todo': async (message: ParsedMessageEntities, options: MessageHandlerOptions) => {
     if (!options.ticktickEmail) throw new Error('missing ticktickEmail')
     if (!options.ticktickPassword) throw new Error('missing ticktickPassword')
@@ -60,7 +62,7 @@ export async function processMessage(
     if (!commandHandler) {
       text = `🤔  Please retry with a valid command: ${Object.keys(commandHandlers).join(', ')}`
     } else {
-      text = (await commandHandler(message, options)).text
+      text = (await commandHandler(entities, options)).text
     }
   } catch (err) {
     text = `😕  Error while processing: ${err.message}`
