@@ -74,7 +74,7 @@ export async function processMessage(
     }
   } catch (err) {
     text = `😕  Error while processing: ${err.message}`
-    console.error(text, err, err.stack)
+    console.error(`❌ `, err, err.stack)
   }
 
   console.log(`=> ${text}`)
