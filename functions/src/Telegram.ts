@@ -57,14 +57,15 @@ export function parseEntities(
   supportedTypes = ['bot_command', 'hashtag'],
   inlineTypes = ['hashtag'] // types of entities to leave in the `rest` return value
 ): ParsedMessageEntities {
-  const entities = message.entities.filter(({ type }) => supportedTypes.includes(type))
+  const entities: MessageEntity[] = message.entities || []
+  const supportedEntities = entities.filter(({ type }) => supportedTypes.includes(type))
   // add a `text` property in each supported entity
-  const entitiesWithText = entities.map(entity => ({
+  const entitiesWithText = supportedEntities.map(entity => ({
     ...entity,
     text: message.text.substr(entity.offset, entity.length)
   }))
   // remove parsed entities from the message's text => return the rest
-  const rest = message.entities
+  const rest = supportedEntities
     .filter(({ type }) => !inlineTypes.includes(type)) // do not remove inlineTypes entities
     .sort((a, b) => b.offset - a.offset) // we'll remove from the end to the beginning of the string, to keep the offsets valid
     .reduce((text, entity) => {
