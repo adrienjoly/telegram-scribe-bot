@@ -3,7 +3,7 @@ import * as TrelloNodeAPI from 'trello-node-api'
 // string to include in Trello card(s), to bind them with some tags
 const RE_TRELLO_CARD_BINDING = /telegram\-scribe\-bot\:addCommentsFromTaggedNotes\(([^\)]+)\)/
 
-type TrelloCard = { name: string, desc: string }
+type TrelloCard = { id: string, name: string, desc: string }
 
 const cleanTag = (tag: string) => tag.replace(/^\#/, '')
 

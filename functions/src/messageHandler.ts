@@ -42,7 +42,12 @@ const commandHandlers: { [key: string]: CommandHandler } = {
     const noteTags = message.tags.map(tagEntity => tagEntity.text)
     const targetedCards = await trello.getCardsBoundToTags(noteTags, options.trelloBoardId)
     if (!targetedCards) return { text: `🤔  No cards match these tags. Please retry without another tag.` }
-    return { text: `Hello ${message.initial.from.first_name}, ${targetedCards.map(c => c.name).join(', ')}` }
+    await Promise.all(
+      targetedCards.map(card =>
+        trello.card.addComment(card.id, { text: message.rest })
+      )
+    )
+    return { text: `✅  Sent to Trello cards: ${targetedCards.map(c => c.name).join(', ')}` }
   }
 }
 
