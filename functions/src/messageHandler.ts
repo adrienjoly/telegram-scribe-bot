@@ -41,6 +41,7 @@ const commandHandlers: { [key: string]: CommandHandler } = {
     const trello = new Trello(options.trelloApiKey, options.trelloUserToken)
     const noteTags = message.tags.map(tagEntity => tagEntity.text)
     const targetedCards = await trello.getCardsBoundToTags(noteTags, options.trelloBoardId)
+    if (!targetedCards) return { text: `🤔  No cards match these tags. Please retry without another tag.` }
     return { text: `Hello ${message.initial.from.first_name}, ${targetedCards.map(c => c.name).join(', ')}` }
   }
 }
