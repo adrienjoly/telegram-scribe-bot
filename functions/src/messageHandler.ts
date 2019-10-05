@@ -36,9 +36,12 @@ export async function processMessage(
     const boards = await trello.member.searchBoards('me')
     text = `Hello ${message.from.first_name}, ${boards[0].name}`
     */
+    /*
     if (message.entities.length) {
       
-    } else if (options.ticktickEmail && options.ticktickPassword) {
+    } else
+    */
+    if (options.ticktickEmail && options.ticktickPassword) {
       const ticktick = new Ticktick(options.ticktickEmail, options.ticktickPassword)
       await ticktick.connect()
       const desc = `Sent from Telegram-scribe-bot, on ${new Date(message.date * 1000)}`
