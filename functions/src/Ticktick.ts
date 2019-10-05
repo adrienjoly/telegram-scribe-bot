@@ -17,9 +17,9 @@ export class Ticktick {
     }
   }
 
-  async addTask(title: string, desc?: string) {
+  async addTask(title: string, desc?: string, date?: Date, isAllDay?: Boolean) {
     try {
-      await ticktick.Inbox.addSimpleTask(title, desc)
+      await ticktick.Inbox.addSimpleTask(title, desc, date, isAllDay)
     } catch (err) {
       throw new Error(
         `Error while trying to add a task to ticktick.com: ${err.stack}`

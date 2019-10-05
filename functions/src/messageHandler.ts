@@ -21,6 +21,15 @@ const commandHandlers: { [key: string]: Function } = {
     await ticktick.addTask(message.text, desc)
     return { text: '✅  Sent to Ticktick\'s inbox' }
   },
+  '/today': async (message: TelegramMessage, options: MessageHandlerOptions) => {
+    if (!options.ticktickEmail) throw new Error('missing ticktickEmail')
+    if (!options.ticktickPassword) throw new Error('missing ticktickPassword')
+    const ticktick = new Ticktick(options.ticktickEmail, options.ticktickPassword)
+    await ticktick.connect()
+    const desc = `Sent from Telegram-scribe-bot, on ${new Date(message.date * 1000)}`
+    await ticktick.addTask(message.text, desc, new Date(), true)
+    return { text: '✅  Sent to Ticktick\'s "Today" tasks' }
+  },
   /*
   '/note': async (message: TelegramMessage, options: MessageHandlerOptions) => {
     if (!options.trelloApiKey) throw new Error('missing trelloApiKey')

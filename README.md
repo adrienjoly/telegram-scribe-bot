@@ -6,11 +6,10 @@ A (work-in-progress) chat-bot that can add comments to Trello cards, your TickTi
 
 **Why rely on Telegram?** Sending data from a mobile terminal to a server is far from trivial. For instance, your internet connection may be unstable (or unexistent) at the time when you want to save something. In that case, you'd expect your message to be automatically re-sent as soon as your internet connectivity is back. Telegram provides that out of the box! ✨
 
-**Supported (and planned) automations**
+**Supported commands**
 
-- Log a note as comment in a Trello card, for journaling. (WIP)
-- Save a bookmark to a web page in Diigo, with or without tags and description. (WIP)
-- Add a task to TickTick.
+- `/todo <task> [#tag [#...]]` will add a ToDo/task to TickTick's inbox, for sorting
+- `/today <task> [#tag [#...]]` will add a ToDo/task to TickTick, due today
 
 Note: the first version of this bot was developed by following the steps provided in [Serverless Telegram Bot with Firebase - Francisco Gutiérrez - Medium](https://medium.com/@pikilon/serverless-telegram-bot-with-firebase-d11d07579d8a).
 
@@ -96,9 +95,7 @@ Set `TELEGRAM_USER_ID` in your `.env` file and call `$ npm run deploy:config` ag
 
 - Make setup easier and faster, e.g. by automatizing some of the steps
 - ideas of "command" use cases to implement:
-  - `/note <card>` will add a comment to the specified Trello card
-  - `/today` will add a ToDo/task to TickTick, due today
-  - `/todo` will add a ToDo/task to TickTick's inbox, for sorting
+  - `/note <card>` will add a comment to the specified Trello card, for journaling
   - `/convert` units of measure into others (e.g. timezones, sizes, currencies, data formats...)
   - `/issue <repo>` will create a github issue on the provided repo
   - `/bk <url> [desc] [#tag]>` will create a Diigo bookmark to that URL
