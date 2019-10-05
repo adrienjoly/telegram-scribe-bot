@@ -1,16 +1,6 @@
-import { TelegramMessage } from './types'
+import { TelegramMessage } from './Telegram'
 import { Ticktick } from './Ticktick'
 // import { Trello } from './Trello'
-
-export function parseMessage(container: any) {
-  try {
-    return container.message.chat && container.message.from
-      ? container.message
-      : null
-  } catch (err) {
-    throw new Error('not a telegram message')
-  }
-}
 
 export type MessageHandlerOptions = {
   onlyFromUserId?: number

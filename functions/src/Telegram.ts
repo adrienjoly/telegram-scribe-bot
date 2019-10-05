@@ -15,7 +15,7 @@ export type TelegramLocation = {
 }
 
 export type MessageEntity = {
-  type:	string // can be mention (@username), hashtag, cashtag, bot_command, url, email, phone_number, bold (bold text), italic (italic text), code (monowidth string), pre (monowidth block), text_link (for clickable text URLs), text_mention (for users without usernames)
+  type: string // can be mention (@username), hashtag, cashtag, bot_command, url, email, phone_number, bold (bold text), italic (italic text), code (monowidth string), pre (monowidth block), text_link (for clickable text URLs), text_mention (for users without usernames)
   offset: number // Integer	Offset in UTF-16 code units to the start of the entity
   length: number // Integer	Length of the entity in UTF-16 code units
   url: string // (Optional) For “text_link” only, url that will be opened after user taps on the text
@@ -29,4 +29,25 @@ export type TelegramMessage = {
   date: number // Date the message was sent in Unix time
   location: TelegramLocation // if the user has explicitely shared their location
   entities: MessageEntity[]
+}
+
+export function parseMessage(container: any) {
+  try {
+    return container.message.chat && container.message.from
+      ? container.message
+      : null
+  } catch (err) {
+    throw new Error('not a telegram message')
+  }
+}
+
+export function parseEntities(message: TelegramMessage) {
+  const entitiesWithText = message.entities.map(entity => ({
+    ...entity,
+    text: message.text.substr(entity.offset, entity.length)
+  }))
+  return {
+    commands: entitiesWithText.filter(({ type }) => type === 'bot_command'),
+    tags: entitiesWithText.filter(({ type }) => type === 'hastag'),
+  }
 }
