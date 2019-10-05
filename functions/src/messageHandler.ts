@@ -27,7 +27,7 @@ export async function processMessage(
   if (options.onlyFromUserId && message.from.id !== options.onlyFromUserId)
     throw new Error('this sender is not allowed')
 
-  console.log('received message from Telegram:', message);
+  console.log('received message from Telegram:', message)
 
   let text
   try {
