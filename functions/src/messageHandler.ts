@@ -1,11 +1,12 @@
 import { TelegramMessage, parseEntities, ParsedMessageEntities } from './Telegram'
 import { Ticktick } from './Ticktick'
-// import { Trello } from './Trello'
+import { Trello } from './Trello'
 
 export type MessageHandlerOptions = {
   onlyFromUserId?: number
   trelloApiKey?: string
   trelloUserToken?: string
+  trelloBoardId?: string
   ticktickEmail?: string
   ticktickPassword?: string
 }
@@ -32,15 +33,17 @@ const commandHandlers: { [key: string]: CommandHandler } = {
     await ticktick.addTask(message.rest, desc, new Date(), true)
     return { text: '✅  Sent to Ticktick\'s "Today" tasks' }
   },
-  /*
-  '/note': async (message: TelegramMessage, options: MessageHandlerOptions) => {
+  '/note': async (message: ParsedMessageEntities, options: MessageHandlerOptions) => {
     if (!options.trelloApiKey) throw new Error('missing trelloApiKey')
     if (!options.trelloUserToken) throw new Error('missing trelloUserToken')
+    if (!options.trelloBoardId) throw new Error('missing trelloBoardId')
+    if (!message.tags.length) throw new Error('please specify at least one card as a hashtag')
+    //const cardTag = message.tags[0]
     const trello = new Trello(options.trelloApiKey, options.trelloUserToken)
-    const boards = await trello.member.searchBoards('me')
-    return { text: `Hello ${message.from.first_name}, ${boards[0].name}` }
+    // const boards = await trello.member.searchBoards('me')
+    const cards = await trello.board.searchCards(options.trelloBoardId)
+    return { text: `Hello ${message.initial.from.first_name}, ${cards[0].name}` }
   }
-  */
 }
 
 export async function processMessage(

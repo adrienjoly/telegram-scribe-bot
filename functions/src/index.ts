@@ -11,6 +11,7 @@ const options = {
     : undefined,
   trelloApiKey: config.trello.apikey,
   trelloUserToken: config.trello.usertoken,
+  trelloBoardId: config.trello.boardid,
   ticktickEmail: config.ticktick.email,
   ticktickPassword: config.ticktick.password,
 }

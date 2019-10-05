@@ -10,6 +10,7 @@ const options = {
   onlyFromUserId: TELEGRAM_USER_ID ? parseInt(TELEGRAM_USER_ID, 10) : undefined,
   trelloApiKey: process.env.TRELLO_API_KEY || '',
   trelloUserToken: process.env.TRELLO_USER_TOKEN || '',
+  trelloBoardId: process.env.TRELLO_BOARD_ID || '',
 }
 
 makeApp(options).listen(PORT, () =>
