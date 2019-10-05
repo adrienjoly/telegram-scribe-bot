@@ -11,8 +11,6 @@ export type MessageHandlerOptions = {
   ticktickPassword?: string
 }
 
-const cleanTag = (tag: string) => tag.replace(/^\#/, '')
-
 type CommandHandler = (message: ParsedMessageEntities, options: MessageHandlerOptions) => Promise<{ text: string }>
 
 const commandHandlers: { [key: string]: CommandHandler } = {
@@ -40,18 +38,9 @@ const commandHandlers: { [key: string]: CommandHandler } = {
     if (!options.trelloUserToken) throw new Error('missing trelloUserToken')
     if (!options.trelloBoardId) throw new Error('missing trelloBoardId')
     if (!message.tags.length) throw new Error('please specify at least one card as a hashtag')
-    const noteTags = message.tags.map(tagEntity => cleanTag(tagEntity.text))
     const trello = new Trello(options.trelloApiKey, options.trelloUserToken)
-    // const boards = await trello.member.searchBoards('me')
-    type TrelloCard = { name: string, desc: string }
-    const cards: TrelloCard[] = await trello.board.searchCards(options.trelloBoardId)
-
-    const RE_TRELLO_CARD_BINDING = /telegram\-scribe\-bot\:addCommentsFromTaggedNotes\(([^\)]+)\)/
-    const targetedCards = cards.filter((card: TrelloCard) => {
-      const cardTags = (card.desc.match(RE_TRELLO_CARD_BINDING) || [])[1]
-      const matches = cardTags && noteTags.find(noteTag => cardTags.includes(noteTag))
-      return matches
-    })
+    const noteTags = message.tags.map(tagEntity => tagEntity.text)
+    const targetedCards = await trello.getCardsBoundToTags(noteTags, options.trelloBoardId)
     return { text: `Hello ${message.initial.from.first_name}, ${targetedCards.map(c => c.name).join(', ')}` }
   }
 }
