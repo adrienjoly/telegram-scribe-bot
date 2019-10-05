@@ -19,7 +19,7 @@ const commandHandlers: { [key: string]: Function } = {
     const desc = `Sent from Telegram-scribe-bot, on ${new Date(message.date * 1000)}`
     // note: user's location can be requested, cf https://tutorials.botsfloor.com/request-and-handle-phone-number-and-location-with-telegram-bot-api-e90004c0c87e
     await ticktick.addTask(message.text, desc)
-    return { text: '✅  Sent to Ticktick' }
+    return { text: '✅  Sent to Ticktick\'s inbox' }
   },
   /*
   '/note': async (message: TelegramMessage, options: MessageHandlerOptions) => {
@@ -49,12 +49,12 @@ export async function processMessage(
     const command = entities.commands[0].text
     const commandHandler = commandHandlers[command]
     if (!commandHandler) {
-      text = 'Please retry with a valid command: ' + Object.keys(commandHandlers).join(', ')
+      text = `🤔  Please retry with a valid command: ${Object.keys(commandHandlers).join(', ')}`
     } else {
       text = (await commandHandler(message, options)).text
     }
   } catch (err) {
-    text = `Error while processing: ${err.message}`
+    text = `😕  Error while processing: ${err.message}`
     console.error(text)
   }
 
