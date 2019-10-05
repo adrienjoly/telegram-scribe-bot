@@ -46,8 +46,15 @@ export function parseEntities(message: TelegramMessage) {
     ...entity,
     text: message.text.substr(entity.offset, entity.length)
   }))
+  // remove parsed entities from the message's text => return the rest
+  const rest = message.entities
+    .sort((a, b) => b.offset - a.offset) // we'll remove from the end to the beginning of the string, to keep the offsets valid
+    .reduce((text, entity) => {
+      return text.substr(0, entity.offset) + text.substr(entity.offset + entity.length)
+    }, message.text)
   return {
     commands: entitiesWithText.filter(({ type }) => type === 'bot_command'),
     tags: entitiesWithText.filter(({ type }) => type === 'hastag'),
+    rest
   }
 }

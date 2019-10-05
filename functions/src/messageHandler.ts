@@ -1,4 +1,4 @@
-import { TelegramMessage } from './Telegram'
+import { TelegramMessage, parseEntities } from './Telegram'
 import { Ticktick } from './Ticktick'
 // import { Trello } from './Trello'
 
@@ -18,6 +18,9 @@ export async function processMessage(
     throw new Error('this sender is not allowed')
 
   console.log('received message from Telegram:', message)
+
+  const entities = parseEntities(message)
+  console.log('entities', entities)
 
   let text
   try {
