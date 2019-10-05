@@ -98,7 +98,7 @@ Set `TELEGRAM_USER_ID` in your `.env` file and call `$ npm run deploy:config` ag
 - ideas of "command" use cases to implement:
   - `/note <card>` will add a comment to the specified Trello card
   - `/today` will add a ToDo/task to TickTick, due today
-  - `/someday` will add a ToDo/task to TickTick's inbox, for sorting
+  - `/todo` will add a ToDo/task to TickTick's inbox, for sorting
   - `/convert` units of measure into others (e.g. timezones, sizes, currencies, data formats...)
   - `/issue <repo>` will create a github issue on the provided repo
   - `/bk <url> [desc] [#tag]>` will create a Diigo bookmark to that URL
