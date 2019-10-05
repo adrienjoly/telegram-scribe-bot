@@ -65,7 +65,7 @@ export async function processMessage(
     const entities = parseEntities(message)
     console.log('entities:', entities)
 
-    const command = entities.commands[0].text
+    const command = (entities.commands[0] || {}).text
     const commandHandler = commandHandlers[command]
     if (!commandHandler) {
       text = `🤔  Please retry with a valid command: ${Object.keys(commandHandlers).join(', ')}`
@@ -74,7 +74,7 @@ export async function processMessage(
     }
   } catch (err) {
     text = `😕  Error while processing: ${err.message}`
-    console.error(text)
+    console.error(text, err, err.stack)
   }
 
   return {
