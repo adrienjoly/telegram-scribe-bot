@@ -41,8 +41,10 @@ export function parseMessage(container: any) {
   }
 }
 
-export function parseEntities(message: TelegramMessage) {
-  const entitiesWithText = message.entities.map(entity => ({
+export function parseEntities(message: TelegramMessage, supportedTypes = ['bot_command', 'hashtag']) {
+  const entities = message.entities.filter(({ type }) => supportedTypes.includes(type))
+  // add a `text` property in each supported entity
+  const entitiesWithText = entities.map(entity => ({
     ...entity,
     text: message.text.substr(entity.offset, entity.length)
   }))
@@ -54,7 +56,7 @@ export function parseEntities(message: TelegramMessage) {
     }, message.text)
   return {
     commands: entitiesWithText.filter(({ type }) => type === 'bot_command'),
-    tags: entitiesWithText.filter(({ type }) => type === 'hastag'),
+    tags: entitiesWithText.filter(({ type }) => type === 'hashtag'),
     rest
   }
 }
