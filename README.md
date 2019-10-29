@@ -121,3 +121,5 @@ Set `TELEGRAM_USER_ID` in your `.env` file and call `$ npm run deploy:config` ag
 - ideas of "request" use cases to implement:
   - when waking up: invite to keep a note of the dream you were having
   - before going to sleep: invite to keep a note of how was your day (i.e. mood) and of what you did that day (i.e. journal), possibly with a photo to illustrate it
+- read [issues](https://github.com/adrienjoly/telegram-scribe-bot/issues) for more.
+
