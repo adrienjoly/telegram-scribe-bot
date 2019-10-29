@@ -112,10 +112,12 @@ Set `TELEGRAM_USER_ID` in your `.env` file and call `$ npm run deploy:config` ag
 
 - Make setup easier and faster, e.g. by automatizing some of the steps
 - ideas of "command" use cases to implement:
-  - `/convert` units of measure into others (e.g. timezones, sizes, currencies, data formats...)
+  - `/openwhyd <track> [#tag] [desc]` will add a music track (e.g. YouTube URL) to Openwhyd.org, in a playlist corresponding to the `tag`, and may add a `desc`ription if provided
+  - `/next <task> [#tag]` will add a `task` to the top of the check-list of the Trello card associated with `#tag`
   - `/issue <repo>` will create a github issue on the provided repo
   - `/bk <url> [desc] [#tag]>` will create a Diigo bookmark to that URL
   - `/met "<person name>" [@place] [#tag] [desc]` will create or update a Google Contact
+  - `/convert` units of measure into others (e.g. timezones, sizes, currencies, data formats...)
 - ideas of "request" use cases to implement:
   - when waking up: invite to keep a note of the dream you were having
   - before going to sleep: invite to keep a note of how was your day (i.e. mood) and of what you did that day (i.e. journal), possibly with a photo to illustrate it
