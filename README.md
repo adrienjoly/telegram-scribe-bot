@@ -112,6 +112,7 @@ Set `TELEGRAM_USER_ID` in your `.env` file and call `$ npm run deploy:config` ag
 
 - Make setup easier and faster, e.g. by automatizing some of the steps
 - ideas of "command" use cases to implement:
+  - `/search <text> [#tag [#...]]` will search occurrences of `text` in comments of Trello cards, optionally filtered by `#tags`
   - `/openwhyd <track> [#tag] [desc]` will add a music track (e.g. YouTube URL) to Openwhyd.org, in a playlist corresponding to the `tag`, and may add a `desc`ription if provided
   - `/next <task> [#tag]` will add a `task` to the top of the check-list of the Trello card associated with `#tag`
   - `/issue <repo>` will create a github issue on the provided repo
