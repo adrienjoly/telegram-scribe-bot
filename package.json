@@ -26,7 +26,8 @@
       "prettier/prettier": "error"
     },
     "env": {
-      "node": true
+      "node": true,
+      "mocha": true
     }
   },
   "devDependencies": {
