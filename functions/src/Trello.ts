@@ -15,6 +15,11 @@ type TrelloBoard = {
   name: string
 }
 
+type TrelloChecklist = {
+  id: string
+  name: string
+}
+
 const cleanTag = (tag: string) => tag.replace(/^\#/, '')
 
 export class Trello extends TrelloNodeAPI {
@@ -61,7 +66,7 @@ export class Trello extends TrelloNodeAPI {
     return (await this.card.search(cardId)).idChecklists
   }
 
-  async getChecklist(checklistId: string): Promise<string[]> {
+  async getChecklist(checklistId: string): Promise<TrelloChecklist> {
     return await this.trelloLib.makeRequest(
       'get',
       `/1/checklists/${checklistId}`
@@ -74,6 +79,7 @@ export class Trello extends TrelloNodeAPI {
     pos: 'top' | 'bottom'
   ) {
     await this.trelloLib.addItemToChecklist(checklistId, name, pos)
+    return { checklistId, name, pos }
   }
 }
 
