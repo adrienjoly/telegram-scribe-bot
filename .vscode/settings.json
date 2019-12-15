@@ -1,3 +1,4 @@
 {
+  "eslint.nodePath": "functions/",
   "editor.formatOnSave": true
 }
