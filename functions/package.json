@@ -59,6 +59,7 @@
     "firebase-admin": "^8.0.0",
     "firebase-functions": "^3.1.0",
     "ticktick-wrapper": "0.0.4",
+    "trello": "^0.9.1",
     "trello-node-api": "github:adrienjoly/trello-node-api"
   },
   "devDependencies": {
@@ -72,7 +73,6 @@
     "mocha": "^6.1.4",
     "node-fetch": "^2.6.0",
     "prettier": "^1.19.1",
-    "trello": "^0.9.1",
     "ts-mocha": "^6.0.0",
     "ts-node": "^8.3.0",
     "typescript": "^3.2.2"
