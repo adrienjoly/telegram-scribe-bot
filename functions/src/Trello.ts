@@ -20,6 +20,7 @@ const cleanTag = (tag: string) => tag.replace(/^\#/, '')
 export class Trello extends TrelloNodeAPI {
   private trelloLib: {
     addItemToChecklist: Function
+    makeRequest: Function
   }
 
   constructor(apiKey: string, userToken: string) {
@@ -58,6 +59,13 @@ export class Trello extends TrelloNodeAPI {
 
   async getChecklistIds(cardId: string): Promise<string[]> {
     return (await this.card.search(cardId)).idChecklists
+  }
+
+  async getChecklist(checklistId: string): Promise<string[]> {
+    return await this.trelloLib.makeRequest(
+      'get',
+      `/1/checklists/${checklistId}`
+    )
   }
 
   async addChecklistItem(

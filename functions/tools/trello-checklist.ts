@@ -26,7 +26,10 @@ const main = async () => {
   cards.map(({ id, name }) => console.log(`${id} \t ${name}`))
   const cardId = await getAnswer('enter a card id: ')
   const [checklistId] = await trello.getChecklistIds(cardId)
-  await trello.addChecklistItem(checklistId, 'this is a test', 'top')
+  const checklist = await trello.getChecklist(checklistId)
+  console.log('=> checklist:', checklist)
+  const taskName = await getAnswer('enter the name of a task to add: ')
+  if (taskName) await trello.addChecklistItem(checklistId, taskName, 'top')
 }
 
 main()
