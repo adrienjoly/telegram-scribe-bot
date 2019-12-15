@@ -21,13 +21,13 @@ To get started, you just need `git`, NodeJS and to follow these instructions:
 ```sh
 $ git clone https://github.com/adrienjoly/telegram-scribe-bot.git
 $ cd telegram-scribe-bot
-$ cd functions
 $ npm install
+$ npm run build
 ```
 
 ## Test locally (optional)
 
-Before binding the chat-bot to Telegram, you can test it locally (still from the `functions` sub-folder):
+Before binding the chat-bot to Telegram, you can test it locally:
 
 ```sh
 $ npm start
@@ -44,7 +44,7 @@ Follow these steps to setup your own "scribe" bot, connect it to your own Trello
 
 - See the [Clone and Install](#clone-and-install) section above
 
-### 2. Create a Firebase project (still from the `functions` sub-folder)
+### 2. Create a Firebase project
 
 - Go to [your firebase console](https://console.firebase.google.com)
 - Add a new project
@@ -59,7 +59,7 @@ Follow these steps to setup your own "scribe" bot, connect it to your own Trello
 - In the `.env` file, replace the default `BOT_TOKEN` value by the Secret Token provided by that bot
 - Also, take note of the name of your bot (ends with `bot`), we'll need it later
 
-### 4. Deploy and bind the bot to Telegram (still from the `functions` sub-folder)
+### 4. Deploy and bind the bot to Telegram
 
 - `$ npm run deploy` (will upload the source code to your Firebase project)
 - In the `.env` file, replace the default `ROUTER_URL` value by the one printed when deploying (previous step), it must end with `/router/`
@@ -123,4 +123,3 @@ Set `TELEGRAM_USER_ID` in your `.env` file and call `$ npm run deploy:config` ag
   - when waking up: invite to keep a note of the dream you were having
   - before going to sleep: invite to keep a note of how was your day (i.e. mood) and of what you did that day (i.e. journal), possibly with a photo to illustrate it
 - read [issues](https://github.com/adrienjoly/telegram-scribe-bot/issues) for more.
-

@@ -1,5 +1,0 @@
-## Compiled JavaScript files
-lib/**/*.js
-lib/**/*.js.map
-
-node_modules/

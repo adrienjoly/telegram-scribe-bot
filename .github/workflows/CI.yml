@@ -10,12 +10,10 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v1
-      - run: cd functions
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
@@ -32,5 +30,7 @@ jobs:
         env:
           CI: true
         run: npm install --prefer-offline --no-audit
+      - name: build
+        run: npm run build
       - name: npm test
         run: npm test
