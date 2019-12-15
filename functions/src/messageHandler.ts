@@ -1,3 +1,4 @@
+import { MessageHandlerOptions, CommandHandler } from './types'
 import {
   TelegramMessage,
   parseEntities,
@@ -5,20 +6,6 @@ import {
 } from './Telegram'
 import { Ticktick } from './Ticktick'
 import { Trello } from './Trello'
-
-export type MessageHandlerOptions = {
-  onlyFromUserId?: number
-  trelloApiKey?: string
-  trelloUserToken?: string
-  trelloBoardId?: string
-  ticktickEmail?: string
-  ticktickPassword?: string
-}
-
-type CommandHandler = (
-  message: ParsedMessageEntities,
-  options: MessageHandlerOptions
-) => Promise<{ text: string }>
 
 const commandHandlers: { [key: string]: CommandHandler } = {
   '/todo': async (

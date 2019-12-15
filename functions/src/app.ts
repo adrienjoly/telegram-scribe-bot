@@ -1,10 +1,8 @@
 import * as express from 'express'
 import * as cors from 'cors'
 import { TelegramMessage, parseMessage } from './Telegram'
-import {
-  processMessage,
-  MessageHandlerOptions,
-} from './messageHandler'
+import { processMessage } from './messageHandler'
+import { MessageHandlerOptions } from './types'
 
 const errorCodes: { [s: string]: number } = {
   'not a telegram message': 400,
