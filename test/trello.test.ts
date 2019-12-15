@@ -1,6 +1,6 @@
 /// <reference types="mocha" />
 
-require('dotenv').config({ path: `${__dirname}/../../.env` }) // load environment variables
+require('dotenv').config({ path: `${__dirname}/../.env` }) // load environment variables
 import * as expect from 'expect'
 import { Trello } from './../lib/src/Trello'
 
