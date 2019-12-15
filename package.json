@@ -36,6 +36,7 @@
     "prettier": "^1.19.1"
   },
   "prettier": {
+    "trailingComma": "es5",
     "singleQuote": true,
     "semi": false
   }
