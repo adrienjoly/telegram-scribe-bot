@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "description": "A chat-bot that can add comments to Trello cards, from any Telegram client.",
   "scripts": {
+    "lint": "npx eslint .",
     "lint:fix": "npx eslint . --fix",
-    "test": "ts-mocha -p ../tsconfig.json ./test/*.test.ts",
+    "test": "ts-mocha -p ./tsconfig.json ./test/*.test.ts",
     "clean": "rm -rf lib",
     "build": "tsc",
     "serve": "npm run build && firebase serve --only functions",
@@ -29,7 +30,8 @@
   "license": "ISC",
   "eslintConfig": {
     "ignorePatterns": [
-      "**/node_modules/"
+      "lib/",
+      "node_modules/"
     ],
     "extends": [
       "plugin:prettier/recommended"
