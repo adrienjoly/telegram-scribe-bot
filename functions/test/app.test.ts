@@ -45,12 +45,13 @@ describe('app', () => {
     const message = {
       chat: { id: 1 },
       from: { first_name: 'test_name' },
+      text: 'Hello world!',
     }
     const res = await postJSON(`http://localhost:${port}/`, { message })
     const payload = await res.json()
     expect(payload.status).toBeUndefined()
     expect(res.status).toEqual(200)
-    expect(payload.text).toMatch(/Not sent to any service/)
+    expect(payload.text).toMatch(/Please retry with a valid command/)
     server.destroy()
   })
 
