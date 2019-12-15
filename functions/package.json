@@ -4,7 +4,7 @@
   "description": "A chat-bot that can add comments to Trello cards, from any Telegram client.",
   "scripts": {
     "lint:fix": "npx eslint . --fix",
-    "test": "ts-mocha -p ./tsconfig.json ./test/*.test.ts",
+    "test": "ts-mocha -p ../tsconfig.json ./test/*.test.ts",
     "clean": "rm -rf lib",
     "build": "tsc",
     "serve": "npm run build && firebase serve --only functions",
@@ -12,14 +12,14 @@
     "start": "npm run build && node lib/tools/start.js",
     "deploy": "npm run build && firebase deploy --only functions",
     "deploy:setup": "firebase login && echo \"Don't forget to specify your Firebase app id in .firebaserc, cf README.md\"",
-    "deploy:config": "source .env && firebase functions:config:set telegram.userid=${TELEGRAM_USER_ID} trello.apikey=${TRELLO_API_KEY} trello.usertoken=${TRELLO_USER_TOKEN} trello.boardid=${TRELLO_BOARD_ID} ticktick.email=${TICKTICK_EMAIL} ticktick.password=${TICKTICK_PASSWORD}",
-    "deploy:test": "source .env && curl -X POST -H \"Content-Type:application/json\" ${ROUTER_URL} -d '{}'",
-    "webhook:bind": "source .env && curl https://api.telegram.org/bot${BOT_TOKEN}/setWebhook?url=${ROUTER_URL}",
-    "webhook:test": "source .env && curl https://api.telegram.org/bot${BOT_TOKEN}/getWebhookInfo",
+    "deploy:config": "source ../.env && firebase functions:config:set telegram.userid=${TELEGRAM_USER_ID} trello.apikey=${TRELLO_API_KEY} trello.usertoken=${TRELLO_USER_TOKEN} trello.boardid=${TRELLO_BOARD_ID} ticktick.email=${TICKTICK_EMAIL} ticktick.password=${TICKTICK_PASSWORD}",
+    "deploy:test": "source ../.env && curl -X POST -H \"Content-Type:application/json\" ${ROUTER_URL} -d '{}'",
+    "webhook:bind": "source ../.env && curl https://api.telegram.org/bot${BOT_TOKEN}/setWebhook?url=${ROUTER_URL}",
+    "webhook:test": "source ../.env && curl https://api.telegram.org/bot${BOT_TOKEN}/getWebhookInfo",
     "logs": "firebase functions:log",
     "ticktick:test": "ts-node tools/ticktick.ts",
-    "trello:test": "source .env && curl -LI \"https://api.trello.com/1/members/me/boards?key=${TRELLO_API_KEY}&token=${TRELLO_USER_TOKEN}\" -s | grep HTTP",
-    "trello:boards": "npm run build && source .env && node tools/trello-boards.js"
+    "trello:test": "source ../.env && curl -LI \"https://api.trello.com/1/members/me/boards?key=${TRELLO_API_KEY}&token=${TRELLO_USER_TOKEN}\" -s | grep HTTP",
+    "trello:boards": "npm run build && source ../.env && node tools/trello-boards.js"
   },
   "engines": {
     "node": "8"

@@ -21,6 +21,7 @@ To get started, you just need `git`, NodeJS and to follow these instructions:
 ```sh
 $ git clone https://github.com/adrienjoly/telegram-scribe-bot.git
 $ cd telegram-scribe-bot
+$ cd functions
 $ npm install
 $ npm run build
 ```

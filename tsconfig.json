@@ -3,12 +3,12 @@
     "module": "commonjs",
     "noImplicitReturns": true,
     "noUnusedLocals": true,
-    "outDir": "lib",
+    "outDir": "./functions/lib",
     "sourceMap": true,
     "strict": true,
     "target": "es2017",
-    "typeRoots": ["./node_modules/@types", "./typings"]
+    "typeRoots": ["./functions/node_modules/@types", "./functions/typings"]
   },
   "compileOnSave": true,
-  "include": ["src", "tools/start.ts"]
+  "include": ["./functions/src", "./functions/tools/start.ts"]
 }
