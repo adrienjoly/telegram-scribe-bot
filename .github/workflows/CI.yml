@@ -29,8 +29,11 @@ jobs:
       - name: npm install
         env:
           CI: true
+        working-directory: functions/
         run: npm install --prefer-offline --no-audit
       - name: build
+        working-directory: functions/
         run: npm run build
       - name: npm test
+        working-directory: functions/
         run: npm test
