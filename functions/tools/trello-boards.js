@@ -2,8 +2,12 @@ require('dotenv').config({ path: `${__dirname}/../../.env` }) // load environmen
 const { Trello } = require('./../lib/src/Trello')
 const { TRELLO_API_KEY, TRELLO_USER_TOKEN } = process.env
 
-const trello = new Trello(TRELLO_API_KEY, TRELLO_USER_TOKEN)
-
-trello.member.searchBoards('me').then(boards => {
-  boards.map(({ id, name }) => console.log(`${id} \t ${name}`))
-})
+new Trello(TRELLO_API_KEY, TRELLO_USER_TOKEN)
+  .getBoards()
+  .then(boards => {
+    boards.map(({ id, name }) => console.log(`${id} \t ${name}`))
+  })
+  .catch(err => {
+    console.error(err)
+    process.exit(1)
+  })
