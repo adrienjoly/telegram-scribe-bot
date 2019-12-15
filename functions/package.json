@@ -20,6 +20,7 @@
     "logs": "firebase functions:log",
     "ticktick:test": "ts-node tools/ticktick.ts",
     "trello:test": "source ../.env && curl -LI \"https://api.trello.com/1/members/me/boards?key=${TRELLO_API_KEY}&token=${TRELLO_USER_TOKEN}\" -s | grep HTTP",
+    "trello:checklist": "ts-node tools/trello-checklist.ts",
     "trello:boards": "npm run build && source ../.env && node tools/trello-boards.js"
   },
   "engines": {
@@ -71,6 +72,7 @@
     "mocha": "^6.1.4",
     "node-fetch": "^2.6.0",
     "prettier": "^1.19.1",
+    "trello": "^0.9.1",
     "ts-mocha": "^6.0.0",
     "ts-node": "^8.3.0",
     "typescript": "^3.2.2"
