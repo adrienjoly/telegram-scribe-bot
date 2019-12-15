@@ -20,8 +20,11 @@ jobs:
         with:
           node-version: 10
       - name: npm install
-        run: cd functions && npm install --prefer-offline --no-audit
+        working-directory: functions/
+        run: npm install --prefer-offline --no-audit
       - name: build
-        run: cd functions && npm run build
+        working-directory: functions/
+        run: npm run build
       - name: npm test
-        run: cd functions && npm test
+        working-directory: functions/
+        run: npm test
