@@ -19,19 +19,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 10
-      - name: check npm cache
-        uses: actions/cache@v1
-        with:
-          path: node_modules
-          key: ${{ runner.OS }}-build-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.OS }}-build-${{ env.cache-name }}-
-            ${{ runner.OS }}-build-
       - name: npm install
-        env:
-          CI: true
-        working-directory: ./functions
-        run: npm install --prefer-offline --no-audit
+        run: cd functions && npm install --prefer-offline --no-audit
       - name: npm test
-        working-directory: ./functions
-        run: npm test
+        run: cd functions && npm test
