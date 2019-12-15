@@ -1,14 +1,10 @@
 /// <reference types="mocha" />
 
-require('dotenv').config({ path: `${__dirname}/../../.env` }) // load environment variables
 import * as expect from 'expect'
 import fetch from 'node-fetch'
 import { startApp } from './../lib/src/app'
 
-const options = {
-  trelloApiKey: process.env.TRELLO_API_KEY,
-  trelloUserToken: process.env.TRELLO_USER_TOKEN,
-}
+const options = {}
 
 const allocatePort = (() => {
   let current = 8081
