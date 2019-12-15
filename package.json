@@ -3,9 +3,40 @@
   "version": "1.0.0",
   "description": "A chat-bot that can add comments to Trello cards, from any Telegram client.",
   "scripts": {
+    "lint:fix": "npx eslint . --fix",
     "start": "echo \"Please refer to README.md for setup and usage instructions.\""
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "eslintConfig": {
+    "ignorePatterns": [
+      "**/node_modules/"
+    ],
+    "extends": [
+      "plugin:prettier/recommended"
+    ],
+    "plugins": [
+      "prettier"
+    ],
+    "parserOptions": {
+      "ecmaVersion": 2019
+    },
+    "rules": {
+      "prettier/prettier": "error"
+    },
+    "env": {
+      "node": true
+    }
+  },
+  "devDependencies": {
+    "eslint": "^6.7.2",
+    "eslint-config-prettier": "^6.7.0",
+    "eslint-plugin-prettier": "^3.1.1",
+    "prettier": "^1.19.1"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "semi": false
+  }
 }
