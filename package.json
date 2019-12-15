@@ -22,7 +22,7 @@
     "trello:boards": "npm run build && source .env && node tools/trello-boards.js"
   },
   "engines": {
-    "node": "10"
+    "node": "8"
   },
   "main": "lib/src/index.js",
   "author": "Adrien Joly",
