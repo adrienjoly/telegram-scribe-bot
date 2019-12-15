@@ -15,7 +15,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v1
-      - run: cd functions
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
@@ -31,6 +30,8 @@ jobs:
       - name: npm install
         env:
           CI: true
+        working-directory: ./functions
         run: npm install --prefer-offline --no-audit
       - name: npm test
+        working-directory: ./functions
         run: npm test
