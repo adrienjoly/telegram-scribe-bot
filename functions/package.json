@@ -2,6 +2,7 @@
   "name": "functions",
   "scripts": {
     "test": "ts-mocha -p ./tsconfig.json ./test/*.test.ts",
+    "clean": "rm -rf lib",
     "build": "tsc",
     "serve": "npm run build && firebase serve --only functions",
     "shell": "npm run build && firebase functions:shell",
