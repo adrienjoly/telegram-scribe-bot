@@ -2,7 +2,7 @@ import { MessageHandlerOptions } from './../types'
 import { ParsedMessageEntities } from './../Telegram'
 import { Trello } from './../Trello'
 
-type Options = {
+export type Options = {
   trelloApiKey: string
   trelloUserToken: string
   trelloBoardId: string
