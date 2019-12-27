@@ -60,12 +60,18 @@ describe('trello use cases', () => {
       expect(promise).rejects.toThrow('missing trelloApiKey')
     })
 
-    it('fails if no hashtag was provided', async () => {
+    it('suggests existing tags if no tags were provided', async () => {
+      const tags = ['#card1tag', '#card2tag']
+      const cards = tags.map(tag => trelloCardWithTag(tag))
       const message = createMessage({ rest: 'coucou' })
-      const promise = addAsTrelloComment(message, FAKE_CREDS)
-      expect(promise).rejects.toThrow(
-        'please specify at least one card as a hashtag'
-      )
+      // simulate trello cards
+      nock('https://api.trello.com')
+        .get(uri => uri.includes(`/1/boards/${FAKE_CREDS.trelloBoardId}/cards`))
+        .reply(200, cards)
+      const res = await addAsTrelloComment(message, FAKE_CREDS)
+      expect(res.text).toMatch('please specify at least one card as a hashtag')
+      expect(res.text).toMatch(tags[0])
+      expect(res.text).toMatch(tags[1])
     })
 
     it('fails if no card matches the tag', async () => {
