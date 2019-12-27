@@ -1,18 +1,10 @@
 import * as TrelloNodeAPI from 'trello-node-api'
 import * as TrelloLib from 'trello'
 
-// string to include in Trello card(s), to bind them with some tags
-const RE_TRELLO_CARD_BINDING = /telegram\-scribe\-bot\:addCommentsFromTaggedNotes\(([^\)]+)\)/
-
 export type TrelloCard = {
   id: string
   name: string
   desc: string
-}
-
-type TrelloCardWithTags = {
-  card: TrelloCard
-  tags: string[]
 }
 
 type TrelloBoard = {
@@ -24,8 +16,6 @@ type TrelloChecklist = {
   id: string
   name: string
 }
-
-const cleanTag = (tag: string) => tag.replace(/^\#/, '')
 
 export class Trello extends TrelloNodeAPI {
   private trelloLib: {
@@ -50,25 +40,6 @@ export class Trello extends TrelloNodeAPI {
 
   async getCards(boardId: string): Promise<TrelloCard[]> {
     return await this.board.searchCards(boardId)
-  }
-
-  async getCardsWithTags(trelloBoardId: string): Promise<TrelloCardWithTags[]> {
-    const cards = await this.getCards(trelloBoardId)
-    return cards.map(card => ({
-      card,
-      tags: (card.desc.match(RE_TRELLO_CARD_BINDING) || [])[1].split(','),
-    }))
-  }
-
-  getCardsBoundToTags(
-    targetedTags: string[],
-    cardsWithTags: TrelloCardWithTags[]
-  ): TrelloCard[] {
-    return cardsWithTags
-      .filter(({ tags }) =>
-        targetedTags.some(targetedTag => tags.includes(targetedTag))
-      )
-      .map(({ card }) => card)
   }
 
   async getChecklistIds(cardId: string): Promise<string[]> {

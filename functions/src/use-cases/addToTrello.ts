@@ -2,10 +2,18 @@ import { MessageHandlerOptions } from './../types'
 import { ParsedMessageEntities } from './../Telegram'
 import { Trello, TrelloCard } from './../Trello'
 
+// string to include in Trello card(s), to bind them with some tags
+const RE_TRELLO_CARD_BINDING = /telegram\-scribe\-bot\:addCommentsFromTaggedNotes\(([^\)]+)\)/
+
 export type Options = {
   trelloApiKey: string
   trelloUserToken: string
   trelloBoardId: string
+}
+
+type TrelloCardWithTags = {
+  card: TrelloCard
+  tags: string[]
 }
 
 const checkOptions = (options: MessageHandlerOptions) => {
@@ -15,9 +23,15 @@ const checkOptions = (options: MessageHandlerOptions) => {
   return options as Options
 }
 
-const extractTags = (message: ParsedMessageEntities) => {
-  return message.tags.map(tagEntity => tagEntity.text)
-}
+const getCardsBoundToTags = (
+  cardsWithTags: TrelloCardWithTags[],
+  targetedTags: string[]
+): TrelloCard[] =>
+  cardsWithTags
+    .filter(({ tags }) =>
+      targetedTags.some(targetedTag => tags.includes(targetedTag))
+    )
+    .map(({ card }) => card)
 
 const wrap = (func: Function) => async (
   message: ParsedMessageEntities,
@@ -25,9 +39,12 @@ const wrap = (func: Function) => async (
 ) => {
   const options = checkOptions(messageHandlerOptions) // may throw
   const trello = new Trello(options.trelloApiKey, options.trelloUserToken)
-  const noteTags = extractTags(message)
-  const cardsWithTags = await trello.getCardsWithTags(options.trelloBoardId)
-  // console.warn(cardsWithTags)
+  const cards = await trello.getCards(options.trelloBoardId)
+  const cardsWithTags = cards.map(card => ({
+    card,
+    tags: (card.desc.match(RE_TRELLO_CARD_BINDING) || [])[1].split(','),
+  }))
+  const noteTags = message.tags.map(tagEntity => tagEntity.text)
   if (!noteTags.length) {
     const tagsPerCard = cardsWithTags.map(({ tags }) => tags)
     const allTags = tagsPerCard.reduce((allTags, tags: string[]) => {
@@ -40,7 +57,7 @@ const wrap = (func: Function) => async (
       ].join(', ')}`,
     }
   }
-  const targetedCards = trello.getCardsBoundToTags(noteTags, cardsWithTags)
+  const targetedCards = getCardsBoundToTags(cardsWithTags, noteTags)
   if (!targetedCards.length)
     return {
       text: `🤔  No cards match these tags. Please retry without another tag.`,
