@@ -2,17 +2,32 @@ import { MessageHandlerOptions } from './../types'
 import { ParsedMessageEntities } from './../Telegram'
 import { Trello } from './../Trello'
 
-export const addAsTrelloComment = async (
-  message: ParsedMessageEntities,
-  options: MessageHandlerOptions
-) => {
+type Options = {
+  trelloApiKey: string
+  trelloUserToken: string
+  trelloBoardId: string
+}
+
+const checkOptions = (options: MessageHandlerOptions) => {
   if (!options.trelloApiKey) throw new Error('missing trelloApiKey')
   if (!options.trelloUserToken) throw new Error('missing trelloUserToken')
   if (!options.trelloBoardId) throw new Error('missing trelloBoardId')
+  return options as Options
+}
+
+const extractTags = (message: ParsedMessageEntities) => {
   if (!message.tags.length)
     throw new Error('please specify at least one card as a hashtag')
+  return message.tags.map(tagEntity => tagEntity.text)
+}
+
+export const addAsTrelloComment = async (
+  message: ParsedMessageEntities,
+  messageHandlerOptions: MessageHandlerOptions
+) => {
+  const options = checkOptions(messageHandlerOptions) // may throw
+  const noteTags = extractTags(message) // may throw
   const trello = new Trello(options.trelloApiKey, options.trelloUserToken)
-  const noteTags = message.tags.map(tagEntity => tagEntity.text)
   const targetedCards = await trello.getCardsBoundToTags(
     noteTags,
     options.trelloBoardId
@@ -35,15 +50,11 @@ export const addAsTrelloComment = async (
 
 export const addAsTrelloTask = async (
   message: ParsedMessageEntities,
-  options: MessageHandlerOptions
+  messageHandlerOptions: MessageHandlerOptions
 ) => {
-  if (!options.trelloApiKey) throw new Error('missing trelloApiKey')
-  if (!options.trelloUserToken) throw new Error('missing trelloUserToken')
-  if (!options.trelloBoardId) throw new Error('missing trelloBoardId')
-  if (!message.tags.length)
-    throw new Error('please specify at least one card as a hashtag')
+  const options = checkOptions(messageHandlerOptions) // may throw
+  const noteTags = extractTags(message) // may throw
   const trello = new Trello(options.trelloApiKey, options.trelloUserToken)
-  const noteTags = message.tags.map(tagEntity => tagEntity.text)
   const targetedCards = await trello.getCardsBoundToTags(
     noteTags,
     options.trelloBoardId
