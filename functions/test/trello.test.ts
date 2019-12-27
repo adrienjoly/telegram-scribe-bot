@@ -66,7 +66,7 @@ describe('trello use cases', () => {
 
     it('fails if no card matches the tag', async () => {
       const message = createMessage({
-        text: 'coucou',
+        rest: 'coucou',
         commands: [{ type: 'bot_command', text: '/note' }],
         tags: [{ type: 'hashtag', text: '#tag' }],
       })
@@ -80,7 +80,7 @@ describe('trello use cases', () => {
     it('succeeds', async () => {
       const tagName = '#myTag'
       const message = createMessage({
-        text: 'coucou',
+        rest: 'coucou',
         commands: [{ type: 'bot_command', text: '/note' }],
         tags: [{ type: 'hashtag', text: tagName }],
       })
@@ -109,7 +109,7 @@ describe('trello use cases', () => {
 
     it('fails if no card matches the tag', async () => {
       const message = createMessage({
-        text: 'coucou',
+        rest: 'coucou',
         commands: [{ type: 'bot_command', text: '/note' }],
         tags: [{ type: 'hashtag', text: '#tag' }],
       })
@@ -123,7 +123,7 @@ describe('trello use cases', () => {
     it('fails if matching card has no checklist', async () => {
       const tagName = '#myTag'
       const message = createMessage({
-        text: 'coucou',
+        rest: 'coucou',
         commands: [{ type: 'bot_command', text: '/note' }],
         tags: [{ type: 'hashtag', text: tagName }],
       })
