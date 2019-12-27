@@ -97,4 +97,47 @@ describe('trello use cases', () => {
       expect(res.text).toMatch(tagName)
     })
   })
+
+  describe('addAsTrelloTask', () => {
+    it('fails if no hashtag was provided', async () => {
+      const message = createMessage({ rest: 'coucou' })
+      const promise = addAsTrelloTask(message, FAKE_CREDS)
+      expect(promise).rejects.toThrow(
+        'please specify at least one card as a hashtag'
+      )
+    })
+
+    it('fails if no card matches the tag', async () => {
+      const message = createMessage({
+        text: 'coucou',
+        commands: [{ type: 'bot_command', text: '/note' }],
+        tags: [{ type: 'hashtag', text: '#tag' }],
+      })
+      nock('https://api.trello.com')
+        .get(uri => uri.includes('/cards')) // actual path: /1/boards/trelloBoardId/cards?key=trelloApiKey&token=trelloUserToken
+        .reply(200, [])
+      const res = await addAsTrelloTask(message, FAKE_CREDS)
+      expect(res.text).toMatch('No cards match these tags')
+    })
+
+    it('fails if matching card has no checklist', async () => {
+      const tagName = '#myTag'
+      const message = createMessage({
+        text: 'coucou',
+        commands: [{ type: 'bot_command', text: '/note' }],
+        tags: [{ type: 'hashtag', text: tagName }],
+      })
+      const card = trelloCardWithTag(tagName)
+      // simulate a trello card that is associated with the tag
+      nock('https://api.trello.com')
+        .get(uri => uri.includes(`/1/boards/${FAKE_CREDS.trelloBoardId}/cards`))
+        .reply(200, [card])
+      // simulate the absence of checklists in that trello card
+      nock('https://api.trello.com')
+        .get(uri => uri.includes(`/1/cards/${card.id}`))
+        .reply(200, { idChecklists: [] })
+      const res = await addAsTrelloTask(message, FAKE_CREDS)
+      expect(res.text).toMatch('No checklists were found for these tags')
+    })
+  })
 })
