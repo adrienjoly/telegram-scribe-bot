@@ -1,6 +1,6 @@
 import { MessageHandlerOptions } from './../types'
 import { ParsedMessageEntities } from './../Telegram'
-import { Trello } from './../Trello'
+import { Trello, TrelloCard } from './../Trello'
 
 export type Options = {
   trelloApiKey: string
@@ -21,7 +21,7 @@ const extractTags = (message: ParsedMessageEntities) => {
   return message.tags.map(tagEntity => tagEntity.text)
 }
 
-export const addAsTrelloComment = async (
+const wrap = (func: Function) => async (
   message: ParsedMessageEntities,
   messageHandlerOptions: MessageHandlerOptions
 ) => {
@@ -36,6 +36,14 @@ export const addAsTrelloComment = async (
     return {
       text: `🤔  No cards match these tags. Please retry without another tag.`,
     }
+  else return await func(message, trello, targetedCards)
+}
+
+const _addAsTrelloComment = async (
+  message: ParsedMessageEntities,
+  trello: Trello,
+  targetedCards: TrelloCard[]
+) => {
   await Promise.all(
     targetedCards.map(card =>
       trello.card.addComment(card.id, { text: message.rest })
@@ -48,21 +56,11 @@ export const addAsTrelloComment = async (
   }
 }
 
-export const addAsTrelloTask = async (
+const _addAsTrelloTask = async (
   message: ParsedMessageEntities,
-  messageHandlerOptions: MessageHandlerOptions
+  trello: Trello,
+  targetedCards: TrelloCard[]
 ) => {
-  const options = checkOptions(messageHandlerOptions) // may throw
-  const noteTags = extractTags(message) // may throw
-  const trello = new Trello(options.trelloApiKey, options.trelloUserToken)
-  const targetedCards = await trello.getCardsBoundToTags(
-    noteTags,
-    options.trelloBoardId
-  )
-  if (!targetedCards.length)
-    return {
-      text: `🤔  No cards match these tags. Please retry without another tag.`,
-    }
   const getUniqueCardChecklist = async (checklistIds: string[]) =>
     checklistIds.length !== 1 ? null : trello.getChecklist(checklistIds[0])
   const taskName = message.rest
@@ -87,3 +85,6 @@ export const addAsTrelloTask = async (
       .join(', ')}`,
   }
 }
+
+export const addAsTrelloComment = wrap(_addAsTrelloComment)
+export const addAsTrelloTask = wrap(_addAsTrelloTask)
