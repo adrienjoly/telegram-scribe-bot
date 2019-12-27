@@ -37,6 +37,10 @@ const createMessage = ({ ...overrides }): ParsedMessageEntities => ({
 })
 
 describe('trello use cases', () => {
+  beforeEach(() => {
+    nock.cleanAll()
+  })
+
   describe('(shared behaviors)', () => {
     it('fails if trello credentials are not provided', async () => {
       const message = createMessage({ rest: 'coucou' })
