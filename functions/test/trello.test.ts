@@ -22,6 +22,12 @@ const FAKE_CREDS: Options = {
   trelloUserToken: 'trelloUserToken',
 }
 
+const trelloCardWithTag = tag => ({
+  id: 'myCardId',
+  name: `Dummy card associated with ${tag}`,
+  desc: `telegram-scribe-bot:addCommentsFromTaggedNotes(${tag})`,
+})
+
 const createMessage = ({ ...overrides }): ParsedMessageEntities => ({
   date: new Date(),
   commands: [],
@@ -69,6 +75,26 @@ describe('trello use cases', () => {
         .reply(200, [])
       const res = await addAsTrelloComment(message, FAKE_CREDS)
       expect(res.text).toMatch('No cards match these tags')
+    })
+
+    it('succeeds', async () => {
+      const tagName = '#myTag'
+      const message = createMessage({
+        text: 'coucou',
+        commands: [{ type: 'bot_command', text: '/note' }],
+        tags: [{ type: 'hashtag', text: tagName }],
+      })
+      // simulate a trello card that is associated with the tag
+      nock('https://api.trello.com')
+        .get(uri => uri.includes('/cards'))
+        .reply(200, [trelloCardWithTag(tagName)])
+      // simulate the response of adding a comment to that card
+      nock('https://api.trello.com')
+        .post(uri => uri.includes('/actions/comments'))
+        .reply(200, '{ "text": "my POST response" }')
+      const res = await addAsTrelloComment(message, FAKE_CREDS)
+      expect(res.text).toMatch('Sent to Trello cards')
+      expect(res.text).toMatch(tagName)
     })
   })
 })
