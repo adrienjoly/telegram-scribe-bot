@@ -60,25 +60,35 @@ describe('trello use cases', () => {
       expect(promise).rejects.toThrow('missing trelloApiKey')
     })
 
-    it('fails if no hashtag was provided', async () => {
+    it('suggests existing tags if no tags were provided', async () => {
+      const tags = ['#card1tag', '#card2tag']
+      const cards = tags.map(tag => trelloCardWithTag(tag))
       const message = createMessage({ rest: 'coucou' })
-      const promise = addAsTrelloComment(message, FAKE_CREDS)
-      expect(promise).rejects.toThrow(
-        'please specify at least one card as a hashtag'
-      )
+      // simulate trello cards
+      nock('https://api.trello.com')
+        .get(uri => uri.includes(`/1/boards/${FAKE_CREDS.trelloBoardId}/cards`))
+        .reply(200, cards)
+      const res = await addAsTrelloComment(message, FAKE_CREDS)
+      expect(res.text).toMatch('Please specify at least one hashtag')
+      expect(res.text).toMatch(tags[0])
+      expect(res.text).toMatch(tags[1])
     })
 
-    it('fails if no card matches the tag', async () => {
+    it('suggests existing tags if no card matches the tag', async () => {
+      const tagName = '#anActualTag'
+      const card = trelloCardWithTag(tagName)
       const message = createMessage({
         rest: 'coucou',
         commands: [{ type: 'bot_command', text: '/note' }],
-        tags: [{ type: 'hashtag', text: '#tag' }],
+        tags: [{ type: 'hashtag', text: '#aRandomTag' }],
       })
       nock('https://api.trello.com')
         .get(uri => uri.includes('/cards')) // actual path: /1/boards/trelloBoardId/cards?key=trelloApiKey&token=trelloUserToken
-        .reply(200, [])
+        .reply(200, [card])
       const res = await addAsTrelloComment(message, FAKE_CREDS)
-      expect(res.text).toMatch('No cards match these tags')
+      expect(res.text).toMatch('No cards match')
+      expect(res.text).toMatch('Please pick another tag')
+      expect(res.text).toMatch(tagName)
     })
   })
 
