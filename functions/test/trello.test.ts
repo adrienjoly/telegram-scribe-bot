@@ -139,5 +139,36 @@ describe('trello use cases', () => {
       const res = await addAsTrelloTask(message, FAKE_CREDS)
       expect(res.text).toMatch('No checklists were found for these tags')
     })
+
+    it('succeeds', async () => {
+      const tagName = '#myTag'
+      const checklistId = 'myChecklistId'
+      const message = createMessage({
+        rest: 'coucou',
+        commands: [{ type: 'bot_command', text: '/next' }],
+        tags: [{ type: 'hashtag', text: tagName }],
+      })
+      const card = trelloCardWithTag(tagName)
+      // simulate a trello card that is associated with the tag
+      nock('https://api.trello.com')
+        .get(uri => uri.includes(`/1/boards/${FAKE_CREDS.trelloBoardId}/cards`))
+        .reply(200, [card])
+      // simulate a checklist of that trello card
+      nock('https://api.trello.com')
+        .get(uri => uri.includes(`/1/cards/${card.id}`))
+        .reply(200, { idChecklists: [checklistId] })
+      // simulate a checklist of that trello card
+      nock('https://api.trello.com')
+        .get(uri => uri.includes(`/1/checklists/${checklistId}`))
+        .reply(200, { id: checklistId, name: 'My checklist' })
+      // simulate the response of adding a task to that checklist
+      nock('https://api.trello.com')
+        .post(uri => uri.includes(`/1/checklists/${checklistId}/checkitems`))
+        .reply(200, '{ "text": "my POST response" }')
+      const res = await addAsTrelloTask(message, FAKE_CREDS)
+      expect(res.text).toMatch('Added task at the top of these Trello cards')
+      expect(res.text).toMatch(tagName)
+      expect(res.text).toMatch(card.name)
+    })
   })
 })
