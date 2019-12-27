@@ -23,6 +23,14 @@ const checkOptions = (options: MessageHandlerOptions) => {
   return options as Options
 }
 
+const listValidTags = (cardsWithTags: TrelloCardWithTags[]) => {
+  const allTags = cardsWithTags.reduce((allTags, { tags }) => {
+    tags.forEach(tag => allTags.add(tag))
+    return allTags
+  }, new Set<string>())
+  return [...allTags].join(', ')
+}
+
 const getCardsBoundToTags = (
   cardsWithTags: TrelloCardWithTags[],
   targetedTags: string[]
@@ -46,16 +54,8 @@ const wrap = (func: Function) => async (
   }))
   const noteTags = message.tags.map(tagEntity => tagEntity.text)
   if (!noteTags.length) {
-    const tagsPerCard = cardsWithTags.map(({ tags }) => tags)
-    const allTags = tagsPerCard.reduce((allTags, tags: string[]) => {
-      tags.forEach(tag => allTags.add(tag))
-      return allTags
-    }, new Set<string>())
-    return {
-      text: `🤔  please specify at least one card as a hashtag. Please specify at least one hashtag: ${[
-        ...allTags,
-      ].join(', ')}`,
-    }
+    const validTags = listValidTags(cardsWithTags)
+    return { text: `🤔  Please specify at least one hashtag: ${validTags}` }
   }
   const targetedCards = getCardsBoundToTags(cardsWithTags, noteTags)
   if (!targetedCards.length)

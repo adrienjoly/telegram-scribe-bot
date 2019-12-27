@@ -69,7 +69,7 @@ describe('trello use cases', () => {
         .get(uri => uri.includes(`/1/boards/${FAKE_CREDS.trelloBoardId}/cards`))
         .reply(200, cards)
       const res = await addAsTrelloComment(message, FAKE_CREDS)
-      expect(res.text).toMatch('please specify at least one card as a hashtag')
+      expect(res.text).toMatch('Please specify at least one hashtag')
       expect(res.text).toMatch(tags[0])
       expect(res.text).toMatch(tags[1])
     })
