@@ -1,6 +1,7 @@
 /// <reference types="mocha" />
 
 import * as expect from 'expect'
+import * as nock from 'nock'
 import {
   Options,
   addAsTrelloComment,
@@ -8,6 +9,12 @@ import {
 } from './../src/use-cases/addToTrello'
 import { MessageHandlerOptions } from '../src/types'
 import { ParsedMessageEntities } from '../src/Telegram'
+
+// nock.disableNetConnect() // block HTTP requests
+// nock.recorder.rec() // useful to trace HTTP requests that would be sent
+nock.emitter.on('no match', ({ method, path }) =>
+  console.warn(`⚠ no match for ${method} ${path}`)
+)
 
 const FAKE_CREDS: Options = {
   trelloApiKey: 'trelloApiKey',
@@ -50,16 +57,18 @@ describe('trello use cases', () => {
         'please specify at least one card as a hashtag'
       )
     })
-    /*
-    it('succeeds', async () => {
+
+    it('fails if no card matches the tag', async () => {
       const message = createMessage({
         text: 'coucou',
         commands: [{ type: 'bot_command', text: '/note' }],
         tags: [{ type: 'hashtag', text: '#tag' }],
       })
+      nock('https://api.trello.com')
+        .get(uri => uri.includes('/cards')) // actual path: /1/boards/trelloBoardId/cards?key=trelloApiKey&token=trelloUserToken
+        .reply(200, [])
       const res = await addAsTrelloComment(message, FAKE_CREDS)
-      expect(res).toMatch('✅')
+      expect(res.text).toMatch('No cards match these tags')
     })
-    */
   })
 })
