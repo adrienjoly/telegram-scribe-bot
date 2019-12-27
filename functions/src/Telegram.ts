@@ -46,7 +46,7 @@ type MessageEntityWithText = MessageEntity & {
 }
 
 export type ParsedMessageEntities = {
-  initial: TelegramMessage
+  date: Date
   commands: MessageEntityWithText[]
   tags: MessageEntityWithText[]
   rest: string
@@ -58,24 +58,29 @@ export function parseEntities(
   inlineTypes = ['hashtag'] // types of entities to leave in the `rest` return value
 ): ParsedMessageEntities {
   const entities: MessageEntity[] = message.entities || []
-  const supportedEntities = entities.filter(({ type }) => supportedTypes.includes(type))
+  const supportedEntities = entities.filter(({ type }) =>
+    supportedTypes.includes(type)
+  )
   // add a `text` property in each supported entity
   const entitiesWithText = supportedEntities.map(entity => ({
     ...entity,
-    text: message.text.substr(entity.offset, entity.length)
+    text: message.text.substr(entity.offset, entity.length),
   }))
   // remove parsed entities from the message's text => return the rest
   const rest = supportedEntities
     .filter(({ type }) => !inlineTypes.includes(type)) // do not remove inlineTypes entities
     .sort((a, b) => b.offset - a.offset) // we'll remove from the end to the beginning of the string, to keep the offsets valid
     .reduce((text, entity) => {
-      return text.substr(0, entity.offset) + text.substr(entity.offset + entity.length)
+      return (
+        text.substr(0, entity.offset) +
+        text.substr(entity.offset + entity.length)
+      )
     }, message.text)
     .replace(/  +/, ' ') // remove duplicate spaces
   return {
-    initial: message,
+    date: new Date(message.date * 1000),
     commands: entitiesWithText.filter(({ type }) => type === 'bot_command'),
     tags: entitiesWithText.filter(({ type }) => type === 'hashtag'),
-    rest
+    rest,
   }
 }

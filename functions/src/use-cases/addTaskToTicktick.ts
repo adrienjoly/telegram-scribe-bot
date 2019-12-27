@@ -10,9 +10,7 @@ export const addTaskToTicktick = async (
   if (!options.ticktickPassword) throw new Error('missing ticktickPassword')
   const ticktick = new Ticktick(options.ticktickEmail, options.ticktickPassword)
   await ticktick.connect()
-  const desc = `Sent from Telegram-scribe-bot, on ${new Date(
-    message.initial.date * 1000
-  )}`
+  const desc = `Sent from Telegram-scribe-bot, on ${message.date}`
   // note: user's location can be requested, cf https://tutorials.botsfloor.com/request-and-handle-phone-number-and-location-with-telegram-bot-api-e90004c0c87e
   await ticktick.addTask(message.rest, desc)
   return { text: "✅  Sent to Ticktick's inbox" }
@@ -26,9 +24,7 @@ export const addTodayTaskToTicktick = async (
   if (!options.ticktickPassword) throw new Error('missing ticktickPassword')
   const ticktick = new Ticktick(options.ticktickEmail, options.ticktickPassword)
   await ticktick.connect()
-  const desc = `Sent from Telegram-scribe-bot, on ${new Date(
-    message.initial.date * 1000
-  )}`
+  const desc = `Sent from Telegram-scribe-bot, on ${message.date}`
   await ticktick.addTask(message.rest, desc, new Date(), true)
   return { text: '✅  Sent to Ticktick\'s "Today" tasks' }
 }
