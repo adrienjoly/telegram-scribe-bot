@@ -10,6 +10,11 @@ export type TrelloCard = {
   desc: string
 }
 
+type TrelloCardWithTags = {
+  card: TrelloCard
+  tags: string[]
+}
+
 type TrelloBoard = {
   id: string
   name: string
@@ -47,19 +52,23 @@ export class Trello extends TrelloNodeAPI {
     return await this.board.searchCards(boardId)
   }
 
-  async getCardsBoundToTags(
-    tags: string[],
-    trelloBoardId: string
-  ): Promise<TrelloCard[]> {
-    const targetedTags = tags.map(cleanTag)
+  async getCardsWithTags(trelloBoardId: string): Promise<TrelloCardWithTags[]> {
     const cards = await this.getCards(trelloBoardId)
-    return cards.filter(card => {
-      const cardTags = (card.desc.match(RE_TRELLO_CARD_BINDING) || [])[1]
-      return (
-        cardTags &&
-        targetedTags.some(targetedTag => cardTags.includes(targetedTag))
+    return cards.map(card => ({
+      card,
+      tags: (card.desc.match(RE_TRELLO_CARD_BINDING) || [])[1].split(','),
+    }))
+  }
+
+  getCardsBoundToTags(
+    targetedTags: string[],
+    cardsWithTags: TrelloCardWithTags[]
+  ): TrelloCard[] {
+    return cardsWithTags
+      .filter(({ tags }) =>
+        targetedTags.some(targetedTag => tags.includes(targetedTag))
       )
-    })
+      .map(({ card }) => card)
   }
 
   async getChecklistIds(cardId: string): Promise<string[]> {

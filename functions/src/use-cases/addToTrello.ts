@@ -16,8 +16,6 @@ const checkOptions = (options: MessageHandlerOptions) => {
 }
 
 const extractTags = (message: ParsedMessageEntities) => {
-  if (!message.tags.length)
-    throw new Error('please specify at least one card as a hashtag')
   return message.tags.map(tagEntity => tagEntity.text)
 }
 
@@ -26,12 +24,23 @@ const wrap = (func: Function) => async (
   messageHandlerOptions: MessageHandlerOptions
 ) => {
   const options = checkOptions(messageHandlerOptions) // may throw
-  const noteTags = extractTags(message) // may throw
   const trello = new Trello(options.trelloApiKey, options.trelloUserToken)
-  const targetedCards = await trello.getCardsBoundToTags(
-    noteTags,
-    options.trelloBoardId
-  )
+  const noteTags = extractTags(message)
+  const cardsWithTags = await trello.getCardsWithTags(options.trelloBoardId)
+  // console.warn(cardsWithTags)
+  if (!noteTags.length) {
+    const tagsPerCard = cardsWithTags.map(({ tags }) => tags)
+    const allTags = tagsPerCard.reduce((allTags, tags: string[]) => {
+      tags.forEach(tag => allTags.add(tag))
+      return allTags
+    }, new Set<string>())
+    return {
+      text: `🤔  please specify at least one card as a hashtag. Please specify at least one hashtag: ${[
+        ...allTags,
+      ].join(', ')}`,
+    }
+  }
+  const targetedCards = trello.getCardsBoundToTags(noteTags, cardsWithTags)
   if (!targetedCards.length)
     return {
       text: `🤔  No cards match these tags. Please retry without another tag.`,
