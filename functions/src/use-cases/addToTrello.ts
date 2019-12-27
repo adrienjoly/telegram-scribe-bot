@@ -32,7 +32,7 @@ export const addAsTrelloComment = async (
     noteTags,
     options.trelloBoardId
   )
-  if (!targetedCards)
+  if (!targetedCards.length)
     return {
       text: `🤔  No cards match these tags. Please retry without another tag.`,
     }
@@ -59,7 +59,7 @@ export const addAsTrelloTask = async (
     noteTags,
     options.trelloBoardId
   )
-  if (!targetedCards)
+  if (!targetedCards.length)
     return {
       text: `🤔  No cards match these tags. Please retry without another tag.`,
     }
