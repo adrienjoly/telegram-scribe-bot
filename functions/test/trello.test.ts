@@ -37,7 +37,7 @@ const createMessage = ({ ...overrides }): ParsedMessageEntities => ({
 })
 
 describe('trello use cases', () => {
-  describe('addAsTrelloComment', () => {
+  describe('(shared behaviors)', () => {
     it('fails if trello credentials are not provided', async () => {
       const message = createMessage({ rest: 'coucou' })
       const options: MessageHandlerOptions = {}
@@ -76,7 +76,9 @@ describe('trello use cases', () => {
       const res = await addAsTrelloComment(message, FAKE_CREDS)
       expect(res.text).toMatch('No cards match these tags')
     })
+  })
 
+  describe('addAsTrelloComment', () => {
     it('succeeds', async () => {
       const tagName = '#myTag'
       const message = createMessage({
@@ -99,27 +101,6 @@ describe('trello use cases', () => {
   })
 
   describe('addAsTrelloTask', () => {
-    it('fails if no hashtag was provided', async () => {
-      const message = createMessage({ rest: 'coucou' })
-      const promise = addAsTrelloTask(message, FAKE_CREDS)
-      expect(promise).rejects.toThrow(
-        'please specify at least one card as a hashtag'
-      )
-    })
-
-    it('fails if no card matches the tag', async () => {
-      const message = createMessage({
-        rest: 'coucou',
-        commands: [{ type: 'bot_command', text: '/note' }],
-        tags: [{ type: 'hashtag', text: '#tag' }],
-      })
-      nock('https://api.trello.com')
-        .get(uri => uri.includes('/cards')) // actual path: /1/boards/trelloBoardId/cards?key=trelloApiKey&token=trelloUserToken
-        .reply(200, [])
-      const res = await addAsTrelloTask(message, FAKE_CREDS)
-      expect(res.text).toMatch('No cards match these tags')
-    })
-
     it('fails if matching card has no checklist', async () => {
       const tagName = '#myTag'
       const message = createMessage({
