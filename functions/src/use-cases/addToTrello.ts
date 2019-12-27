@@ -58,11 +58,10 @@ const wrap = (func: Function) => async (
     return { text: `🤔  Please specify at least one hashtag: ${validTags}` }
   }
   const targetedCards = getCardsBoundToTags(cardsWithTags, noteTags)
-  if (!targetedCards.length)
-    return {
-      text: `🤔  No cards match these tags. Please retry without another tag.`,
-    }
-  else return await func(message, trello, targetedCards)
+  if (!targetedCards.length) {
+    const validTags = listValidTags(cardsWithTags)
+    return { text: `🤔  No cards match. Please pick another tag: ${validTags}` }
+  } else return await func(message, trello, targetedCards)
 }
 
 const _addAsTrelloComment = async (

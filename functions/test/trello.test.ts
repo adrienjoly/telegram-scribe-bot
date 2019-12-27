@@ -86,7 +86,8 @@ describe('trello use cases', () => {
         .get(uri => uri.includes('/cards')) // actual path: /1/boards/trelloBoardId/cards?key=trelloApiKey&token=trelloUserToken
         .reply(200, [card])
       const res = await addAsTrelloComment(message, FAKE_CREDS)
-      expect(res.text).toMatch('No cards match these tags')
+      expect(res.text).toMatch('No cards match')
+      expect(res.text).toMatch('Please pick another tag')
       expect(res.text).toMatch(tagName)
     })
   })
