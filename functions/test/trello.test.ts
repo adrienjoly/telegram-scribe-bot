@@ -90,6 +90,23 @@ describe('trello use cases', () => {
       expect(res.text).toMatch('Please pick another tag')
       expect(res.text).toMatch(tagName)
     })
+
+    it('tolerates cards that are not associated with a tag', async () => {
+      const tagName = '#anActualTag'
+      const card = { id: 'myCardId', name: `Dummy card`, desc: `` }
+      const message = createMessage({
+        rest: 'coucou',
+        commands: [{ type: 'bot_command', text: '/note' }],
+        tags: [{ type: 'hashtag', text: '#aRandomTag' }],
+      })
+      nock('https://api.trello.com')
+        .get(uri => uri.includes('/cards')) // actual path: /1/boards/trelloBoardId/cards?key=trelloApiKey&token=trelloUserToken
+        .reply(200, [card])
+      const res = await addAsTrelloComment(message, FAKE_CREDS)
+      expect(res.text).toMatch('No cards match')
+      expect(res.text).toMatch('Please pick another tag')
+      expect(res.text).toMatch(tagName)
+    })
   })
 
   describe('addAsTrelloComment', () => {
