@@ -23,23 +23,38 @@ const checkOptions = (options: MessageHandlerOptions) => {
   return options as Options
 }
 
+const cleanTag = (tag: string) =>
+  tag
+    .replace('#', '')
+    .trim()
+    .toLowerCase()
+
+const renderTag = (tag: string) => `#${cleanTag(tag)}`
+
+const extractTagsFromBinding = (card: TrelloCard) =>
+  ((card.desc.match(RE_TRELLO_CARD_BINDING) || [])[1] || '')
+    .split(',')
+    .map(cleanTag)
+
 const listValidTags = (cardsWithTags: TrelloCardWithTags[]) => {
   const allTags = cardsWithTags.reduce((allTags, { tags }) => {
     tags.forEach(tag => allTags.add(tag))
     return allTags
   }, new Set<string>())
-  return [...allTags].join(', ')
+  return [...allTags].map(renderTag).join(', ')
 }
 
 const getCardsBoundToTags = (
   cardsWithTags: TrelloCardWithTags[],
   targetedTags: string[]
-): TrelloCard[] =>
-  cardsWithTags
+): TrelloCard[] => {
+  const cleanedTags = targetedTags.map(cleanTag)
+  return cardsWithTags
     .filter(({ tags }) =>
-      targetedTags.some(targetedTag => tags.includes(targetedTag))
+      cleanedTags.some(targetedTag => tags.includes(targetedTag))
     )
     .map(({ card }) => card)
+}
 
 const wrap = (func: Function) => async (
   message: ParsedMessageEntities,
@@ -50,7 +65,7 @@ const wrap = (func: Function) => async (
   const cards = await trello.getCards(options.trelloBoardId)
   const cardsWithTags = cards.map(card => ({
     card,
-    tags: ((card.desc.match(RE_TRELLO_CARD_BINDING) || [])[1] || '').split(','),
+    tags: extractTagsFromBinding(card),
   }))
   const noteTags = message.tags.map(tagEntity => tagEntity.text)
   if (!noteTags.length) {

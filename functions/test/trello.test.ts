@@ -75,7 +75,7 @@ describe('trello use cases', () => {
     })
 
     it('suggests existing tags if no card matches the tag', async () => {
-      const tagName = '#anActualTag'
+      const tagName = '#anActualTag'.toLowerCase()
       const card = trelloCardWithTag(tagName)
       const message = createMessage({
         rest: 'coucou',
@@ -115,6 +115,26 @@ describe('trello use cases', () => {
         rest: 'coucou',
         commands: [{ type: 'bot_command', text: '/note' }],
         tags: [{ type: 'hashtag', text: tagName }],
+      })
+      // simulate a trello card that is associated with the tag
+      nock('https://api.trello.com')
+        .get(uri => uri.includes('/cards'))
+        .reply(200, [trelloCardWithTag(tagName)])
+      // simulate the response of adding a comment to that card
+      nock('https://api.trello.com')
+        .post(uri => uri.includes('/actions/comments'))
+        .reply(200, '{ "text": "my POST response" }')
+      const res = await addAsTrelloComment(message, FAKE_CREDS)
+      expect(res.text).toMatch('Sent to Trello cards')
+      expect(res.text).toMatch(tagName)
+    })
+
+    it('succeeds if tag is specified without hash, in the card', async () => {
+      const tagName = 'myTag'
+      const message = createMessage({
+        rest: 'coucou',
+        commands: [{ type: 'bot_command', text: '/note' }],
+        tags: [{ type: 'hashtag', text: `#${tagName}` }],
       })
       // simulate a trello card that is associated with the tag
       nock('https://api.trello.com')
