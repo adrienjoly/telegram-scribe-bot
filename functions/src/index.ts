@@ -3,7 +3,7 @@
 import * as functions from 'firebase-functions'
 import { makeApp } from './app'
 
-const options = functions.config()
+const options = functions.config().config // load credentials and options from firebase config
 
 const app = makeApp(options)
 
