@@ -32,10 +32,8 @@ $ npm run build
 Before binding the chat-bot to Telegram, you can test it locally:
 
 ```sh
-$ npm start
-
-# ... then, in a separate terminal:
-$ npm test
+$ npm test     # run automated test suites
+$ npm test:bot # interactive: simulates a Telegram client
 ```
 
 ## Setup
