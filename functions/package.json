@@ -6,6 +6,7 @@
     "lint": "npx eslint .",
     "lint:fix": "npx eslint . --fix",
     "test": "ts-mocha -p ./tsconfig.json ./test/*.test.ts",
+    "test:bot": "ts-node tools/bot-cli.ts",
     "clean": "rm -rf lib",
     "build": "tsc",
     "serve": "npm run build && firebase serve --only functions",
