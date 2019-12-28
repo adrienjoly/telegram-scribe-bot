@@ -17,11 +17,9 @@ export type TrelloChecklist = {
   name: string
 }
 
-export class Trello extends TrelloNodeAPI {
-  private trelloLib: {
-    addItemToChecklist: Function
-    makeRequest: Function
-  }
+export class Trello {
+  private trelloApi: TrelloNodeAPI
+  private trelloLib: TrelloLib
 
   constructor(apiKey: string, userToken: string) {
     if (!apiKey) {
@@ -30,20 +28,23 @@ export class Trello extends TrelloNodeAPI {
     if (!userToken) {
       throw new Error('missing TRELLO_USER_TOKEN, see README for more info')
     }
-    super(apiKey, userToken)
+    this.trelloApi = new TrelloNodeAPI(apiKey, userToken)
     this.trelloLib = new TrelloLib(apiKey, userToken)
   }
 
   async getBoards(): Promise<TrelloBoard[]> {
-    return await this.member.searchBoards('me')
+    return await this.trelloApi.member.searchBoards('me')
+    // TODO: return await this.trelloLib.getBoards('me')
   }
 
   async getCards(boardId: string): Promise<TrelloCard[]> {
-    return await this.board.searchCards(boardId)
+    return await this.trelloApi.board.searchCards(boardId)
+    // TODO: return await this.trelloLib.getCardsOnBoard(boardId)
   }
 
   async getChecklistIds(cardId: string): Promise<string[]> {
-    return (await this.card.search(cardId)).idChecklists
+    return (await this.trelloApi.card.search(cardId)).idChecklists
+    // TODO: return (await this.trelloLib.getCard(cardId)).idChecklists
   }
 
   async getChecklist(checklistId: string): Promise<TrelloChecklist> {
@@ -51,6 +52,11 @@ export class Trello extends TrelloNodeAPI {
       'get',
       `/1/checklists/${checklistId}`
     )
+  }
+
+  async addComment(cardId: string, { text }: { text: string }) {
+    return await this.trelloApi.card.addComment(cardId, { text })
+    // TODO: this.trelloLib.makeRequest('post', `/actions/comments` card.id, { text: message.rest })
   }
 
   async addChecklistItem(

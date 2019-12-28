@@ -93,7 +93,7 @@ const _addAsTrelloComment = async (
 ): Promise<BotResponse> => {
   await Promise.all(
     targetedCards.map(card =>
-      trello.card.addComment(card.id, { text: message.rest })
+      trello.addComment(card.id, { text: message.rest })
     )
   )
   return {
