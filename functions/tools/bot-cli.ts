@@ -1,4 +1,4 @@
-import * as readline from 'readline'
+import readline from 'readline'
 import { TelegramMessage, MessageEntity, TelegramUser } from './../src/Telegram'
 import { processMessage } from './../src/messageHandler'
 

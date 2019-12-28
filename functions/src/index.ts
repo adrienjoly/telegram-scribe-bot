@@ -1,6 +1,6 @@
 // This file is intended to run the app in production
 
-import * as functions from 'firebase-functions'
+import functions from 'firebase-functions'
 import { makeApp } from './app'
 
 const options = functions.config().config // load credentials and options from firebase config

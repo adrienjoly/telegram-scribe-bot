@@ -1,7 +1,7 @@
 /// <reference types="mocha" />
 
-import * as expect from 'expect'
-import * as nock from 'nock'
+import expect from 'expect'
+import nock from 'nock'
 import {
   Options,
   addAsTrelloComment,

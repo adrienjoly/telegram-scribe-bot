@@ -1,31 +1,9 @@
 // Wrappers to Trello API (https://developers.trello.com/reference)
 
-import * as TrelloLib from 'trello' // lib reference: https://www.npmjs.com/package/trello
-
-export type TrelloCard = {
-  id: string
-  name: string
-  desc: string
-}
-
-export type TrelloBoard = {
-  id: string
-  name: string
-}
-
-export type TrelloChecklist = {
-  id: string
-  name: string
-}
+import TrelloLib from 'trello' // lib reference: https://www.npmjs.com/package/trello
 
 export class Trello {
-  private trelloLib: {
-    getBoards: Function
-    getCardsOnBoard: Function
-    getCard: Function
-    addItemToChecklist: Function
-    makeRequest: Function
-  }
+  private trelloLib: TrelloLib
 
   constructor(apiKey: string, userToken: string) {
     if (!apiKey) {
@@ -37,8 +15,8 @@ export class Trello {
     this.trelloLib = new TrelloLib(apiKey, userToken)
   }
 
-  async getBoards(): Promise<TrelloBoard[]> {
-    return await this.trelloLib.getBoards('me')
+  async getBoards(owner: string = 'me'): Promise<TrelloBoard[]> {
+    return await this.trelloLib.getBoards(owner)
   }
 
   async getCards(boardId: string): Promise<TrelloCard[]> {
@@ -51,10 +29,10 @@ export class Trello {
   }
 
   async getChecklist(checklistId: string): Promise<TrelloChecklist> {
-    return await this.trelloLib.makeRequest(
+    return (await this.trelloLib.makeRequest(
       'get',
       `/1/checklists/${checklistId}`
-    )
+    )) as TrelloChecklist
   }
 
   async addComment(cardId: string, { text }: { text: string }) {

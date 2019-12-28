@@ -1,5 +1,5 @@
-import * as express from 'express'
-import * as cors from 'cors'
+import express from 'express'
+import cors from 'cors'
 import { TelegramMessage, parseMessage } from './Telegram'
 import { processMessage } from './messageHandler'
 import { MessageHandlerOptions } from './types'

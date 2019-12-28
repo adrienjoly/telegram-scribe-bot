@@ -1,6 +1,6 @@
 /// <reference types="mocha" />
 
-import * as expect from 'expect'
+import expect from 'expect'
 import fetch from 'node-fetch'
 import { startApp } from './../src/app'
 

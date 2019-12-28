@@ -1,4 +1,4 @@
-import * as ticktick from 'ticktick-wrapper'
+import ticktick from 'ticktick-wrapper'
 
 export class Ticktick {
   emailCreds: { username: string; password: string }

@@ -1,4 +1,4 @@
-import * as readline from 'readline'
+import readline from 'readline'
 import { Trello } from './../src/Trello'
 
 // load credentials from config file
