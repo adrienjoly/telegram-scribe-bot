@@ -1,4 +1,3 @@
-import * as TrelloNodeAPI from 'trello-node-api'
 import * as TrelloLib from 'trello'
 
 export type TrelloCard = {
@@ -18,7 +17,6 @@ export type TrelloChecklist = {
 }
 
 export class Trello {
-  private trelloApi: TrelloNodeAPI
   private trelloLib: {
     getBoards: Function
     getCardsOnBoard: Function
@@ -34,7 +32,6 @@ export class Trello {
     if (!userToken) {
       throw new Error('missing TRELLO_USER_TOKEN, see README for more info')
     }
-    this.trelloApi = new TrelloNodeAPI(apiKey, userToken)
     this.trelloLib = new TrelloLib(apiKey, userToken)
   }
 
