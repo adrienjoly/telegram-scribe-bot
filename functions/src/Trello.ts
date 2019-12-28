@@ -21,6 +21,7 @@ export class Trello {
   private trelloApi: TrelloNodeAPI
   private trelloLib: {
     getBoards: Function
+    getCardsOnBoard: Function
     addItemToChecklist: Function
     makeRequest: Function
   }
@@ -41,8 +42,7 @@ export class Trello {
   }
 
   async getCards(boardId: string): Promise<TrelloCard[]> {
-    return await this.trelloApi.board.searchCards(boardId)
-    // TODO: return await this.trelloLib.getCardsOnBoard(boardId)
+    return await this.trelloLib.getCardsOnBoard(boardId)
   }
 
   async getChecklistIds(cardId: string): Promise<string[]> {
