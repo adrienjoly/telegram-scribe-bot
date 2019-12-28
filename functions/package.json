@@ -22,7 +22,7 @@
     "ticktick:test": "ts-node tools/ticktick.ts",
     "trello:test": "source ../.env && curl -LI \"https://api.trello.com/1/members/me/boards?key=${TRELLO_API_KEY}&token=${TRELLO_USER_TOKEN}\" -s | grep HTTP",
     "trello:checklist": "ts-node tools/trello-checklist.ts",
-    "trello:boards": "npm run build && source ../.env && node tools/trello-boards.js"
+    "trello:boards": "ts-node tools/trello-boards.ts"
   },
   "engines": {
     "node": "8"
