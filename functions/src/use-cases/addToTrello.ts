@@ -31,10 +31,10 @@ const cleanTag = (tag: string) =>
 
 const renderTag = (tag: string) => `#${cleanTag(tag)}`
 
-const extractTagsFromBinding = (card: TrelloCard) =>
-  ((card.desc.match(RE_TRELLO_CARD_BINDING) || [])[1] || '')
-    .split(',')
-    .map(cleanTag)
+const extractTagsFromBinding = (card: TrelloCard) => {
+  const tagList = (card.desc.match(RE_TRELLO_CARD_BINDING) || [])[1]
+  return tagList ? tagList.split(',').map(cleanTag) : []
+}
 
 const listValidTags = (cardsWithTags: TrelloCardWithTags[]) => {
   const allTags = cardsWithTags.reduce((allTags, { tags }) => {
