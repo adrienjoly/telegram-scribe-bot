@@ -6,8 +6,8 @@ export const addTaskToTicktick = async (
   message: ParsedMessageEntities,
   options: MessageHandlerOptions
 ): Promise<BotResponse> => {
-  if (!options.ticktick.email) throw new Error('missing ticktick.email')
-  if (!options.ticktick.password) throw new Error('missing ticktick.password')
+  if (!options.ticktick?.email) throw new Error('missing ticktick.email')
+  if (!options.ticktick?.password) throw new Error('missing ticktick.password')
   const ticktick = new Ticktick(
     options.ticktick.email,
     options.ticktick.password
