@@ -83,7 +83,7 @@ const wrap = (func: Function) => async (
   if (!targetedCards.length) {
     return { text: `🤔  No cards match. Please pick another tag: ${validTags}` }
   }
-  return await func(message, trello, targetedCards)
+  return await func(message, trello, targetedCards, options)
 }
 
 const _addAsTrelloComment = async (
@@ -106,7 +106,8 @@ const _addAsTrelloComment = async (
 const _addAsTrelloTask = async (
   message: ParsedMessageEntities,
   trello: Trello,
-  targetedCards: TrelloCard[]
+  targetedCards: TrelloCard[],
+  options: Options
 ): Promise<BotResponse> => {
   const getUniqueCardChecklist = async (
     checklistIds: string[]
@@ -115,7 +116,10 @@ const _addAsTrelloTask = async (
   const taskName = message.rest
   const consideredCards = await Promise.all(
     targetedCards.map(async card => {
-      const checklistIds = await trello.getChecklistIds(card.id)
+      const checklistIds = await trello.getChecklistIds(
+        options.trello.boardid,
+        card.id
+      )
       const checklist = await getUniqueCardChecklist(checklistIds)
       const addedItem = checklist
         ? await trello.addChecklistItem(checklist.id, taskName, 'top')
