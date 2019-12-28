@@ -15,6 +15,16 @@ A (work-in-progress) chat-bot that can add comments to Trello cards, your TickTi
 
 Note: the first version of this bot was developed by following the steps provided in [Serverless Telegram Bot with Firebase - Francisco Gutiérrez - Medium](https://medium.com/@pikilon/serverless-telegram-bot-with-firebase-d11d07579d8a).
 
+## Bind tags to Trello cards
+
+In order to add comments and tasks to your Trello cards, you must associate one or more hashtags to these cards.
+
+How to achieve this?
+
+1. Open one of your Trello cards
+2. In the description of that card, add the following text: `telegram-scribe-bot:addCommentsFromTaggedNotes(mytag1)`, and save your changes
+3. After doing so, you'll be able to add a comment to that card, by sending the following message through your Telegram app: `/note hello world! #mytag1`
+
 ## Clone and Install
 
 To get started, you just need `git`, NodeJS and to follow these instructions:

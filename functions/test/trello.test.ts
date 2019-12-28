@@ -98,7 +98,10 @@ describe('trello use cases', () => {
 
     it('tolerates cards that are not associated with a tag', async () => {
       const tagName = '#anActualTag'
-      const card = { id: 'myCardId', name: `Dummy card`, desc: `` }
+      const cards = [
+        trelloCardWithTag(tagName),
+        { id: 'cardWithoutTag', name: `Card without tag`, desc: `` },
+      ]
       const message = createMessage({
         rest: 'coucou',
         commands: [{ type: 'bot_command', text: '/note' }],
@@ -106,10 +109,25 @@ describe('trello use cases', () => {
       })
       nock('https://api.trello.com')
         .get(uri => uri.includes('/cards')) // actual path: /1/boards/trelloBoardId/cards?key=trelloApiKey&token=trelloUserToken
-        .reply(200, [card])
+        .reply(200, cards)
       const res = await addAsTrelloComment(message, FAKE_CREDS)
       expect(res.text).toMatch('No cards match')
-      // TODO: expect(res.text).toMatch('Please associate tags with your cards') // + explain how to do this
+    })
+
+    it('invites to bind tags to card, if none were found', async () => {
+      const cards = [
+        { id: 'cardWithoutTag', name: `Card without tag`, desc: `` },
+      ]
+      const message = createMessage({
+        rest: 'coucou',
+        commands: [{ type: 'bot_command', text: '/note' }],
+        tags: [{ type: 'hashtag', text: '#aRandomTag' }],
+      })
+      nock('https://api.trello.com')
+        .get(uri => uri.includes('/cards')) // actual path: /1/boards/trelloBoardId/cards?key=trelloApiKey&token=trelloUserToken
+        .reply(200, cards)
+      const res = await addAsTrelloComment(message, FAKE_CREDS)
+      expect(res.text).toMatch('Please bind tags to your cards')
     })
   })
 

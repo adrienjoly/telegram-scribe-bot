@@ -67,16 +67,21 @@ const wrap = (func: Function) => async (
     card,
     tags: extractTagsFromBinding(card),
   }))
+  const validTags = listValidTags(cardsWithTags)
+  if (!validTags.length) {
+    return {
+      text: `🤔  Please bind tags to your cards. How: https://github.com/adrienjoly/telegram-scribe-bot#bind-tags-to-trello-cards`,
+    }
+  }
   const noteTags = message.tags.map(tagEntity => tagEntity.text)
   if (!noteTags.length) {
-    const validTags = listValidTags(cardsWithTags)
     return { text: `🤔  Please specify at least one hashtag: ${validTags}` }
   }
   const targetedCards = getCardsBoundToTags(cardsWithTags, noteTags)
   if (!targetedCards.length) {
-    const validTags = listValidTags(cardsWithTags)
     return { text: `🤔  No cards match. Please pick another tag: ${validTags}` }
-  } else return await func(message, trello, targetedCards)
+  }
+  return await func(message, trello, targetedCards)
 }
 
 const _addAsTrelloComment = async (
