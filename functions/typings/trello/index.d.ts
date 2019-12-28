@@ -1,3 +1,5 @@
+declare module 'trello'
+
 /*
 declare class TrelloLib {
   constructor(apiKey: string, userToken: string)
@@ -9,9 +11,9 @@ declare class TrelloLib {
 declare module 'trello' {
   export default TrelloLib
 }
-
 */
 
+/*
 declare class TrelloLib {
   constructor(apiKey: string, userToken: string)
   //search(needle: string): T[];
@@ -27,3 +29,4 @@ declare class TrelloLib {
 declare module 'trello' {
   export = TrelloLib
 }
+*/

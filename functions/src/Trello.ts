@@ -19,7 +19,10 @@ export type TrelloChecklist = {
 
 export class Trello {
   private trelloApi: TrelloNodeAPI
-  private trelloLib: TrelloLib
+  private trelloLib: {
+    addItemToChecklist: Function
+    makeRequest: Function
+  }
 
   constructor(apiKey: string, userToken: string) {
     if (!apiKey) {
