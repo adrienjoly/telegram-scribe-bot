@@ -41,16 +41,16 @@ Let's see how to set it up.
 
 ### 1. Connect to a Trello board
 
-Trello credentials must be provided in a `.env` file, at the root directory of the project.
+Trello credentials must be provided in a `.config.json` file, at the root directory of the project.
 
-1. Get started by copying the provided template: `$ cp .env.example .env`
-2. Copy your Trello API Key (from [trello.com/app-key](https://trello.com/app-key)) and paste it as the value of the `TRELLO_API_KEY` variable, in your `.env` file
-3. Manually generate a Token (a link is provided on [trello.com/app-key](https://trello.com/app-key), below the Trello API Key) and paste it as the value of the `TRELLO_USER_TOKEN` variable, still in your `.env` file
+1. Get started by copying the provided template: `$ cp .config.example.json .config.json`
+2. Copy your Trello API Key (from [trello.com/app-key](https://trello.com/app-key)) and paste it as the value of the `trello.apikey` variable, in your `.config.json` file
+3. Manually generate a Token (a link is provided on [trello.com/app-key](https://trello.com/app-key), below the Trello API Key) and paste it as the value of the `trello.usertoken` variable, still in your `.config.json` file
 4. Run `$ npm run trello:test` to make sure that these credentials give access to Trello's API
 5. Run `$ npm run trello:boards` to display the list of the Trello boards you have access to
-6. Copy the 24-characters-long identifier of the Trello board that you want your bot to edit, and paste it as the value of the `TRELLO_BOARD_ID` variable of your `.env` file
+6. Copy the 24-characters-long identifier of the Trello board that you want your bot to edit, and paste it as the value of the `trello.boardid` variable of your `.config.json` file
 
-If you want to also connect to your TickTick account, fill the `TICKTICK_EMAIL` and `TICKTICK_PASSWORD` variables accordingly.
+If you want to also connect to your TickTick account, fill the `ticktick.email` and `ticktick.password` variables accordingly.
 
 ### 2. Bind tags to Trello cards
 
@@ -87,6 +87,7 @@ Follow these steps to deploy your bot to Firebase and make it accessible through
 
 - In your Telegram app, start a conversation with [@BotFather](https://telegram.me/BotFather)
 - Write the command `/newBot` and follow the provided steps
+- Initialize the `.env` file, based on the provided template: `$ cp .env.example .env`
 - In the `.env` file, replace the default `BOT_TOKEN` value by the Secret Token provided by that bot
 - Also, take note of the name of your bot (ends with `bot`), we'll need it later
 
@@ -97,7 +98,7 @@ Follow these steps to deploy your bot to Firebase and make it accessible through
 - `$ npm run deploy:test` (to check that the function deployed on Firebase works as expected)
 - `$ npm run webhook:bind` (to bind that function to your Telegram bot)
 - `$ npm run webhook:test` (to check that the function's router URL was properly bound to your Telegram bot)
-- `$ npm run deploy:config` to upload your environment variables (from `.env`) to the cloud function
+- `$ npm run deploy:config` to upload your configuration (from `.config.json`) to the cloud function
 
 After making any change to your bot, don't forget to deploy again it using `$ npm run deploy`.
 
@@ -111,7 +112,7 @@ You can troubleshoot your bot using [your firebase console](https://console.fire
 
 ### Options
 
-Set `TELEGRAM_USER_ID` in your `.env` file and call `$ npm run deploy:config` again if you want the bot to only respond to that Telegram user identifier.
+Set `telegram.onlyfromuserid` in your `.config.json` file and call `$ npm run deploy:config` again if you want the bot to only respond to that Telegram user identifier.
 
 ## ToDo / Next steps
 

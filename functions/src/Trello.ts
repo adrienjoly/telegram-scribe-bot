@@ -7,12 +7,12 @@ export type TrelloCard = {
   desc: string
 }
 
-type TrelloBoard = {
+export type TrelloBoard = {
   id: string
   name: string
 }
 
-type TrelloChecklist = {
+export type TrelloChecklist = {
   id: string
   name: string
 }
@@ -57,7 +57,7 @@ export class Trello extends TrelloNodeAPI {
     checklistId: string,
     name: string,
     pos: 'top' | 'bottom'
-  ) {
+  ): Promise<{ checklistId: string; name: string; pos: 'top' | 'bottom' }> {
     await this.trelloLib.addItemToChecklist(checklistId, name, pos)
     return { checklistId, name, pos }
   }

@@ -1,18 +1,11 @@
 // This file is intended to run the app on a development/local environment
 
-import * as dotenv from 'dotenv'
 import { makeApp } from '../src/app'
 
-dotenv.config({ path: `${__dirname}/../../.env` }) // load environment variables
+// load credentials from config file
+const options = require(`${__dirname}/../../.config.json`) // eslint-disable-line @typescript-eslint/no-var-requires
 
-const { PORT = 8000, TELEGRAM_USER_ID } = process.env
-
-const options = {
-  onlyFromUserId: TELEGRAM_USER_ID ? parseInt(TELEGRAM_USER_ID, 10) : undefined,
-  trelloApiKey: process.env.TRELLO_API_KEY || '',
-  trelloUserToken: process.env.TRELLO_USER_TOKEN || '',
-  trelloBoardId: process.env.TRELLO_BOARD_ID || '',
-}
+const { PORT = 8000 } = process.env
 
 makeApp(options).listen(PORT, () =>
   console.log(`Listening on http://localhost:${PORT}`)

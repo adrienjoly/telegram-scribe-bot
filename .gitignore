@@ -61,8 +61,9 @@ node_modules/
 # Yarn Integrity file
 .yarn-integrity
 
-# dotenv environment variables file
+# Configuration
 .env
+.config.json
 
 ## Compiled JavaScript files
 functions/lib/**/*.js

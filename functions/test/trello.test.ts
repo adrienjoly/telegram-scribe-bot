@@ -10,9 +10,11 @@ import {
 import { ParsedMessageEntities } from '../src/Telegram'
 
 const FAKE_CREDS: Options = {
-  trelloApiKey: 'trelloApiKey',
-  trelloBoardId: 'trelloBoardId',
-  trelloUserToken: 'trelloUserToken',
+  trello: {
+    apikey: 'trelloApiKey',
+    boardid: 'trelloBoardId',
+    usertoken: 'trelloUserToken',
+  },
 }
 
 const trelloCardWithTag = tag => ({
@@ -55,9 +57,11 @@ describe('trello use cases', () => {
     it('fails if trello credentials are empty', async () => {
       const message = createMessage({ rest: 'coucou' })
       const options: Options = {
-        trelloApiKey: '',
-        trelloBoardId: '',
-        trelloUserToken: '',
+        trello: {
+          apikey: '',
+          boardid: '',
+          usertoken: '',
+        },
       }
       const promise = addAsTrelloComment(message, options)
       expect(promise).rejects.toThrow('missing trelloApiKey')
@@ -69,7 +73,9 @@ describe('trello use cases', () => {
       const message = createMessage({ rest: 'coucou' })
       // simulate trello cards
       nock('https://api.trello.com')
-        .get(uri => uri.includes(`/1/boards/${FAKE_CREDS.trelloBoardId}/cards`))
+        .get(uri =>
+          uri.includes(`/1/boards/${FAKE_CREDS.trello.boardid}/cards`)
+        )
         .reply(200, cards)
       const res = await addAsTrelloComment(message, FAKE_CREDS)
       expect(res.text).toMatch('Please specify at least one hashtag')
@@ -182,7 +188,9 @@ describe('trello use cases', () => {
       const card = trelloCardWithTag(tagName)
       // simulate a trello card that is associated with the tag
       nock('https://api.trello.com')
-        .get(uri => uri.includes(`/1/boards/${FAKE_CREDS.trelloBoardId}/cards`))
+        .get(uri =>
+          uri.includes(`/1/boards/${FAKE_CREDS.trello.boardid}/cards`)
+        )
         .reply(200, [card])
       // simulate the absence of checklists in that trello card
       nock('https://api.trello.com')
@@ -203,7 +211,9 @@ describe('trello use cases', () => {
       const card = trelloCardWithTag(tagName)
       // simulate a trello card that is associated with the tag
       nock('https://api.trello.com')
-        .get(uri => uri.includes(`/1/boards/${FAKE_CREDS.trelloBoardId}/cards`))
+        .get(uri =>
+          uri.includes(`/1/boards/${FAKE_CREDS.trello.boardid}/cards`)
+        )
         .reply(200, [card])
       // simulate a checklist of that trello card
       nock('https://api.trello.com')

@@ -1,14 +1,12 @@
-import * as dotenv from 'dotenv'
 import { Ticktick } from './../src/Ticktick'
 
-dotenv.config({ path: `${__dirname}/../../.env` }) // load environment variables
+// load credentials from config file
+const config = require(`${__dirname}/../../.config.json`) // eslint-disable-line @typescript-eslint/no-var-requires
 
-const { TICKTICK_EMAIL, TICKTICK_PASSWORD } = process.env
-
-const main = async () => {
+const main = async (): Promise<void> => {
   const ticktick = new Ticktick(
-    TICKTICK_EMAIL as string,
-    TICKTICK_PASSWORD as string
+    config.ticktick.email as string,
+    config.ticktick.password as string
   )
   await ticktick.connect()
   const task = {

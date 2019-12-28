@@ -2,6 +2,7 @@
   "compilerOptions": {
     "module": "commonjs",
     "noImplicitReturns": true,
+    "noImplicitAny": true,
     "noUnusedLocals": true,
     "outDir": "./lib",
     "sourceMap": true,
@@ -10,5 +11,5 @@
     "typeRoots": ["./node_modules/@types", "./typings"]
   },
   "compileOnSave": true,
-  "include": ["./src", "./tools/start.ts"]
+  "include": ["./src", "./tools"]
 }

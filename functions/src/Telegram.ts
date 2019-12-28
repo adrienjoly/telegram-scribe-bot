@@ -1,12 +1,12 @@
 // reference: https://core.telegram.org/bots/api#available-types
 
 export type TelegramChat = {
-  id: Number
+  id: number
 }
 
 export type TelegramUser = {
-  id: Number
-  first_name: String
+  id: number
+  first_name: string
 }
 
 export type TelegramLocation = {
@@ -31,11 +31,13 @@ export type TelegramMessage = {
   entities: MessageEntity[]
 }
 
-export function parseMessage(container: any) {
+type TelegramBody = {
+  message: TelegramMessage
+}
+
+export function parseMessage(container: TelegramBody): TelegramMessage {
   try {
-    return container.message.chat && container.message.from
-      ? container.message
-      : null
+    return container.message.chat && container.message.from && container.message
   } catch (err) {
     throw new Error('not a telegram message')
   }

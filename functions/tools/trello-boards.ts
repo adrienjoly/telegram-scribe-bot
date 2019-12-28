@@ -1,11 +1,9 @@
-import * as dotenv from 'dotenv'
 import { Trello } from './../src/Trello'
 
-dotenv.config({ path: `${__dirname}/../../.env` }) // load environment variables
+// load credentials from config file
+const { trello } = require(`${__dirname}/../../.config.json`) // eslint-disable-line @typescript-eslint/no-var-requires
 
-const { TRELLO_API_KEY, TRELLO_USER_TOKEN } = process.env
-
-new Trello(TRELLO_API_KEY as string, TRELLO_USER_TOKEN as string)
+new Trello(trello.apikey as string, trello.usertoken as string)
   .getBoards()
   .then(boards => {
     boards.map(({ id, name }) => console.log(`${id} \t ${name}`))
