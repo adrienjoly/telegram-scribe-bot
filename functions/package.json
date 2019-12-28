@@ -12,7 +12,7 @@
     "build": "tsc",
     "serve": "npm run build && firebase serve --only functions",
     "shell": "npm run build && firebase functions:shell",
-    "deploy": "npm run build && firebase deploy --only functions",
+    "deploy": "firebase deploy --only functions",
     "deploy:setup": "firebase login && echo \"Don't forget to specify your Firebase app id in .firebaserc, cf README.md\"",
     "deploy:config": "source ../.env && firebase functions:config:set config=\"$(cat ../.config.json)\"",
     "deploy:test": "source ../.env && curl -X POST -H \"Content-Type:application/json\" ${ROUTER_URL} -d '{}'",
