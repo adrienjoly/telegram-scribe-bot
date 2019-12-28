@@ -39,7 +39,14 @@ type StarterParams = {
   options: MessageHandlerOptions
 }
 
-export const startApp = ({ port, options }: StarterParams) =>
+type Destroyable = {
+  destroy: Function
+}
+
+export const startApp = ({
+  port,
+  options,
+}: StarterParams): Promise<Destroyable> =>
   new Promise((resolve, reject) => {
     try {
       const server = makeApp(options).listen(port, () =>
