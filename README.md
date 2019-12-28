@@ -15,16 +15,6 @@ A (work-in-progress) chat-bot that can add comments to Trello cards, your TickTi
 
 Note: the first version of this bot was developed by following the steps provided in [Serverless Telegram Bot with Firebase - Francisco Gutiérrez - Medium](https://medium.com/@pikilon/serverless-telegram-bot-with-firebase-d11d07579d8a).
 
-## Bind tags to Trello cards
-
-In order to add comments and tasks to your Trello cards, you must associate one or more hashtags to these cards.
-
-How to achieve this?
-
-1. Open one of your Trello cards
-2. In the description of that card, add the following text: `telegram-scribe-bot:addCommentsFromTaggedNotes(mytag1)`, and save your changes
-3. After doing so, you'll be able to add a comment to that card, by sending the following message through your Telegram app: `/note hello world! #mytag1`
-
 ## Clone and Install
 
 To get started, you just need `git`, NodeJS and to follow these instructions:
@@ -34,71 +24,43 @@ $ git clone https://github.com/adrienjoly/telegram-scribe-bot.git
 $ cd telegram-scribe-bot
 $ cd functions
 $ npm install
-$ npm run build
+$ npm test # run automated test suites
 ```
 
-## Test locally (optional)
+## Local setup and testing
 
-Before binding the chat-bot to Telegram, you can test it locally:
+Before making your chat-bot accessible through Telegram, you can test it locally:
 
 ```sh
-$ npm test     # run automated test suites
-$ npm test:bot # interactive: simulates a Telegram client
+$ npm run test:bot
 ```
 
-## Setup
+This command will start a CLI that will allow you to interact with the bot without having to put it online.
 
-Follow these steps to setup your own "scribe" bot, connect it to your own Trello board and deploy it to your own Firebase account.
+Let's see how to set it up.
 
-### 1. Clone the project
+### 1. Connect to a Trello board
 
-- See the [Clone and Install](#clone-and-install) section above
+Trello credentials must be provided in a `.env` file, at the root directory of the project.
 
-### 2. Create a Firebase project
+1. Get started by copying the provided template: `$ cp .env.example .env`
+2. Copy your Trello API Key (from [trello.com/app-key](https://trello.com/app-key)) and paste it as the value of the `TRELLO_API_KEY` variable, in your `.env` file
+3. Manually generate a Token (a link is provided on [trello.com/app-key](https://trello.com/app-key), below the Trello API Key) and paste it as the value of the `TRELLO_USER_TOKEN` variable, still in your `.env` file
+4. Run `$ npm run trello:test` to make sure that these credentials give access to Trello's API
+5. Run `$ npm run trello:boards` to display the list of the Trello boards you have access to
+6. Copy the 24-characters-long identifier of the Trello board that you want your bot to edit, and paste it as the value of the `TRELLO_BOARD_ID` variable of your `.env` file
 
-- Go to [your firebase console](https://console.firebase.google.com)
-- Add a new project
-- In the `.firebaserc` file, replace `telegram-scribe-bot` by the id of that project
-- `$ npm run deploy:setup` (to login to your Firebase account)
-- `$ cp .env.example .env` (we will set your Firebase, Telegram and Trello credentials in this confidential file, in later steps)
+If you want to also connect to your TickTick account, fill the `TICKTICK_EMAIL` and `TICKTICK_PASSWORD` variables accordingly.
 
-### 3. Create a Telegram bot
+### 2. Bind tags to Trello cards
 
-- In your Telegram app, start a conversation with [@BotFather](https://telegram.me/BotFather)
-- Write the command `/newBot` and follow the provided steps
-- In the `.env` file, replace the default `BOT_TOKEN` value by the Secret Token provided by that bot
-- Also, take note of the name of your bot (ends with `bot`), we'll need it later
+In order to add comments and tasks to your Trello cards, you must associate one or more hashtags to these cards.
 
-### 4. Deploy and bind the bot to Telegram
+How to achieve this?
 
-- `$ npm run deploy` (will upload the source code to your Firebase project)
-- In the `.env` file, replace the default `ROUTER_URL` value by the one printed when deploying (previous step), it must end with `/router/`
-- `$ npm run deploy:test` (to check that the function deployed on Firebase works as expected)
-- `$ npm run webhook:bind` (to bind that function to your Telegram bot)
-- `$ npm run webhook:test` (to check that the function's router URL was properly bound to your Telegram bot)
-
-### 5. Test your bot
-
-- In your Telegram app, start a conversation with your bot (e.g. mine is [@aj_scribe_bot](t.me/aj_scribe_bot))
-- Send "hello"
-- The bot should reply with your name
-
-### 6. Bind to a Trello board
-
-- Copy your Trello API Key (from [trello.com/app-key](https://trello.com/app-key)) and paste it as the value of the `TRELLO_API_KEY` variable, in your `.env` file
-- Manually generate a Token (a link is provided on [trello.com/app-key](https://trello.com/app-key), below the Trello API Key) and paste it as the value of the `TRELLO_USER_TOKEN` variable, still in your `.env` file
-- Run `$ npm run trello:test` to make sure that these credentials give access to Trello's API
-- Run `$ npm run trello:boards` to display the list of the Trello boards you have access to
-- Copy the 24-characters-long identifier of the Trello board that you want your bot to edit, and paste it as the value of the `TRELLO_BOARD_ID` variable of your `.env` file
-- Run `$ npm run deploy:config` to upload your environment variables to the cloud function
-
-After making any change to your bot, don't forget to deploy again it using `$ npm run deploy`.
-
-In order to bind `#tags` to some of your Trello cards, specify them as below, anywhere in the comment of those cards:
-
-```
-telegram-scribe-bot:addCommentsFromTaggedNotes(#tag1,#tag2,...)
-```
+1. Open one of your Trello cards
+2. In the description of that card, add the following text: `telegram-scribe-bot:addCommentsFromTaggedNotes(#mytag1,mytag2,...)`, and save your changes
+3. After doing so, you'll be able to add a comment to that card, by sending the following message through your Telegram app: `/note hello world! #mytag1`
 
 For instance, if you have a card in which you want to store your `#diary` notes as comments, add the following line to the description of that card:
 
@@ -108,13 +70,46 @@ telegram-scribe-bot:addCommentsFromTaggedNotes(#diary)
 
 After doing that, the following chat message will add a comment to that card:
 
-> /note #diary I had a great day today!
+> /note I had a great day today! #diary
+
+## Production Setup
+
+Follow these steps to deploy your bot to Firebase and make it accessible through Telegram.
+
+### 1. Create a Firebase project
+
+- Go to [your firebase console](https://console.firebase.google.com)
+- Add a new project
+- In the `.firebaserc` file, replace `telegram-scribe-bot` by the id of that project
+- `$ npm run deploy:setup` (to login to your Firebase account)
+
+### 2. Create a Telegram bot
+
+- In your Telegram app, start a conversation with [@BotFather](https://telegram.me/BotFather)
+- Write the command `/newBot` and follow the provided steps
+- In the `.env` file, replace the default `BOT_TOKEN` value by the Secret Token provided by that bot
+- Also, take note of the name of your bot (ends with `bot`), we'll need it later
+
+### 3. Deploy and bind the bot to Telegram
+
+- `$ npm run deploy` (will upload the source code to your Firebase project)
+- In the `.env` file, replace the default `ROUTER_URL` value by the one printed when deploying (previous step), it must end with `/router/`
+- `$ npm run deploy:test` (to check that the function deployed on Firebase works as expected)
+- `$ npm run webhook:bind` (to bind that function to your Telegram bot)
+- `$ npm run webhook:test` (to check that the function's router URL was properly bound to your Telegram bot)
+- `$ npm run deploy:config` to upload your environment variables (from `.env`) to the cloud function
+
+After making any change to your bot, don't forget to deploy again it using `$ npm run deploy`.
+
+### 4. Test your bot
+
+- In your Telegram app, start a conversation with your bot (e.g. mine is [@aj_scribe_bot](t.me/aj_scribe_bot))
+- Send "hello"
+- The bot should reply with your name
 
 You can troubleshoot your bot using [your firebase console](https://console.firebase.google.com).
 
-You can also run and test the bot/webhook locally using `$ npm start` or `$ npm run serve`, but it would be much more complicated to bind it to Telegram's API.
-
-## Options
+### Options
 
 Set `TELEGRAM_USER_ID` in your `.env` file and call `$ npm run deploy:config` again if you want the bot to only respond to that Telegram user identifier.
 

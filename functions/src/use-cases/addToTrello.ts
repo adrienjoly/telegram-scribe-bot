@@ -70,7 +70,7 @@ const wrap = (func: Function) => async (
   const validTags = listValidTags(cardsWithTags)
   if (!validTags.length) {
     return {
-      text: `🤔  Please bind tags to your cards. How: https://github.com/adrienjoly/telegram-scribe-bot#bind-tags-to-trello-cards`,
+      text: `🤔  Please bind tags to your cards. How: https://github.com/adrienjoly/telegram-scribe-bot#2-bind-tags-to-trello-cards`,
     }
   }
   const noteTags = message.tags.map(tagEntity => tagEntity.text)
