@@ -3,9 +3,8 @@ import { TelegramMessage, MessageEntity, TelegramUser } from './../src/Telegram'
 import { processMessage } from './../src/messageHandler'
 
 // load credentials from config file
-const options = {
-  trello: require(`${__dirname}/../../.config.json`).trello,
-}
+const options = require(`${__dirname}/../../.config.json`) // eslint-disable-line @typescript-eslint/no-var-requires
+delete options.telegram.onlyfromuserid // disable telegram user-id restriction
 
 // Mimic the way Telegram clients turn a full-text chat message into a TelegramMessage
 const makeTelegramMessage = (rawMessage: string): TelegramMessage => {
