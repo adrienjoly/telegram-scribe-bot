@@ -7,7 +7,6 @@ import { MessageHandlerOptions } from './../src/types'
 dotenv.config({ path: `${__dirname}/../../.env` }) // load environment variables
 
 const options: MessageHandlerOptions = {
-  // onlyFromUserId: TELEGRAM_USER_ID ? parseInt(TELEGRAM_USER_ID, 10) : undefined,
   trelloApiKey: process.env.TRELLO_API_KEY || '',
   trelloUserToken: process.env.TRELLO_USER_TOKEN || '',
   trelloBoardId: process.env.TRELLO_BOARD_ID || '',
