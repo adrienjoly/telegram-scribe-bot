@@ -10,12 +10,6 @@ import {
 import { MessageHandlerOptions } from '../src/types'
 import { ParsedMessageEntities } from '../src/Telegram'
 
-// nock.disableNetConnect() // block HTTP requests
-// nock.recorder.rec() // useful to trace HTTP requests that would be sent
-nock.emitter.on('no match', ({ method, path }) =>
-  console.warn(`⚠ no match for ${method} ${path}`)
-)
-
 const FAKE_CREDS: Options = {
   trelloApiKey: 'trelloApiKey',
   trelloBoardId: 'trelloBoardId',
@@ -37,6 +31,17 @@ const createMessage = ({ ...overrides }): ParsedMessageEntities => ({
 })
 
 describe('trello use cases', () => {
+  before(() => {
+    nock.emitter.on('no match', ({ method, path }) =>
+      console.warn(`⚠ no match for ${method} ${path}`)
+    )
+  })
+
+  after(() => {
+    nock.cleanAll()
+    nock.enableNetConnect()
+  })
+
   beforeEach(() => {
     nock.cleanAll()
   })
