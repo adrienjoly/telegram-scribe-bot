@@ -1,6 +1,6 @@
 // Wrappers to Trello API (https://developers.trello.com/reference)
 
-import * as TrelloLib from 'trello' // lib reference: https://www.npmjs.com/package/trello
+import TrelloLib from 'trello' // lib reference: https://www.npmjs.com/package/trello
 
 export type TrelloCard = {
   id: string
