@@ -110,7 +110,7 @@ const _addAsTrelloTask = async (
 ): Promise<BotResponse> => {
   const getUniqueCardChecklist = async (
     checklistIds: string[]
-  ): Promise<TrelloChecklist> =>
+  ): Promise<TrelloChecklist | null> =>
     checklistIds.length !== 1 ? null : trello.getChecklist(checklistIds[0])
   const taskName = message.rest
   const consideredCards = await Promise.all(
