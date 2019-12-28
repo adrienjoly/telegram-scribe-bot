@@ -1,5 +1,7 @@
-require('dotenv').config({ path: `${__dirname}/../../.env` }) // load environment variables
+import * as dotenv from 'dotenv'
 import { Ticktick } from './../src/Ticktick'
+
+dotenv.config({ path: `${__dirname}/../../.env` }) // load environment variables
 
 const { TICKTICK_EMAIL, TICKTICK_PASSWORD } = process.env
 

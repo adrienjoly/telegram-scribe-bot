@@ -1,8 +1,9 @@
 // This file is intended to run the app on a development/local environment
 
+import * as dotenv from 'dotenv'
 import { makeApp } from '../src/app'
 
-require('dotenv').config({ path: `${__dirname}/../../.env` }) // load environment variables
+dotenv.config({ path: `${__dirname}/../../.env` }) // load environment variables
 
 const { PORT = 8000, TELEGRAM_USER_ID } = process.env
 
