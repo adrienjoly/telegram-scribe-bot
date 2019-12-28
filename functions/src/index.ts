@@ -3,18 +3,7 @@
 import * as functions from 'firebase-functions'
 import { makeApp } from './app'
 
-const config = functions.config()
-
-const options = {
-  onlyFromUserId: config.telegram.userid
-    ? parseInt(config.telegram.userid, 10)
-    : undefined,
-  trelloApiKey: config.trello.apikey,
-  trelloUserToken: config.trello.usertoken,
-  trelloBoardId: config.trello.boardid,
-  ticktickEmail: config.ticktick.email,
-  ticktickPassword: config.ticktick.password,
-}
+const options = functions.config()
 
 const app = makeApp(options)
 

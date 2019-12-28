@@ -84,7 +84,10 @@ describe('app', () => {
     }
     const server = await startApp({
       port,
-      options: { ...options, onlyFromUserId },
+      options: {
+        ...options,
+        telegram: { onlyfromuserid: `${onlyFromUserId}` },
+      },
     })
     const res = await postJSON(`http://localhost:${port}/`, { message })
     expect(res.status).toEqual(403)
@@ -105,7 +108,7 @@ describe('app', () => {
     }
     const server = await startApp({
       port,
-      options: { ...options, trelloApiKey: 'incorrect' },
+      options: { ...options, trello: { apikey: 'incorrect' } },
     })
     const res = await postJSON(`http://localhost:${port}/`, { message })
     expect(res.status).toEqual(200)

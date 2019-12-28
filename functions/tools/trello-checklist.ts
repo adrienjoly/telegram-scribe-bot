@@ -1,10 +1,8 @@
-import * as dotenv from 'dotenv'
 import * as readline from 'readline'
 import { Trello } from './../src/Trello'
 
-dotenv.config({ path: `${__dirname}/../../.env` }) // load environment variables
-
-const { TRELLO_API_KEY, TRELLO_USER_TOKEN } = process.env
+// load credentials from config file
+const config = require(`${__dirname}/../../.config.json`) // eslint-disable-line @typescript-eslint/no-var-requires
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -14,10 +12,10 @@ const rl = readline.createInterface({
 const getAnswer = (prompt: string): Promise<string> =>
   new Promise(resolve => rl.question(`${prompt}\n`, resolve))
 
-const main = async () => {
+const main = async (): Promise<void> => {
   const trello = new Trello(
-    TRELLO_API_KEY as string,
-    TRELLO_USER_TOKEN as string
+    config.trello.apikey as string,
+    config.trello.usertoken as string
   )
   const boards = await trello.getBoards()
   boards.map(({ id, name }) => console.log(`${id} \t ${name}`))

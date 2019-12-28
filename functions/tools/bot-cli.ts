@@ -1,20 +1,14 @@
-import * as dotenv from 'dotenv'
 import * as readline from 'readline'
 import { TelegramMessage, MessageEntity, TelegramUser } from './../src/Telegram'
 import { processMessage } from './../src/messageHandler'
-import { MessageHandlerOptions } from './../src/types'
 
-dotenv.config({ path: `${__dirname}/../../.env` }) // load environment variables
-
-const options: MessageHandlerOptions = {
-  trelloApiKey: process.env.TRELLO_API_KEY || '',
-  trelloUserToken: process.env.TRELLO_USER_TOKEN || '',
-  trelloBoardId: process.env.TRELLO_BOARD_ID || '',
-}
+// load credentials from config file
+const options = require(`${__dirname}/../../.config.json`) // eslint-disable-line @typescript-eslint/no-var-requires
+delete options.telegram.onlyfromuserid // disable telegram user-id restriction
 
 // Mimic the way Telegram clients turn a full-text chat message into a TelegramMessage
 const makeTelegramMessage = (rawMessage: string): TelegramMessage => {
-  const user: TelegramUser = { id: 2, first_name: 'cli' }
+  const user: TelegramUser = { id: 2, first_name: 'cli' } // eslint-disable-line @typescript-eslint/camelcase
   const entities: MessageEntity[] = []
   const command = rawMessage.match(/\/(\w+)/)
   if (command && command.index !== undefined) {
@@ -44,7 +38,7 @@ const rl = readline.createInterface({
 const getAnswer = (prompt: string): Promise<string> =>
   new Promise(resolve => rl.question(`${prompt}\n`, resolve))
 
-const main = async () => {
+const main = async (): Promise<void> => {
   console.warn(
     `ℹ️  This bot client is connected to the accounts specified in .env`
   )

@@ -7,7 +7,7 @@ export class Ticktick {
     this.emailCreds = { username: email, password }
   }
 
-  async connect() {
+  async connect(): Promise<void> {
     try {
       await ticktick.login({ email: this.emailCreds })
     } catch (err) {
@@ -17,7 +17,12 @@ export class Ticktick {
     }
   }
 
-  async addTask(title: string, desc?: string, date?: Date, isAllDay?: Boolean) {
+  async addTask(
+    title: string,
+    desc?: string,
+    date?: Date,
+    isAllDay?: boolean
+  ): Promise<void> {
     try {
       await ticktick.Inbox.addSimpleTask(title, desc, date, isAllDay)
     } catch (err) {

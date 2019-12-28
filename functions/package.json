@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "A chat-bot that can add comments to Trello cards, from any Telegram client.",
   "scripts": {
-    "lint": "npx eslint .",
-    "lint:fix": "npx eslint . --fix",
+    "lint": "npx eslint src/**/*.ts tools/**/*.ts",
+    "lint:fix": "npx eslint src/**/*.ts tools/**/*.ts --fix",
     "test": "ts-mocha -p ./tsconfig.json ./test/*.test.ts",
     "test:bot": "ts-node tools/bot-cli.ts",
     "start": "ts-node tools/start.ts",
@@ -12,9 +12,9 @@
     "build": "tsc",
     "serve": "npm run build && firebase serve --only functions",
     "shell": "npm run build && firebase functions:shell",
-    "deploy": "npm run build && firebase deploy --only functions",
+    "deploy": "firebase deploy --only functions",
     "deploy:setup": "firebase login && echo \"Don't forget to specify your Firebase app id in .firebaserc, cf README.md\"",
-    "deploy:config": "source ../.env && firebase functions:config:set telegram.userid=${TELEGRAM_USER_ID} trello.apikey=${TRELLO_API_KEY} trello.usertoken=${TRELLO_USER_TOKEN} trello.boardid=${TRELLO_BOARD_ID} ticktick.email=${TICKTICK_EMAIL} ticktick.password=${TICKTICK_PASSWORD}",
+    "deploy:config": "source ../.env && firebase functions:config:set config=\"$(cat ../.config.json)\"",
     "deploy:test": "source ../.env && curl -X POST -H \"Content-Type:application/json\" ${ROUTER_URL} -d '{}'",
     "webhook:bind": "source ../.env && curl https://api.telegram.org/bot${BOT_TOKEN}/setWebhook?url=${ROUTER_URL}",
     "webhook:test": "source ../.env && curl https://api.telegram.org/bot${BOT_TOKEN}/getWebhookInfo",
@@ -30,32 +30,9 @@
   "main": "lib/src/index.js",
   "author": "Adrien Joly",
   "license": "ISC",
-  "eslintConfig": {
-    "ignorePatterns": [
-      "lib/",
-      "node_modules/"
-    ],
-    "extends": [
-      "plugin:prettier/recommended"
-    ],
-    "plugins": [
-      "prettier"
-    ],
-    "parserOptions": {
-      "ecmaVersion": 2019
-    },
-    "rules": {
-      "prettier/prettier": "error"
-    },
-    "env": {
-      "node": true,
-      "mocha": true
-    }
-  },
   "dependencies": {
     "@types/cors": "^2.8.6",
     "cors": "^2.8.5",
-    "dotenv": "^8.1.0",
     "express": "^4.17.1",
     "firebase-admin": "^8.0.0",
     "firebase-functions": "^3.1.0",
@@ -66,6 +43,9 @@
   "devDependencies": {
     "@types/expect": "^1.20.4",
     "@types/mocha": "^5.2.7",
+    "@types/node": "^13.1.1",
+    "@typescript-eslint/eslint-plugin": "^2.13.0",
+    "@typescript-eslint/parser": "^2.13.0",
     "eslint": "^6.7.2",
     "eslint-config-prettier": "^6.7.0",
     "eslint-plugin-prettier": "^3.1.1",

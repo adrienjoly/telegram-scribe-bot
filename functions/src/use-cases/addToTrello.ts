@@ -1,14 +1,16 @@
-import { MessageHandlerOptions } from './../types'
+import { MessageHandlerOptions, BotResponse } from './../types'
 import { ParsedMessageEntities } from './../Telegram'
-import { Trello, TrelloCard } from './../Trello'
+import { Trello, TrelloCard, TrelloChecklist } from './../Trello'
 
 // string to include in Trello card(s), to bind them with some tags
-const RE_TRELLO_CARD_BINDING = /telegram\-scribe\-bot\:addCommentsFromTaggedNotes\(([^\)]+)\)/
+const RE_TRELLO_CARD_BINDING = /telegram-scribe-bot:addCommentsFromTaggedNotes\(([^)]+)\)/
 
 export type Options = {
-  trelloApiKey: string
-  trelloUserToken: string
-  trelloBoardId: string
+  trello: {
+    apikey: string
+    usertoken: string
+    boardid: string
+  }
 }
 
 type TrelloCardWithTags = {
@@ -16,27 +18,27 @@ type TrelloCardWithTags = {
   tags: string[]
 }
 
-const checkOptions = (options: MessageHandlerOptions) => {
-  if (!options.trelloApiKey) throw new Error('missing trelloApiKey')
-  if (!options.trelloUserToken) throw new Error('missing trelloUserToken')
-  if (!options.trelloBoardId) throw new Error('missing trelloBoardId')
+const checkOptions = (options: MessageHandlerOptions): Options => {
+  if (!options.trello?.apikey) throw new Error('missing trelloApiKey')
+  if (!options.trello?.usertoken) throw new Error('missing trelloUserToken')
+  if (!options.trello?.boardid) throw new Error('missing trelloBoardId')
   return options as Options
 }
 
-const cleanTag = (tag: string) =>
+const cleanTag = (tag: string): string =>
   tag
     .replace('#', '')
     .trim()
     .toLowerCase()
 
-const renderTag = (tag: string) => `#${cleanTag(tag)}`
+const renderTag = (tag: string): string => `#${cleanTag(tag)}`
 
-const extractTagsFromBinding = (card: TrelloCard) => {
+const extractTagsFromBinding = (card: TrelloCard): string[] => {
   const tagList = (card.desc.match(RE_TRELLO_CARD_BINDING) || [])[1]
   return tagList ? tagList.split(',').map(cleanTag) : []
 }
 
-const listValidTags = (cardsWithTags: TrelloCardWithTags[]) => {
+const listValidTags = (cardsWithTags: TrelloCardWithTags[]): string => {
   const allTags = cardsWithTags.reduce((allTags, { tags }) => {
     tags.forEach(tag => allTags.add(tag))
     return allTags
@@ -59,10 +61,10 @@ const getCardsBoundToTags = (
 const wrap = (func: Function) => async (
   message: ParsedMessageEntities,
   messageHandlerOptions: MessageHandlerOptions
-) => {
+): Promise<BotResponse> => {
   const options = checkOptions(messageHandlerOptions) // may throw
-  const trello = new Trello(options.trelloApiKey, options.trelloUserToken)
-  const cards = await trello.getCards(options.trelloBoardId)
+  const trello = new Trello(options.trello.apikey, options.trello.usertoken)
+  const cards = await trello.getCards(options.trello.boardid)
   const cardsWithTags = cards.map(card => ({
     card,
     tags: extractTagsFromBinding(card),
@@ -88,7 +90,7 @@ const _addAsTrelloComment = async (
   message: ParsedMessageEntities,
   trello: Trello,
   targetedCards: TrelloCard[]
-) => {
+): Promise<BotResponse> => {
   await Promise.all(
     targetedCards.map(card =>
       trello.card.addComment(card.id, { text: message.rest })
@@ -105,8 +107,10 @@ const _addAsTrelloTask = async (
   message: ParsedMessageEntities,
   trello: Trello,
   targetedCards: TrelloCard[]
-) => {
-  const getUniqueCardChecklist = async (checklistIds: string[]) =>
+): Promise<BotResponse> => {
+  const getUniqueCardChecklist = async (
+    checklistIds: string[]
+  ): Promise<TrelloChecklist | null> =>
     checklistIds.length !== 1 ? null : trello.getChecklist(checklistIds[0])
   const taskName = message.rest
   const consideredCards = await Promise.all(

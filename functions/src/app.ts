@@ -9,7 +9,7 @@ const errorCodes: { [s: string]: number } = {
   'this sender is not allowed': 403,
 }
 
-export function makeApp(options: MessageHandlerOptions) {
+export function makeApp(options: MessageHandlerOptions): express.Express {
   const app = express()
 
   app.use(express.json()) // Firebase already does that, but it's required for tests

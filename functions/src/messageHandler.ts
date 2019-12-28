@@ -1,4 +1,4 @@
-import { MessageHandlerOptions, CommandHandler } from './types'
+import { MessageHandlerOptions, CommandHandler, TelegramRequest } from './types'
 import { TelegramMessage, parseEntities } from './Telegram'
 import {
   addTaskToTicktick,
@@ -17,8 +17,11 @@ const commandHandlers: { [key: string]: CommandHandler } = {
 export async function processMessage(
   message: TelegramMessage,
   options: MessageHandlerOptions
-) {
-  if (options.onlyFromUserId && message.from.id !== options.onlyFromUserId)
+): Promise<TelegramRequest> {
+  const onlyFromUserId = options.telegram?.onlyfromuserid
+    ? parseInt(options.telegram.onlyfromuserid, 10)
+    : undefined
+  if (onlyFromUserId && message.from.id !== onlyFromUserId)
     throw new Error('this sender is not allowed')
 
   console.log('received message from Telegram:', message)
@@ -46,7 +49,7 @@ export async function processMessage(
 
   return {
     method: 'sendMessage',
-    chat_id: message.chat.id,
+    chat_id: message.chat.id, // eslint-disable-line @typescript-eslint/camelcase
     text,
   }
 }
