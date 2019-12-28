@@ -7,7 +7,6 @@ import {
   addAsTrelloComment,
   addAsTrelloTask,
 } from './../src/use-cases/addToTrello'
-import { MessageHandlerOptions } from '../src/types'
 import { ParsedMessageEntities } from '../src/Telegram'
 
 const FAKE_CREDS: Options = {
@@ -49,8 +48,7 @@ describe('trello use cases', () => {
   describe('(shared behaviors)', () => {
     it('fails if trello credentials are not provided', async () => {
       const message = createMessage({ rest: 'coucou' })
-      const options: MessageHandlerOptions = {}
-      const promise = addAsTrelloComment(message, options)
+      const promise = addAsTrelloComment(message, {})
       expect(promise).rejects.toThrow('missing trelloApiKey')
     })
 
