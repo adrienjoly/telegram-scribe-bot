@@ -50,7 +50,7 @@ const wrap = (func: Function) => async (
   const cards = await trello.getCards(options.trelloBoardId)
   const cardsWithTags = cards.map(card => ({
     card,
-    tags: (card.desc.match(RE_TRELLO_CARD_BINDING) || [])[1].split(','),
+    tags: ((card.desc.match(RE_TRELLO_CARD_BINDING) || [])[1] || '').split(','),
   }))
   const noteTags = message.tags.map(tagEntity => tagEntity.text)
   if (!noteTags.length) {
