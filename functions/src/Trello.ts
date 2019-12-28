@@ -1,4 +1,6 @@
-import * as TrelloLib from 'trello'
+// Wrappers to Trello API (https://developers.trello.com/reference)
+
+import * as TrelloLib from 'trello' // lib reference: https://www.npmjs.com/package/trello
 
 export type TrelloCard = {
   id: string
@@ -72,6 +74,3 @@ export class Trello {
     return { checklistId, name, pos }
   }
 }
-
-// API reference: https://developers.trello.com/reference
-// lib reference: https://github.com/bhushankumarl/trello-node-api/wiki/Members-TypeScript
