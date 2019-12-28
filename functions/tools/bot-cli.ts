@@ -20,6 +20,16 @@ const makeTelegramMessage = (rawMessage: string): TelegramMessage => {
       user,
     })
   }
+  const tags = rawMessage.match(/#(\w+)/g) || []
+  tags.forEach(tag => {
+    entities.push({
+      type: 'hashtag',
+      offset: rawMessage.indexOf(tag),
+      length: tag.length,
+      url: '',
+      user,
+    })
+  })
   return {
     chat: { id: 1 },
     text: rawMessage,
