@@ -194,7 +194,11 @@ describe('trello use cases', () => {
         .reply(200, [card])
       // simulate the absence of checklists in that trello card
       nock('https://api.trello.com')
-        .get(uri => uri.includes(`/1/cards/${card.id}`))
+        .get(uri =>
+          uri.includes(
+            `/1/boards/${FAKE_CREDS.trello.boardid}/cards/${card.id}`
+          )
+        )
         .reply(200, { idChecklists: [] })
       const res = await addAsTrelloTask(message, FAKE_CREDS)
       expect(res.text).toMatch('No checklists were found for these tags')
@@ -217,7 +221,11 @@ describe('trello use cases', () => {
         .reply(200, [card])
       // simulate a checklist of that trello card
       nock('https://api.trello.com')
-        .get(uri => uri.includes(`/1/cards/${card.id}`))
+        .get(uri =>
+          uri.includes(
+            `/1/boards/${FAKE_CREDS.trello.boardid}/cards/${card.id}`
+          )
+        )
         .reply(200, { idChecklists: [checklistId] })
       // simulate a checklist of that trello card
       nock('https://api.trello.com')

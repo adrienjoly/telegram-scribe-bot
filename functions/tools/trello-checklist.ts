@@ -23,7 +23,7 @@ const main = async (): Promise<void> => {
   const cards = await trello.getCards(boardId)
   cards.map(({ id, name }) => console.log(`${id} \t ${name}`))
   const cardId = await getAnswer('enter a card id: ')
-  const [checklistId] = await trello.getChecklistIds(cardId)
+  const [checklistId] = await trello.getChecklistIds(boardId, cardId)
   const checklist = await trello.getChecklist(checklistId)
   console.log('=> checklist:', checklist)
   const taskName = await getAnswer('enter the name of a task to add: ')
