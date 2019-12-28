@@ -19,6 +19,25 @@ const postJSON = (url, json) =>
   })
 
 describe('app', () => {
+  let consoleBackup
+
+  before(() => {
+    consoleBackup = {
+      log: console.log,
+      warn: console.warn,
+      error: console.error,
+    }
+    console.log = () => {}
+    console.warn = () => {}
+    console.error = () => {}
+  })
+
+  after(() => {
+    console.log = consoleBackup.log
+    console.warn = consoleBackup.warn
+    console.error = consoleBackup.error
+  })
+
   it('responds to GET /', async () => {
     const port = allocatePort()
     const server = await startApp({ port, options })
