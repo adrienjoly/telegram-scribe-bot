@@ -58,8 +58,11 @@ export class Trello {
   }
 
   async addComment(cardId: string, { text }: { text: string }) {
-    return await this.trelloApi.card.addComment(cardId, { text })
-    // TODO: this.trelloLib.makeRequest('post', `/actions/comments` card.id, { text: message.rest })
+    return await this.trelloLib.makeRequest(
+      'post',
+      `/1/cards/${cardId}/actions/comments`,
+      { text }
+    )
   }
 
   async addChecklistItem(
