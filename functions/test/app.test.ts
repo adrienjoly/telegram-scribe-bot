@@ -94,12 +94,14 @@ describe('app', () => {
     )
     server.destroy()
   })
-  /*
+
   it('responds with error if failing to connect to trello', async () => {
     const port = allocatePort()
     const message = {
       chat: { id: 1 },
       from: { first_name: 'test_name' },
+      entities: [{ type: 'bot_command', offset: 0, length: 5 }],
+      text: '/next',
     }
     const server = await startApp({
       port,
@@ -108,8 +110,7 @@ describe('app', () => {
     const res = await postJSON(`http://localhost:${port}/`, { message })
     expect(res.status).toEqual(200)
     const payload = await res.json()
-    expect(payload.text).toMatch('invalid key')
+    expect(payload.text).toMatch('missing trelloUserToken')
     server.destroy()
   })
-  */
 })
