@@ -123,7 +123,7 @@ describe('trello use cases', () => {
       // simulate the response of adding a comment to that card
       nock('https://api.trello.com')
         .post(uri => uri.includes('/actions/comments'))
-        .reply(200, '{ "text": "my POST response" }')
+        .reply(200, {})
       const res = await addAsTrelloComment(message, FAKE_CREDS)
       expect(res.text).toMatch('Sent to Trello cards')
       expect(res.text).toMatch(tagName)
@@ -143,7 +143,7 @@ describe('trello use cases', () => {
       // simulate the response of adding a comment to that card
       nock('https://api.trello.com')
         .post(uri => uri.includes('/actions/comments'))
-        .reply(200, '{ "text": "my POST response" }')
+        .reply(200, {})
       const res = await addAsTrelloComment(message, FAKE_CREDS)
       expect(res.text).toMatch('Sent to Trello cards')
       expect(res.text).toMatch(tagName)
@@ -195,7 +195,7 @@ describe('trello use cases', () => {
       // simulate the response of adding a task to that checklist
       nock('https://api.trello.com')
         .post(uri => uri.includes(`/1/checklists/${checklistId}/checkitems`))
-        .reply(200, '{ "text": "my POST response" }')
+        .reply(200)
       const res = await addAsTrelloTask(message, FAKE_CREDS)
       expect(res.text).toMatch('Added task at the top of these Trello cards')
       expect(res.text).toMatch(tagName)
