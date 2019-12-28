@@ -70,12 +70,12 @@ export function parseEntities(
   const rest = supportedEntities
     .filter(({ type }) => !inlineTypes.includes(type)) // do not remove inlineTypes entities
     .sort((a, b) => b.offset - a.offset) // we'll remove from the end to the beginning of the string, to keep the offsets valid
-    .reduce((text, entity) => {
-      return (
+    .reduce(
+      (text, entity) =>
         text.substr(0, entity.offset) +
-        text.substr(entity.offset + entity.length)
-      )
-    }, message.text)
+        text.substr(entity.offset + entity.length),
+      message.text
+    )
     .replace(/  +/, ' ') // remove duplicate spaces
   return {
     date: new Date(message.date * 1000),
