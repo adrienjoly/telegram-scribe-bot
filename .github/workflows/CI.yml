@@ -36,4 +36,9 @@ jobs:
         run: npm run build
       - name: npm test
         working-directory: functions/
-        run: npm test
+        run: npm test        
+      - name: codechecks
+        run: |
+          npx codechecks
+        env:
+          CC_SECRET: ${{ secrets.CC_SECRET }}
