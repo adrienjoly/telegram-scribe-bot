@@ -1,5 +1,10 @@
 import SpotifyWebApi from 'spotify-web-api-node'
 
+export type SpotifyCreds = {
+  clientid: string
+  secret: string
+}
+
 export const formatAlbum = (album: SpotifyApi.AlbumObjectSimplified) => ({
   title: album.name,
   artist: /*album.artistName ||*/ album.artists
@@ -13,7 +18,7 @@ export const formatAlbum = (album: SpotifyApi.AlbumObjectSimplified) => ({
 export class Spotify {
   spotifyApi: SpotifyWebApi
 
-  constructor({ clientid, secret }: { clientid: string; secret: string }) {
+  constructor({ clientid, secret }: SpotifyCreds) {
     this.spotifyApi = new SpotifyWebApi({
       clientId: clientid,
       clientSecret: secret,
