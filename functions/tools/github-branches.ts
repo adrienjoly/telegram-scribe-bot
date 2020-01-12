@@ -6,8 +6,6 @@ const { github } = require(`${__dirname}/../../.config.json`) // eslint-disable-
 // Note: In order to write to the repo, user must be authenticated with a token
 // that has the "public_repo" permission.
 
-type GitHubRepo = { owner: string; repo: string }
-
 const octokit = new Octokit({
   auth: github.token,
   userAgent: 'telegram-scribe-bot',
@@ -18,7 +16,9 @@ async function getFileContents({
   owner,
   repo,
   path,
-}: GitHubRepo & {
+}: {
+  owner: string
+  repo: string
   path: string
 }): Promise<{ sha: string; buffer: Buffer }> {
   const res = await octokit.repos.getContents({
@@ -37,33 +37,15 @@ async function getFileContents({
   }
 }
 
-async function getLastCommit(ghRepo: GitHubRepo) {
-  return (await octokit.repos.listCommits(ghRepo)).data[0]
-}
-
-/*
-async function createCommit({
-  owner,
-  repo,
-  message,
-  tree,
-  parents,
-}: GitHubRepo & {
-  message: string
-  tree: string // The SHA of the tree object this commit points to
-  parents: string[] // The SHAs of the commits that were the parents of this commit. If omitted or empty, the commit will be written as a root commit. For a single parent, an array of one SHA should be provided; for a merge commit, an array of more than one should be provided.
-}) {}
-*/
-
 async function main() {
   const { owner, repo } = { owner: 'adrienjoly', repo: 'album-shelf' }
-
   const filePath = '_data/albums.yaml'
+  const contentToAdd = '\ntest\n'
+  const branchName = `scribe-bot-test`
 
   console.log(`___\nFetch last commit from ${owner}/${repo}...`)
-
-  const lastCommit = await getLastCommit({ owner, repo })
-  console.log({ tree: lastCommit.commit.tree.sha })
+  const lastCommit = await (await octokit.repos.listCommits({ owner, repo }))
+    .data[0]
 
   console.log(`___\nFetch contents of ${filePath}...`)
   const initialFile = await getFileContents({
@@ -71,33 +53,29 @@ async function main() {
     repo,
     path: filePath,
   })
-  console.log('getFileContents =>', { sha: initialFile.sha })
 
   console.log(`___\nCreate blob with changed file contents...`)
-  const content = initialFile.buffer.toString() + 'test'
   const { data: blob } = await octokit.git.createBlob({
     owner,
     repo,
-    content,
+    content: initialFile.buffer.toString() + contentToAdd,
     encoding: 'utf-8',
   })
-  console.log('createBlob =>', blob.sha)
 
   console.log(`___\nCreate tree with changed file contents...`)
   const { data: tree } = await octokit.git.createTree({
     owner,
     repo,
+    base_tree: lastCommit.commit.tree.sha,
     tree: [
       {
         type: 'blob',
         mode: '100644', // to match "blob", according to http://www.levibotelho.com/development/commit-a-file-with-the-github-api/
         path: filePath,
         sha: blob.sha,
-        // content?: string;
       },
     ],
   })
-  console.log('createTree =>', { tree })
 
   console.log(`___\nCreate commit...`)
   const { data: newCommit } = await octokit.git.createCommit({
@@ -107,22 +85,14 @@ async function main() {
     tree: tree.sha,
     parents: [lastCommit.sha],
   })
-  console.log('createCommit =>', { commit: newCommit })
 
-  const branchName = `scribe-bot-test`
   console.log(`___\nCreate branch: ${branchName}...`)
-  const { data: branchRef } = await octokit.git.createRef({
+  await octokit.git.createRef({
     owner,
     repo,
     ref: `refs/heads/${branchName}`,
     sha: newCommit.sha,
   })
-  const {
-    ref,
-    node_id,
-    object: { sha: branchSha },
-  } = branchRef
-  console.log('createBranch =>', { ref, node_id, branchSha })
 }
 
 main().catch(err => {
