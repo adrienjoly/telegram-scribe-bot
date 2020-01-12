@@ -98,8 +98,19 @@ async function main() {
     repo,
     path: '_data/albums.yaml',
   })
-  console.log('=> data:', buffer.toString())
-  console.log('=>', { sha })
+  console.log('getFileContents => data:', buffer.toString())
+  console.log('getFileContents =>', { sha })
+
+  const content = buffer.toString() + 'test'
+
+  const { data: blob } = await octokit.git.createBlob({
+    owner,
+    repo,
+    content,
+    encoding: 'utf-8',
+  })
+
+  console.log('createBlob =>', blob.sha)
 }
 
 main().catch(err => {
