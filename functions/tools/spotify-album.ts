@@ -11,10 +11,14 @@ async function main() {
   })
 
   // Retrieve an access token.
-  const data = await spotifyApi.clientCredentialsGrant()
+  const { body: auth } = await spotifyApi.clientCredentialsGrant()
 
   // Save the access token so that it's used in future calls
-  spotifyApi.setAccessToken(data.body['access_token'])
+  await spotifyApi.setAccessToken(auth.access_token)
+
+  // Get multiple albums
+  const { body: album } = await spotifyApi.getAlbums(['62KA8cUOqlIg1gxbVqBieD'])
+  console.log('Albums information', album)
 
   console.warn(`✅ Done.`)
 }
