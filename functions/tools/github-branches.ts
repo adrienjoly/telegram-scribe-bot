@@ -37,26 +37,37 @@ async function getFileContents({
   }
 }
 
-async function main() {
-  const { owner, repo } = { owner: 'adrienjoly', repo: 'album-shelf' }
-  const filePath = '_data/albums.yaml'
-  const contentToAdd = '\ntest\n'
-  const branchName = `scribe-bot-${Date.now()}`
-  const prTitle = `add test to ${filePath}`
-  const prBody = 'Submitted by `telegram-scribe-bot`'
-
-  console.log(`___\nFetch last commit from ${owner}/${repo}...`)
+async function proposeFileChangePR({
+  owner,
+  repo,
+  filePath,
+  contentToAdd,
+  branchName,
+  prTitle,
+  prBody,
+  log = () => {},
+}: {
+  owner: string
+  repo: string
+  filePath: string
+  contentToAdd: string
+  branchName: string
+  prTitle: string
+  prBody: string
+  log?: (s: string) => void
+}): Promise<Octokit.PullsCreateResponse> {
+  log(`Fetch last commit from ${owner}/${repo}...`)
   const lastCommit = await (await octokit.repos.listCommits({ owner, repo }))
     .data[0]
 
-  console.log(`___\nFetch contents of ${filePath}...`)
+  log(`Fetch contents of ${filePath}...`)
   const initialFile = await getFileContents({
     owner,
     repo,
     path: filePath,
   })
 
-  console.log(`___\nCreate blob with changed file contents...`)
+  log(`Create blob with changed file contents...`)
   const { data: blob } = await octokit.git.createBlob({
     owner,
     repo,
@@ -64,7 +75,7 @@ async function main() {
     encoding: 'utf-8',
   })
 
-  console.log(`___\nCreate tree with changed file contents...`)
+  log(`Create tree with changed file contents...`)
   const { data: tree } = await octokit.git.createTree({
     owner,
     repo,
@@ -72,14 +83,14 @@ async function main() {
     tree: [
       {
         type: 'blob',
-        mode: '100644', // to match "blob", according to http://www.levibotelho.com/development/commit-a-file-with-the-github-api/
+        mode: '100644',
         path: filePath,
         sha: blob.sha,
       },
     ],
   })
 
-  console.log(`___\nCreate commit...`)
+  log(`Create commit...`)
   const { data: newCommit } = await octokit.git.createCommit({
     owner,
     repo,
@@ -88,7 +99,7 @@ async function main() {
     parents: [lastCommit.sha],
   })
 
-  console.log(`___\nCreate branch: ${branchName}...`)
+  log(`Create branch: ${branchName}...`)
   await octokit.git.createRef({
     owner,
     repo,
@@ -96,8 +107,8 @@ async function main() {
     sha: newCommit.sha,
   })
 
-  console.log(`___\nCreate pull request: ${prTitle}...`)
-  await octokit.pulls.create({
+  log(`Create pull request: ${prTitle}...`)
+  const { data } = await octokit.pulls.create({
     owner,
     repo,
     title: prTitle,
@@ -105,6 +116,22 @@ async function main() {
     base: 'master',
     body: prBody,
   })
+  return data
+}
+
+async function main() {
+  const filePath = '_data/albums.yaml'
+  const pr = await proposeFileChangePR({
+    owner: 'adrienjoly',
+    repo: 'album-shelf',
+    filePath,
+    contentToAdd: '\ntest\n',
+    branchName: `scribe-bot-${Date.now()}`,
+    prTitle: `add test to ${filePath}`,
+    prBody: 'Submitted by `telegram-scribe-bot`',
+    log: console.warn,
+  })
+  console.warn(`✅ GitHub PR URL: ${pr.url}`)
 }
 
 main().catch(err => {
