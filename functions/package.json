@@ -19,6 +19,7 @@
     "webhook:bind": "source ../.env && curl https://api.telegram.org/bot${BOT_TOKEN}/setWebhook?url=${ROUTER_URL}",
     "webhook:test": "source ../.env && curl https://api.telegram.org/bot${BOT_TOKEN}/getWebhookInfo",
     "logs": "firebase functions:log",
+    "spotify:test": "ts-node tools/spotify-album.ts",
     "github:pr:test": "ts-node tools/github-pr.ts",
     "ticktick:test": "ts-node tools/ticktick.ts",
     "trello:test": "source ../.env && curl -LI \"https://api.trello.com/1/members/me/boards?key=${TRELLO_API_KEY}&token=${TRELLO_USER_TOKEN}\" -s | grep HTTP",
@@ -38,6 +39,7 @@
     "express": "^4.17.1",
     "firebase-admin": "^8.0.0",
     "firebase-functions": "^3.1.0",
+    "spotify-web-api-node": "^4.0.0",
     "ticktick-wrapper": "0.0.4",
     "trello": "^0.9.1"
   },
@@ -45,6 +47,7 @@
     "@types/expect": "^1.20.4",
     "@types/mocha": "^5.2.7",
     "@types/node": "^13.1.1",
+    "@types/spotify-web-api-node": "^4.0.1",
     "@typescript-eslint/eslint-plugin": "^2.13.0",
     "@typescript-eslint/parser": "^2.13.0",
     "eslint": "^6.7.2",
