@@ -1,5 +1,15 @@
 import SpotifyWebApi from 'spotify-web-api-node'
 
+export const formatAlbum = (album: SpotifyApi.AlbumObjectSimplified) => ({
+  title: album.name,
+  artist: /*album.artistName ||*/ album.artists
+    .map(artist => artist.name)
+    .join(', '),
+  release_date: album.release_date,
+  img: album.images[0].url,
+  url: `https://open.spotify.com/album/${album.id}`,
+})
+
 export class Spotify {
   spotifyApi: SpotifyWebApi
 
