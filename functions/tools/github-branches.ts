@@ -6,7 +6,7 @@ const { github } = require(`${__dirname}/../../.config.json`) // eslint-disable-
 // Note: In order to write to the repo, user must be authenticated with a token
 // that has the "public_repo" permission.
 
-// type GitHubRepo = { owner: string; repo: string }
+type GitHubRepo = { owner: string; repo: string }
 
 const octokit = new Octokit({
   auth: github.token,
@@ -14,9 +14,30 @@ const octokit = new Octokit({
   // log: console, // uncomment this line to trace debug info
 })
 
-const { owner, repo } = { owner: 'adrienjoly', repo: 'album-shelf' }
-/*
+async function getFileContents({
+  owner,
+  repo,
+  path,
+}: GitHubRepo & {
+  path: string
+}): Promise<{ sha: string; buffer: Buffer }> {
+  const res = await octokit.repos.getContents({
+    owner,
+    repo,
+    path,
+  })
+  const data = res.data as Octokit.ReposGetContentsResponseItem & {
+    encoding: string
+    content: string
+  }
+  assert.equal(data.encoding, 'base64')
+  return {
+    sha: data.sha,
+    buffer: Buffer.from(data.content, 'base64'),
+  }
+}
 
+/*
 async function getLastCommit(ghRepo: GitHubRepo) {
   return (await octokit.repos.listCommits(ghRepo)).data[0]
 }
@@ -63,6 +84,7 @@ async function createCommit({
 */
 
 async function main() {
+  const { owner, repo } = { owner: 'adrienjoly', repo: 'album-shelf' }
   /*
   const {
     ref,
@@ -71,21 +93,13 @@ async function main() {
   } = await createBranch({ owner, repo, name: `scribe-bot-test` })
   console.log('=>', { ref, node_id, sha })
   */
-
-  type ExtendedContent = Octokit.ReposGetContentsResponseItem & {
-    encoding: string
-    content: string
-  }
-  const res = await octokit.repos.getContents({
+  const { sha, buffer } = await getFileContents({
     owner,
     repo,
     path: '_data/albums.yaml',
   })
-  const data = res.data as ExtendedContent
-  assert.equal(data.encoding, 'base64')
-  const fileContent = Buffer.from(data.content, 'base64').toString()
-  console.log('=> data:', fileContent)
-  console.log('=>', { sha: data.sha })
+  console.log('=> data:', buffer.toString())
+  console.log('=>', { sha })
 }
 
 main().catch(err => {
