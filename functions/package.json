@@ -19,7 +19,7 @@
     "webhook:bind": "source ../.env && curl https://api.telegram.org/bot${BOT_TOKEN}/setWebhook?url=${ROUTER_URL}",
     "webhook:test": "source ../.env && curl https://api.telegram.org/bot${BOT_TOKEN}/getWebhookInfo",
     "logs": "firebase functions:log",
-    "github:test": "ts-node tools/github-branches.ts",
+    "github:pr:test": "ts-node tools/github-pr.ts",
     "ticktick:test": "ts-node tools/ticktick.ts",
     "trello:test": "source ../.env && curl -LI \"https://api.trello.com/1/members/me/boards?key=${TRELLO_API_KEY}&token=${TRELLO_USER_TOKEN}\" -s | grep HTTP",
     "trello:checklist": "ts-node tools/trello-checklist.ts",
