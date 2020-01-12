@@ -1,11 +1,23 @@
 import assert from 'assert'
 import Octokit from '@octokit/rest' // API Ref Doc: https://octokit.github.io/rest.js/
 
+const USER_AGENT = 'telegram-scribe-bot'
+
 export class GitHub {
   octokit: Octokit
 
-  constructor(octokit: Octokit) {
-    this.octokit = octokit
+  constructor({
+    token,
+    userAgent = USER_AGENT,
+  }: {
+    token: string
+    userAgent?: string
+  }) {
+    this.octokit = new Octokit({
+      auth: token,
+      userAgent,
+      // log: console, // uncomment this line to trace debug info
+    })
   }
 
   async getFileContents({
@@ -57,7 +69,7 @@ export class GitHub {
     const lastCommit = await (await octokit.repos.listCommits({ owner, repo }))
       .data[0]
     log(`Fetch contents of ${filePath}...`)
-    const initialFile = await getFileContents({
+    const initialFile = await this.getFileContents({
       owner,
       repo,
       path: filePath,

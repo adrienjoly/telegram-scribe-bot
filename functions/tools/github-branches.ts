@@ -1,12 +1,9 @@
-import Octokit from '@octokit/rest' // API Ref Doc: https://octokit.github.io/rest.js/
 import { GitHub } from '../src/GitHub'
 
 // Load credentials from config file
-const { TOKEN } = require(`${__dirname}/../../.config.json`).github // eslint-disable-line @typescript-eslint/no-var-requires
+const { token } = require(`${__dirname}/../../.config.json`).github // eslint-disable-line @typescript-eslint/no-var-requires
 // Note: In order to write to the repo, user must be authenticated with a token
 // that has the "public_repo" permission.
-
-const USER_AGENT = 'telegram-scribe-bot'
 
 const PULL_REQUEST_DATA = {
   owner: 'adrienjoly',
@@ -16,12 +13,7 @@ const PULL_REQUEST_DATA = {
 }
 
 async function main() {
-  const octokit = new Octokit({
-    auth: TOKEN,
-    userAgent: USER_AGENT,
-    // log: console, // uncomment this line to trace debug info
-  })
-  const github = new GitHub(octokit)
+  const github = new GitHub({ token })
   const pr = await github.proposeFileChangePR({
     ...PULL_REQUEST_DATA,
     branchName: `scribe-bot-${Date.now()}`,
