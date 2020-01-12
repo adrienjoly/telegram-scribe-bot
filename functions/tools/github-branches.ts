@@ -37,7 +37,6 @@ async function getFileContents({
   }
 }
 
-/*
 async function getLastCommit(ghRepo: GitHubRepo) {
   return (await octokit.repos.listCommits(ghRepo)).data[0]
 }
@@ -60,57 +59,61 @@ async function createBranch({
   ).data
 }
 
+/*
 async function createCommit({
   owner,
   repo,
-  name,
   message,
   tree,
-  parents
+  parents,
 }: GitHubRepo & {
-  name?: string
-  message:string
-  tree:
-  parents:
-}) { 
-  octokit.git.createCommit({
-    owner,
-    repo,
-    message,
-    tree,
-    parents
-  })
-}
+  message: string
+  tree: string // The SHA of the tree object this commit points to
+  parents: string[] // The SHAs of the commits that were the parents of this commit. If omitted or empty, the commit will be written as a root commit. For a single parent, an array of one SHA should be provided; for a merge commit, an array of more than one should be provided.
+}) {}
 */
 
 async function main() {
   const { owner, repo } = { owner: 'adrienjoly', repo: 'album-shelf' }
-  /*
-  const {
-    ref,
-    node_id,
-    object: { sha },
-  } = await createBranch({ owner, repo, name: `scribe-bot-test` })
-  console.log('=>', { ref, node_id, sha })
-  */
-  const { sha, buffer } = await getFileContents({
+
+  const fileName = '_data/albums.yaml'
+
+  console.log(`___\nFetch contents of ${fileName}...`)
+  const { sha: initialFileSha, buffer } = await getFileContents({
     owner,
     repo,
-    path: '_data/albums.yaml',
+    path: fileName,
   })
-  console.log('getFileContents => data:', buffer.toString())
-  console.log('getFileContents =>', { sha })
+  console.log('getFileContents =>', { initialFileSha })
 
+  console.log(`___\nCreate blob with changed file contents...`)
   const content = buffer.toString() + 'test'
-
   const { data: blob } = await octokit.git.createBlob({
     owner,
     repo,
     content,
     encoding: 'utf-8',
   })
-
   console.log('createBlob =>', blob.sha)
+
+  const branchName = `scribe-bot-test`
+  console.log(`___\nCreate branch: ${branchName}...`)
+  const {
+    ref,
+    node_id,
+    object: { sha: branchSha },
+  } = await createBranch({ owner, repo, name: branchName })
+  console.log('createBranch =>', { ref, node_id, branchSha })
+
+  console.log(`___\nCreate commit...`)
+  const { data } = await octokit.git.createCommit({
+    owner,
+    repo,
+    message: `add test content to ${fileName}`,
+    tree: branchSha,
+    parents: [initialFileSha, blob.sha],
+  })
+  console.log('createCommit =>', data)
 }
 
 main().catch(err => {
