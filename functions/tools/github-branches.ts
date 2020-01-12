@@ -1,4 +1,4 @@
-import Octokit from '@octokit/rest'
+import Octokit from '@octokit/rest' // API Ref Doc: https://octokit.github.io/rest.js/
 import assert from 'assert'
 
 // Load credentials from config file
@@ -41,7 +41,9 @@ async function main() {
   const { owner, repo } = { owner: 'adrienjoly', repo: 'album-shelf' }
   const filePath = '_data/albums.yaml'
   const contentToAdd = '\ntest\n'
-  const branchName = `scribe-bot-test`
+  const branchName = `scribe-bot-${Date.now()}`
+  const prTitle = `add test to ${filePath}`
+  const prBody = 'Submitted by `telegram-scribe-bot`'
 
   console.log(`___\nFetch last commit from ${owner}/${repo}...`)
   const lastCommit = await (await octokit.repos.listCommits({ owner, repo }))
@@ -92,6 +94,16 @@ async function main() {
     repo,
     ref: `refs/heads/${branchName}`,
     sha: newCommit.sha,
+  })
+
+  console.log(`___\nCreate pull request: ${prTitle}...`)
+  await octokit.pulls.create({
+    owner,
+    repo,
+    title: prTitle,
+    head: branchName,
+    base: 'master',
+    body: prBody,
   })
 }
 
