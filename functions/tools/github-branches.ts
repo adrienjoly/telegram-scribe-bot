@@ -9,28 +9,38 @@ const octokit = new Octokit({
   // log: console, // uncomment this line to trace debug info
 })
 
-const { owner, repo } = { owner: 'adrienjoly', repo: 'album-shelf' }
+const { owner, repo } = { owner: 'adrienjoly2', repo: 'album-shelf' }
 
-async function getLastCommit() {
-  const { data, status } = await octokit.repos
+async function getLastCommit({ owner, repo }: { owner: string; repo: string }) {
+  const { data } = await octokit.repos
     //.listBranches()
     .listCommits({
       owner,
       repo,
     })
-  if (status !== 200) {
-    throw new Error(`GitHub API -> ${status}: ${data.toString()}`)
-  } else {
-    return data[0]
-  }
+  return data[0]
+}
+
+async function createBranch({ owner, repo }: { owner: string; repo: string }) {
+  const { sha, commit } = await getLastCommit({ owner, repo })
+  console.log(`last commit: (${sha}) ${commit.message}`)
+  const { data } = await octokit.git.createRef({
+    owner,
+    repo,
+    ref: 'refs/heads/invalid branch name XXX',
+    sha,
+  })
+  return data
 }
 
 async function main() {
-  const { sha, commit } = await getLastCommit()
-  console.log(`last commit: (${sha}) ${commit.message}`)
+  const data = await createBranch({ owner, repo })
+  console.log('=>', data)
 }
 
 main().catch(err => {
-  console.error(err)
+  console.error(
+    `❌  ${err.message} <-- ${err.request?.url}\n   ${err.request?.body}`
+  )
   process.exit(1)
 })
