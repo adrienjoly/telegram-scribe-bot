@@ -1,4 +1,4 @@
-import SpotifyWebApi from 'spotify-web-api-node'
+import { Spotify } from '../src/Spotify'
 import yaml from 'js-yaml'
 
 // Load credentials from config file
@@ -15,24 +15,13 @@ const formatAlbum = (album: SpotifyApi.AlbumObjectSimplified) => ({
 })
 
 async function main() {
-  // Create the api object with the credentials
-  const spotifyApi = new SpotifyWebApi({
-    clientId: clientid,
-    clientSecret: secret,
-  })
-
-  // Retrieve an access token.
-  const { body: auth } = await spotifyApi.clientCredentialsGrant()
-
-  // Save the access token so that it's used in future calls
-  await spotifyApi.setAccessToken(auth.access_token)
-
-  // Get multiple albums
-  const { body: album } = await spotifyApi.getAlbum('62KA8cUOqlIg1gxbVqBieD')
-  console.log('Albums information', formatAlbum(album))
-  console.log('=> YAML:', yaml.dump([formatAlbum(album)]))
-
-  console.warn(`✅ Done.`)
+  const albumId = '62KA8cUOqlIg1gxbVqBieD'
+  const spotify = new Spotify({ clientid, secret })
+  const album = await spotify.fetchAlbumMetadata({ albumId })
+  const metadata = formatAlbum(album)
+  const yamlMeta = yaml.dump([metadata])
+  console.warn(`✅ Album metadata in YAML:`)
+  console.log(yamlMeta)
 }
 
 main().catch(err => {
