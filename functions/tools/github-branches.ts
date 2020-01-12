@@ -22,19 +22,19 @@ async function getLastCommit(ghRepo: GitHubRepo) {
 async function createBranch({
   owner,
   repo,
-  name = `scribe-bot-test`,
+  name,
 }: GitHubRepo & {
   name?: string
 }) {
-  const { sha, commit } = await getLastCommit({ owner, repo })
-  console.log(`last commit: (${sha}) ${commit.message}`)
-  const { data } = await octokit.git.createRef({
-    owner,
-    repo,
-    ref: `refs/heads/${name}`,
-    sha,
-  })
-  return data
+  const { sha } = await getLastCommit({ owner, repo })
+  return (
+    await octokit.git.createRef({
+      owner,
+      repo,
+      ref: `refs/heads/${name}`,
+      sha,
+    })
+  ).data
 }
 
 async function main() {
@@ -42,7 +42,7 @@ async function main() {
     ref,
     node_id,
     object: { sha },
-  } = await createBranch({ owner, repo })
+  } = await createBranch({ owner, repo, name: `scribe-bot-test` })
   console.log('=>', { ref, node_id, sha })
 }
 
