@@ -99,34 +99,30 @@ async function main() {
   })
   console.log('createTree =>', { tree })
 
-  return
-
-  const branchName = `scribe-bot-test`
-  console.log(`___\nCreate branch: ${branchName}...`)
-  const {
-    data: {
-      ref,
-      node_id,
-      object: { sha: branchSha },
-    },
-  } = await octokit.git.createRef({
-    owner,
-    repo,
-    ref: `refs/heads/${branchName}`,
-    sha: lastCommit.sha,
-  })
-
-  console.log('createBranch =>', { ref, node_id, branchSha })
-
   console.log(`___\nCreate commit...`)
-  const { data } = await octokit.git.createCommit({
+  const { data: newCommit } = await octokit.git.createCommit({
     owner,
     repo,
     message: `add test content to ${filePath}`,
-    tree: branchSha,
-    parents: [initialFile.sha, blob.sha],
+    tree: tree.sha,
+    parents: [lastCommit.sha],
   })
-  console.log('createCommit =>', data)
+  console.log('createCommit =>', { commit: newCommit })
+
+  const branchName = `scribe-bot-test`
+  console.log(`___\nCreate branch: ${branchName}...`)
+  const { data: branchRef } = await octokit.git.createRef({
+    owner,
+    repo,
+    ref: `refs/heads/${branchName}`,
+    sha: newCommit.sha,
+  })
+  const {
+    ref,
+    node_id,
+    object: { sha: branchSha },
+  } = branchRef
+  console.log('createBranch =>', { ref, node_id, branchSha })
 }
 
 main().catch(err => {
