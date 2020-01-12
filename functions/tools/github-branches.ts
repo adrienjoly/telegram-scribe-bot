@@ -9,16 +9,28 @@ const octokit = new Octokit({
   // log: console, // uncomment this line to trace debug info
 })
 
-octokit.repos
-  .listBranches({ owner: 'adrienjoly', repo: 'album-shelf' })
-  .then(({ data, status }) => {
-    if (status !== 200) {
-      console.error({ data, status })
-    } else {
-      console.log({ data, status })
-    }
-  })
-  .catch(err => {
-    console.error(err)
-    process.exit(1)
-  })
+const { owner, repo } = { owner: 'adrienjoly', repo: 'album-shelf' }
+
+async function getLastCommit() {
+  const { data, status } = await octokit.repos
+    //.listBranches()
+    .listCommits({
+      owner,
+      repo,
+    })
+  if (status !== 200) {
+    throw new Error(`GitHub API -> ${status}: ${data.toString()}`)
+  } else {
+    return data[0]
+  }
+}
+
+async function main() {
+  const { sha, commit } = await getLastCommit()
+  console.log(`last commit: (${sha}) ${commit.message}`)
+}
+
+main().catch(err => {
+  console.error(err)
+  process.exit(1)
+})
