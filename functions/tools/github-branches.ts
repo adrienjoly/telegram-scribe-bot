@@ -41,24 +41,6 @@ async function getLastCommit(ghRepo: GitHubRepo) {
   return (await octokit.repos.listCommits(ghRepo)).data[0]
 }
 
-async function createBranch({
-  owner,
-  repo,
-  name,
-}: GitHubRepo & {
-  name: string
-}) {
-  const { sha } = await getLastCommit({ owner, repo })
-  return (
-    await octokit.git.createRef({
-      owner,
-      repo,
-      ref: `refs/heads/${name}`,
-      sha,
-    })
-  ).data
-}
-
 /*
 async function createCommit({
   owner,
@@ -76,18 +58,23 @@ async function createCommit({
 async function main() {
   const { owner, repo } = { owner: 'adrienjoly', repo: 'album-shelf' }
 
-  const fileName = '_data/albums.yaml'
+  const filePath = '_data/albums.yaml'
 
-  console.log(`___\nFetch contents of ${fileName}...`)
-  const { sha: initialFileSha, buffer } = await getFileContents({
+  console.log(`___\nFetch last commit from ${owner}/${repo}...`)
+
+  const lastCommit = await getLastCommit({ owner, repo })
+  console.log({ tree: lastCommit.commit.tree.sha })
+
+  console.log(`___\nFetch contents of ${filePath}...`)
+  const initialFile = await getFileContents({
     owner,
     repo,
-    path: fileName,
+    path: filePath,
   })
-  console.log('getFileContents =>', { initialFileSha })
+  console.log('getFileContents =>', { sha: initialFile.sha })
 
   console.log(`___\nCreate blob with changed file contents...`)
-  const content = buffer.toString() + 'test'
+  const content = initialFile.buffer.toString() + 'test'
   const { data: blob } = await octokit.git.createBlob({
     owner,
     repo,
@@ -96,22 +83,48 @@ async function main() {
   })
   console.log('createBlob =>', blob.sha)
 
+  console.log(`___\nCreate tree with changed file contents...`)
+  const { data: tree } = await octokit.git.createTree({
+    owner,
+    repo,
+    tree: [
+      {
+        type: 'blob',
+        mode: '100644', // to match "blob", according to http://www.levibotelho.com/development/commit-a-file-with-the-github-api/
+        path: filePath,
+        sha: blob.sha,
+        // content?: string;
+      },
+    ],
+  })
+  console.log('createTree =>', { tree })
+
+  return
+
   const branchName = `scribe-bot-test`
   console.log(`___\nCreate branch: ${branchName}...`)
   const {
-    ref,
-    node_id,
-    object: { sha: branchSha },
-  } = await createBranch({ owner, repo, name: branchName })
+    data: {
+      ref,
+      node_id,
+      object: { sha: branchSha },
+    },
+  } = await octokit.git.createRef({
+    owner,
+    repo,
+    ref: `refs/heads/${branchName}`,
+    sha: lastCommit.sha,
+  })
+
   console.log('createBranch =>', { ref, node_id, branchSha })
 
   console.log(`___\nCreate commit...`)
   const { data } = await octokit.git.createCommit({
     owner,
     repo,
-    message: `add test content to ${fileName}`,
+    message: `add test content to ${filePath}`,
     tree: branchSha,
-    parents: [initialFileSha, blob.sha],
+    parents: [initialFile.sha, blob.sha],
   })
   console.log('createCommit =>', data)
 }
