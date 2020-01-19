@@ -24,6 +24,8 @@ export const addSpotifyAlbumToShelfRepo = async (
   if (!options.spotify?.secret) throw new Error('missing spotify.secret')
 
   const albumId = parseAlbumId(message.rest)
+  if (!albumId) throw new Error('failed to find albumId in this URL')
+
   const spotify = new Spotify(options.spotify as SpotifyCreds)
   const album = await spotify.fetchAlbumMetadata({ albumId })
   const metadata = formatAlbum(album)
