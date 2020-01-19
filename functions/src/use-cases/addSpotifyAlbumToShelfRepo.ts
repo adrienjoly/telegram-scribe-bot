@@ -10,6 +10,16 @@ const PR_TARGET = {
   filePath: '_data/albums.yaml',
 }
 
+export type Options = {
+  spotify: {
+    clientid: string
+    secret: string
+  }
+  github: {
+    token: string
+  }
+}
+
 export const parseAlbumId = (str: string) =>
   (
     str.match(/https:\/\/open\.spotify\.com\/album\/([a-zA-Z0-9_\-]+)/) || []
