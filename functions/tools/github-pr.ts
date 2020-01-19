@@ -12,7 +12,7 @@ const PULL_REQUEST_DATA = {
   contentToAdd: '\ntest\n',
 }
 
-async function main() {
+async function main(): Promise<void> {
   const github = new GitHub({ token })
   const pr = await github.proposeFileChangePR({
     ...PULL_REQUEST_DATA,
