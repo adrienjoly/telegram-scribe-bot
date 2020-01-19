@@ -5,9 +5,11 @@ import {
   addTodayTaskToTicktick,
 } from './use-cases/addTaskToTicktick'
 import { addAsTrelloComment, addAsTrelloTask } from './use-cases/addToTrello'
+import { addSpotifyAlbumToShelfRepo } from './use-cases/addSpotifyAlbumToShelfRepo'
 
 // map commands to "use-case" implementations
 const commandHandlers: { [key: string]: CommandHandler } = {
+  '/shelf': addSpotifyAlbumToShelfRepo,
   '/todo': addTaskToTicktick,
   '/today': addTodayTaskToTicktick,
   '/note': addAsTrelloComment,

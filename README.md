@@ -12,6 +12,7 @@ A (work-in-progress) chat-bot that can add comments to Trello cards, your TickTi
 - `/today <task> [#tag [#...]]` will add a ToDo/task to TickTick, due today
 - `/next <task> [#tag]` will add a `task` to the top of the check-list of the Trello card associated with `#tag`
 - `/note <text> [#card [#...]]` will add a comment to the specified Trello card(s), for journaling
+- `/shelf <spotify_album_url>` will propose the addition of an album to the [adrienjoly/album-shelf](https://github.com/adrienjoly/album-shelf) GitHub repository (requires options: `spotify.clientid`, `spotify.secret` and `github.token` with "public repo" permissions)
 
 Note: the first version of this bot was developed by following the steps provided in [Serverless Telegram Bot with Firebase - Francisco Gutiérrez - Medium](https://medium.com/@pikilon/serverless-telegram-bot-with-firebase-d11d07579d8a).
 

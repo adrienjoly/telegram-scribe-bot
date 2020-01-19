@@ -1,4 +1,8 @@
 {
+  "spotify": {
+    "clientid": "",
+    "secret": ""
+  },
   "github": {
     "token": "token_created_from_github_com"
   },
