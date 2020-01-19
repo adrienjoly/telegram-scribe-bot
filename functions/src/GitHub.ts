@@ -45,6 +45,7 @@ export class GitHub {
     }
   }
 
+  // Note: otherwise, I could have used https://www.npmjs.com/package/octokit-create-pull-request
   async proposeFileChangePR({
     owner,
     repo,
