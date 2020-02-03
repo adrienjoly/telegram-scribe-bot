@@ -1,4 +1,4 @@
-import { Ticktick } from './../src/Ticktick'
+import { Ticktick } from '../src/services/Ticktick'
 
 // load credentials from config file
 const config = require(`${__dirname}/../../.config.json`) // eslint-disable-line @typescript-eslint/no-var-requires

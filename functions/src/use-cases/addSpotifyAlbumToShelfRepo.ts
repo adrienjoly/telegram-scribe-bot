@@ -1,7 +1,7 @@
 import { MessageHandlerOptions, BotResponse } from './../types'
 import { ParsedMessageEntities } from './../Telegram'
-import { Spotify, SpotifyCreds, formatAlbum } from './../Spotify'
-import { GitHub } from './../GitHub'
+import { Spotify, SpotifyCreds, formatAlbum } from './../services/Spotify'
+import { GitHub } from '../services/GitHub'
 import yaml from 'js-yaml'
 
 const PR_TARGET = {

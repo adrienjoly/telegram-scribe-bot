@@ -1,4 +1,4 @@
-import { GitHub } from '../src/GitHub'
+import { GitHub } from '../src/services/GitHub'
 
 // Load credentials from config file
 const { token } = require(`${__dirname}/../../.config.json`).github // eslint-disable-line @typescript-eslint/no-var-requires

@@ -1,4 +1,4 @@
-import { Spotify, formatAlbum } from '../src/Spotify'
+import { Spotify, formatAlbum } from '../src/services/Spotify'
 import yaml from 'js-yaml'
 
 // Load credentials from config file
