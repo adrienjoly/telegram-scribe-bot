@@ -1,5 +1,5 @@
 import readline from 'readline'
-import { Trello } from './../src/Trello'
+import { Trello } from '../src/services/Trello'
 
 // load credentials from config file
 const config = require(`${__dirname}/../../.config.json`) // eslint-disable-line @typescript-eslint/no-var-requires

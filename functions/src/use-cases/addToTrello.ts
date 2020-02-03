@@ -1,6 +1,6 @@
 import { MessageHandlerOptions, BotResponse } from './../types'
 import { ParsedMessageEntities } from './../Telegram'
-import { Trello } from './../Trello'
+import { Trello } from '../services/Trello'
 
 // string to include in Trello card(s), to bind them with some tags
 const RE_TRELLO_CARD_BINDING = /telegram-scribe-bot:addCommentsFromTaggedNotes\(([^)]+)\)/
