@@ -5,16 +5,13 @@ import { Trello } from '../services/Trello'
 // string to include in Trello card(s), to bind them with some tags
 const RE_TRELLO_CARD_BINDING = /telegram-scribe-bot:addCommentsFromTaggedNotes\(([^)]+)\)/
 
-enum CONFIG_KEYS {
-  'apikey',
-  'usertoken',
-  'boardid',
-}
+const CONFIG_NAMESPACE = 'trello'
+const CONFIG_KEYS = <const>['apikey', 'usertoken', 'boardid']
 
-const configKeys = Object.values(CONFIG_KEYS).filter(x => typeof x === 'string')
+type CONFIG_KEYS_ENUM = typeof CONFIG_KEYS[number]
 
 export type Options = {
-  trello: { [key in keyof typeof CONFIG_KEYS]: string }
+  [CONFIG_NAMESPACE]: { [key in CONFIG_KEYS_ENUM]: string }
 }
 
 type TrelloCardWithTags = {
@@ -23,8 +20,9 @@ type TrelloCardWithTags = {
 }
 
 const checkOptions = (options: MessageHandlerOptions): Options => {
-  for (const key of configKeys) {
-    if (!options.trello?.[key]) throw new Error(`missing ${key}`)
+  for (const key of Object.values(CONFIG_KEYS)) {
+    if (!options?.[CONFIG_NAMESPACE]?.[key])
+      throw new Error(`missing ${CONFIG_NAMESPACE}.${key}`)
   }
   return options as Options
 }

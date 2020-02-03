@@ -113,7 +113,7 @@ describe('app', () => {
     const res = await postJSON(`http://localhost:${port}/`, { message })
     expect(res.status).toEqual(200)
     const payload = await res.json()
-    expect(payload.text).toMatch('missing usertoken')
+    expect(payload.text).toMatch('missing trello.usertoken')
     server.destroy()
   })
 })
