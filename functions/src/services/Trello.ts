@@ -6,12 +6,6 @@ export class Trello {
   private trelloLib: TrelloLib
 
   constructor(apiKey: string, userToken: string) {
-    if (!apiKey) {
-      throw new Error('missing TRELLO_API_KEY, see README for more info')
-    }
-    if (!userToken) {
-      throw new Error('missing TRELLO_USER_TOKEN, see README for more info')
-    }
     this.trelloLib = new TrelloLib(apiKey, userToken)
   }
 
