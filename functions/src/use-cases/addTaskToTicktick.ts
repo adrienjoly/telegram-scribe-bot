@@ -1,6 +1,6 @@
 import { MessageHandlerOptions, BotResponse } from './../types'
 import { ParsedMessageEntities } from './../Telegram'
-import { Ticktick } from './../Ticktick'
+import { Ticktick } from '../services/Ticktick'
 
 export const addTaskToTicktick = async (
   message: ParsedMessageEntities,
