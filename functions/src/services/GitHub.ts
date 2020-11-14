@@ -58,7 +58,7 @@ export class GitHub {
     branchName,
     prTitle,
     prBody,
-    log = () => {},
+    log = () => {}, // eslint-disable-line @typescript-eslint/no-empty-function
   }: {
     owner: string
     repo: string

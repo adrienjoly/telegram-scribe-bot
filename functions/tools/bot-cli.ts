@@ -8,7 +8,7 @@ delete options.telegram.onlyfromuserid // disable telegram user-id restriction
 
 // Mimic the way Telegram clients turn a full-text chat message into a TelegramMessage
 const makeTelegramMessage = (rawMessage: string): TelegramMessage => {
-  const user: TelegramUser = { id: 2, first_name: 'cli' } // eslint-disable-line @typescript-eslint/camelcase
+  const user: TelegramUser = { id: 2, first_name: 'cli' }
   const entities: MessageEntity[] = []
   const command = rawMessage.match(/\/(\w+)/)
   if (command && command.index !== undefined) {

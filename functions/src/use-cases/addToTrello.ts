@@ -57,7 +57,14 @@ const getCardsBoundToTags = (
     .map(({ card }) => card)
 }
 
-const wrap = (func: Function) => async (
+type ActionFunction = (
+  message: ParsedMessageEntities,
+  trello: Trello,
+  targetedCards: TrelloCard[],
+  options: Options
+) => Promise<BotResponse>
+
+const wrap = (func: ActionFunction) => async (
   message: ParsedMessageEntities,
   messageHandlerOptions: MessageHandlerOptions
 ): Promise<BotResponse> => {
