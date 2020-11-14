@@ -1,6 +1,9 @@
 import assert from 'assert'
 import { Octokit } from '@octokit/rest' // API Ref Doc: https://octokit.github.io/rest.js/
-import { PullsCreateResponseData, ReposGetContentResponseData } from '@octokit/types'
+import {
+  PullsCreateResponseData,
+  ReposGetContentResponseData,
+} from '@octokit/types'
 
 const USER_AGENT = 'telegram-scribe-bot'
 

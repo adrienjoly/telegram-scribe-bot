@@ -10,7 +10,7 @@ const rl = readline.createInterface({
 })
 
 const getAnswer = (prompt: string): Promise<string> =>
-  new Promise(resolve => rl.question(`${prompt}\n`, resolve))
+  new Promise((resolve) => rl.question(`${prompt}\n`, resolve))
 
 const main = async (): Promise<void> => {
   const trello = new Trello(
@@ -35,7 +35,7 @@ main()
     console.log('✅  Successfully added checklist item')
     process.exit(0)
   })
-  .catch(err => {
+  .catch((err) => {
     console.error(err)
     process.exit(1)
   })

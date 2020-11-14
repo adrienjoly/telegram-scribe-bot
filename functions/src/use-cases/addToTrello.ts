@@ -28,10 +28,7 @@ const checkOptions = (options: MessageHandlerOptions): Options => {
 }
 
 const cleanTag = (tag: string): string =>
-  tag
-    .replace('#', '')
-    .trim()
-    .toLowerCase()
+  tag.replace('#', '').trim().toLowerCase()
 
 const renderTag = (tag: string): string => `#${cleanTag(tag)}`
 
@@ -42,7 +39,7 @@ const extractTagsFromBinding = (card: TrelloCard): string[] => {
 
 const listValidTags = (cardsWithTags: TrelloCardWithTags[]): string => {
   const allTags = cardsWithTags.reduce((allTags, { tags }) => {
-    tags.forEach(tag => allTags.add(tag))
+    tags.forEach((tag) => allTags.add(tag))
     return allTags
   }, new Set<string>())
   return [...allTags].map(renderTag).join(', ')
@@ -55,7 +52,7 @@ const getCardsBoundToTags = (
   const cleanedTags = targetedTags.map(cleanTag)
   return cardsWithTags
     .filter(({ tags }) =>
-      cleanedTags.some(targetedTag => tags.includes(targetedTag))
+      cleanedTags.some((targetedTag) => tags.includes(targetedTag))
     )
     .map(({ card }) => card)
 }
@@ -67,7 +64,7 @@ const wrap = (func: Function) => async (
   const options = checkOptions(messageHandlerOptions) // may throw
   const trello = new Trello(options.trello.apikey, options.trello.usertoken)
   const cards = await trello.getCards(options.trello.boardid)
-  const cardsWithTags = cards.map(card => ({
+  const cardsWithTags = cards.map((card) => ({
     card,
     tags: extractTagsFromBinding(card),
   }))
@@ -77,7 +74,7 @@ const wrap = (func: Function) => async (
       text: `🤔  Please bind tags to your cards. How: https://github.com/adrienjoly/telegram-scribe-bot#2-bind-tags-to-trello-cards`,
     }
   }
-  const noteTags = message.tags.map(tagEntity => tagEntity.text)
+  const noteTags = message.tags.map((tagEntity) => tagEntity.text)
   if (!noteTags.length) {
     return { text: `🤔  Please specify at least one hashtag: ${validTags}` }
   }
@@ -94,13 +91,13 @@ const _addAsTrelloComment = async (
   targetedCards: TrelloCard[]
 ): Promise<BotResponse> => {
   await Promise.all(
-    targetedCards.map(card =>
+    targetedCards.map((card) =>
       trello.addComment(card.id, { text: message.rest })
     )
   )
   return {
     text: `✅  Sent to Trello cards: ${targetedCards
-      .map(c => c.name)
+      .map((c) => c.name)
       .join(', ')}`,
   }
 }
@@ -117,7 +114,7 @@ const _addAsTrelloTask = async (
     checklistIds.length !== 1 ? null : trello.getChecklist(checklistIds[0])
   const taskName = message.rest
   const consideredCards = await Promise.all(
-    targetedCards.map(async card => {
+    targetedCards.map(async (card) => {
       const checklistIds = await trello.getChecklistIds(
         options.trello.boardid,
         card.id
@@ -133,7 +130,7 @@ const _addAsTrelloTask = async (
       }
     })
   )
-  const populatedCards = consideredCards.filter(card => card.checklistName)
+  const populatedCards = consideredCards.filter((card) => card.checklistName)
   if (!populatedCards.length)
     return {
       text:
@@ -141,7 +138,7 @@ const _addAsTrelloTask = async (
     }
   return {
     text: `✅  Added task at the top of these Trello cards' unique checklists: ${populatedCards
-      .map(c => c.cardName)
+      .map((c) => c.cardName)
       .join(', ')}`,
   }
 }

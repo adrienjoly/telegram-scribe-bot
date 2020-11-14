@@ -14,7 +14,7 @@ async function main(): Promise<void> {
   console.log(yamlMeta)
 }
 
-main().catch(err => {
+main().catch((err) => {
   console.error(`❌ `, err)
   process.exit(1)
 })

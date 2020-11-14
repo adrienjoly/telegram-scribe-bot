@@ -21,7 +21,7 @@ const makeTelegramMessage = (rawMessage: string): TelegramMessage => {
     })
   }
   const tags = rawMessage.match(/#(\w+)/g) || []
-  tags.forEach(tag => {
+  tags.forEach((tag) => {
     entities.push({
       type: 'hashtag',
       offset: rawMessage.indexOf(tag),
@@ -46,7 +46,7 @@ const rl = readline.createInterface({
 })
 
 const getAnswer = (prompt: string): Promise<string> =>
-  new Promise(resolve => rl.question(`${prompt}\n`, resolve))
+  new Promise((resolve) => rl.question(`${prompt}\n`, resolve))
 
 const main = async (): Promise<void> => {
   console.warn(
@@ -68,7 +68,7 @@ main()
   .then(() => {
     process.exit(0)
   })
-  .catch(err => {
+  .catch((err) => {
     console.error(err)
     process.exit(1)
   })
