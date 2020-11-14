@@ -1,7 +1,7 @@
 import { Trello } from '../src/services/Trello'
 
 // load credentials from config file
-const { trello } = require(`${__dirname}/../../.config.json`) // eslint-disable-line @typescript-eslint/no-var-requires
+const { trello } = require(`${__dirname}/bot-config.js`) // eslint-disable-line @typescript-eslint/no-var-requires
 
 new Trello(trello.apikey as string, trello.usertoken as string)
   .getBoards()

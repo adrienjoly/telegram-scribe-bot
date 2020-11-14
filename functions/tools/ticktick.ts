@@ -1,7 +1,7 @@
 import { Ticktick } from '../src/services/Ticktick'
 
 // load credentials from config file
-const config = require(`${__dirname}/../../.config.json`) // eslint-disable-line @typescript-eslint/no-var-requires
+const config = require(`${__dirname}/bot-config.js`) // eslint-disable-line @typescript-eslint/no-var-requires
 
 const main = async (): Promise<{ title: string; desc: string }> => {
   const ticktick = new Ticktick(

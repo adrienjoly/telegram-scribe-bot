@@ -2,7 +2,7 @@ import readline from 'readline'
 import { Trello } from '../src/services/Trello'
 
 // load credentials from config file
-const config = require(`${__dirname}/../../.config.json`) // eslint-disable-line @typescript-eslint/no-var-requires
+const config = require(`${__dirname}/bot-config.js`) // eslint-disable-line @typescript-eslint/no-var-requires
 
 const rl = readline.createInterface({
   input: process.stdin,

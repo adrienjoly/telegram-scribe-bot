@@ -15,8 +15,8 @@ const commandHandlers: { [key: string]: CommandHandler } = {
   '/today': addTodayTaskToTicktick,
   '/note': addAsTrelloComment,
   '/next': addAsTrelloTask,
-  '/version': async (): Promise<BotResponse> => {
-    return { text: `ℹ️  Version: ${process.env.npm_package_version}` }
+  '/version': async (_, options): Promise<BotResponse> => {
+    return { text: `ℹ️  Version: ${options.bot.version}` }
   },
 }
 

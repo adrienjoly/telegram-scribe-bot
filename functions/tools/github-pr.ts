@@ -1,7 +1,7 @@
 import { GitHub } from '../src/services/GitHub'
 
 // Load credentials from config file
-const { token } = require(`${__dirname}/../../.config.json`).github // eslint-disable-line @typescript-eslint/no-var-requires
+const { token } = require(`${__dirname}/bot-config.js`).github // eslint-disable-line @typescript-eslint/no-var-requires
 // Note: In order to write to the repo, user must be authenticated with a token
 // that has the "public_repo" permission.
 
