@@ -26,8 +26,8 @@ declare class TrelloLib {
     checklistId: string,
     name: string,
     pos: 'top' | 'bottom'
-  ): Promise<object>
-  makeRequest(verb: string, url: string, payload?: object): object
+  ): Promise<unknown>
+  makeRequest(verb: string, url: string, payload?: unknown): unknown
 }
 
 declare module 'trello' {

@@ -55,7 +55,7 @@ export async function processMessage(
 
   return {
     method: 'sendMessage',
-    chat_id: message.chat.id, // eslint-disable-line @typescript-eslint/camelcase
+    chat_id: message.chat.id,
     text,
   }
 }

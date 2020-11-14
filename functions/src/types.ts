@@ -15,6 +15,6 @@ export type BotResponse = {
 
 export type TelegramRequest = {
   method: 'sendMessage'
-  chat_id: number // eslint-disable-line @typescript-eslint/camelcase
+  chat_id: number
   text: string
 }

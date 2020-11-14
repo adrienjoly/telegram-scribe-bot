@@ -11,7 +11,7 @@ const allocatePort = (() => {
   return () => current++
 })()
 
-const postJSON = (url, json) =>
+const postJSON = (url: string, json: unknown) =>
   fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -19,17 +19,16 @@ const postJSON = (url, json) =>
   })
 
 describe('app', () => {
-  let consoleBackup
+  const consoleBackup = {
+    log: console.log,
+    warn: console.warn,
+    error: console.error,
+  }
 
   before(() => {
-    consoleBackup = {
-      log: console.log,
-      warn: console.warn,
-      error: console.error,
-    }
-    console.log = () => {}
-    console.warn = () => {}
-    console.error = () => {}
+    console.log = () => {} // eslint-disable-line @typescript-eslint/no-empty-function
+    console.warn = () => {} // eslint-disable-line @typescript-eslint/no-empty-function
+    console.error = () => {} // eslint-disable-line @typescript-eslint/no-empty-function
   })
 
   after(() => {

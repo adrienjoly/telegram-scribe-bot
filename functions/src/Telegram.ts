@@ -64,7 +64,7 @@ export function parseEntities(
     supportedTypes.includes(type)
   )
   // add a `text` property in each supported entity
-  const entitiesWithText = supportedEntities.map(entity => ({
+  const entitiesWithText = supportedEntities.map((entity) => ({
     ...entity,
     text: message.text.substr(entity.offset, entity.length),
   }))
