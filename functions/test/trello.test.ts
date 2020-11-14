@@ -17,7 +17,7 @@ const FAKE_CREDS: Options = {
   },
 }
 
-const trelloCardWithTag = tag => ({
+const trelloCardWithTag = (tag: string) => ({
   id: 'myCardId',
   name: `Dummy card associated with ${tag}`,
   desc: `telegram-scribe-bot:addCommentsFromTaggedNotes(${tag})`,
@@ -69,11 +69,11 @@ describe('trello use cases', () => {
 
     it('suggests existing tags if no tags were provided', async () => {
       const tags = ['#card1tag', '#card2tag']
-      const cards = tags.map(tag => trelloCardWithTag(tag))
+      const cards = tags.map((tag) => trelloCardWithTag(tag))
       const message = createMessage({ rest: 'coucou' })
       // simulate trello cards
       nock('https://api.trello.com')
-        .get(uri =>
+        .get((uri) =>
           uri.includes(`/1/boards/${FAKE_CREDS.trello.boardid}/cards`)
         )
         .reply(200, cards)
@@ -92,7 +92,7 @@ describe('trello use cases', () => {
         tags: [{ type: 'hashtag', text: '#aRandomTag' }],
       })
       nock('https://api.trello.com')
-        .get(uri => uri.includes('/cards')) // actual path: /1/boards/trelloBoardId/cards?key=trelloApiKey&token=trelloUserToken
+        .get((uri) => uri.includes('/cards')) // actual path: /1/boards/trelloBoardId/cards?key=trelloApiKey&token=trelloUserToken
         .reply(200, [card])
       const res = await addAsTrelloComment(message, FAKE_CREDS)
       expect(res.text).toMatch('No cards match')
@@ -112,7 +112,7 @@ describe('trello use cases', () => {
         tags: [{ type: 'hashtag', text: '#aRandomTag' }],
       })
       nock('https://api.trello.com')
-        .get(uri => uri.includes('/cards')) // actual path: /1/boards/trelloBoardId/cards?key=trelloApiKey&token=trelloUserToken
+        .get((uri) => uri.includes('/cards')) // actual path: /1/boards/trelloBoardId/cards?key=trelloApiKey&token=trelloUserToken
         .reply(200, cards)
       const res = await addAsTrelloComment(message, FAKE_CREDS)
       expect(res.text).toMatch('No cards match')
@@ -128,7 +128,7 @@ describe('trello use cases', () => {
         tags: [{ type: 'hashtag', text: '#aRandomTag' }],
       })
       nock('https://api.trello.com')
-        .get(uri => uri.includes('/cards')) // actual path: /1/boards/trelloBoardId/cards?key=trelloApiKey&token=trelloUserToken
+        .get((uri) => uri.includes('/cards')) // actual path: /1/boards/trelloBoardId/cards?key=trelloApiKey&token=trelloUserToken
         .reply(200, cards)
       const res = await addAsTrelloComment(message, FAKE_CREDS)
       expect(res.text).toMatch('Please bind tags to your cards')
@@ -145,11 +145,11 @@ describe('trello use cases', () => {
       })
       // simulate a trello card that is associated with the tag
       nock('https://api.trello.com')
-        .get(uri => uri.includes('/cards'))
+        .get((uri) => uri.includes('/cards'))
         .reply(200, [trelloCardWithTag(tagName)])
       // simulate the response of adding a comment to that card
       nock('https://api.trello.com')
-        .post(uri => uri.includes('/actions/comments'))
+        .post((uri) => uri.includes('/actions/comments'))
         .reply(200, {})
       const res = await addAsTrelloComment(message, FAKE_CREDS)
       expect(res.text).toMatch('Sent to Trello cards')
@@ -165,11 +165,11 @@ describe('trello use cases', () => {
       })
       // simulate a trello card that is associated with the tag
       nock('https://api.trello.com')
-        .get(uri => uri.includes('/cards'))
+        .get((uri) => uri.includes('/cards'))
         .reply(200, [trelloCardWithTag(tagName)])
       // simulate the response of adding a comment to that card
       nock('https://api.trello.com')
-        .post(uri => uri.includes('/actions/comments'))
+        .post((uri) => uri.includes('/actions/comments'))
         .reply(200, {})
       const res = await addAsTrelloComment(message, FAKE_CREDS)
       expect(res.text).toMatch('Sent to Trello cards')
@@ -188,13 +188,13 @@ describe('trello use cases', () => {
       const card = trelloCardWithTag(tagName)
       // simulate a trello card that is associated with the tag
       nock('https://api.trello.com')
-        .get(uri =>
+        .get((uri) =>
           uri.includes(`/1/boards/${FAKE_CREDS.trello.boardid}/cards`)
         )
         .reply(200, [card])
       // simulate the absence of checklists in that trello card
       nock('https://api.trello.com')
-        .get(uri =>
+        .get((uri) =>
           uri.includes(
             `/1/boards/${FAKE_CREDS.trello.boardid}/cards/${card.id}`
           )
@@ -215,13 +215,13 @@ describe('trello use cases', () => {
       const card = trelloCardWithTag(tagName)
       // simulate a trello card that is associated with the tag
       nock('https://api.trello.com')
-        .get(uri =>
+        .get((uri) =>
           uri.includes(`/1/boards/${FAKE_CREDS.trello.boardid}/cards`)
         )
         .reply(200, [card])
       // simulate a checklist of that trello card
       nock('https://api.trello.com')
-        .get(uri =>
+        .get((uri) =>
           uri.includes(
             `/1/boards/${FAKE_CREDS.trello.boardid}/cards/${card.id}`
           )
@@ -229,11 +229,11 @@ describe('trello use cases', () => {
         .reply(200, { idChecklists: [checklistId] })
       // simulate a checklist of that trello card
       nock('https://api.trello.com')
-        .get(uri => uri.includes(`/1/checklists/${checklistId}`))
+        .get((uri) => uri.includes(`/1/checklists/${checklistId}`))
         .reply(200, { id: checklistId, name: 'My checklist' })
       // simulate the response of adding a task to that checklist
       nock('https://api.trello.com')
-        .post(uri => uri.includes(`/1/checklists/${checklistId}/checkitems`))
+        .post((uri) => uri.includes(`/1/checklists/${checklistId}/checkitems`))
         .reply(200)
       const res = await addAsTrelloTask(message, FAKE_CREDS)
       expect(res.text).toMatch('Added task at the top of these Trello cards')
