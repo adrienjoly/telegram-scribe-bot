@@ -68,3 +68,5 @@ node_modules/
 ## Compiled JavaScript files
 functions/lib/**/*.js
 functions/lib/**/*.js.map
+
+dumps/*.json
