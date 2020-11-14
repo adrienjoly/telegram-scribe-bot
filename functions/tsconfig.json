@@ -12,5 +12,5 @@
     "typeRoots": ["./node_modules/@types", "./typings"]
   },
   "compileOnSave": true,
-  "include": ["./src", "./tools"]
+  "include": ["./src", "./tools", "./test", ".eslintrc.js"]
 }
