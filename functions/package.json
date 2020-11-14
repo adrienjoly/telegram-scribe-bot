@@ -1,6 +1,6 @@
 {
   "name": "telegram-scribe-bot",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "A chat-bot that can add comments to Trello cards, from any Telegram client.",
   "scripts": {
     "lint": "npx eslint src/**/*.ts tools/**/*.ts",
@@ -27,7 +27,7 @@
     "trello:boards": "ts-node tools/trello-boards.ts"
   },
   "engines": {
-    "node": "10"
+    "node": "12"
   },
   "main": "lib/src/index.js",
   "author": "Adrien Joly",
