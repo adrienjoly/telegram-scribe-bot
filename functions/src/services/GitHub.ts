@@ -1,5 +1,5 @@
 import assert from 'assert'
-import Octokit from '@octokit/rest' // API Ref Doc: https://octokit.github.io/rest.js/
+import { Octokit } from '@octokit/rest' // API Ref Doc: https://octokit.github.io/rest.js/
 
 const USER_AGENT = 'telegram-scribe-bot'
 
@@ -29,7 +29,7 @@ export class GitHub {
     repo: string
     path: string
   }): Promise<{ sha: string; buffer: Buffer }> {
-    const res = await this.octokit.repos.getContents({
+    const res = await this.octokit.repos.getContent({
       owner,
       repo,
       path,
