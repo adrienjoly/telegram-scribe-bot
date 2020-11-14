@@ -16,7 +16,7 @@ const commandHandlers: { [key: string]: CommandHandler } = {
   '/note': addAsTrelloComment,
   '/next': addAsTrelloTask,
   '/version': async (): Promise<BotResponse> => {
-    return { text: '✅  Version: 1.1.0' }
+    return { text: '✅  Version: 1.2.0' }
   },
 }
 
