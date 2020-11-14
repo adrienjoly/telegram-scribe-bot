@@ -7,6 +7,18 @@ import {
 import { addAsTrelloComment, addAsTrelloTask } from './use-cases/addToTrello'
 import { addSpotifyAlbumToShelfRepo } from './use-cases/addSpotifyAlbumToShelfRepo'
 
+const checkServiceOptions = (
+  options: MessageHandlerOptions,
+  serviceConfigNamespace: string,
+  serviceConfigKeys: string
+): Options => {
+  for (const key of Object.values(CONFIG_KEYS)) {
+    if (!options?.[CONFIG_NAMESPACE]?.[key])
+      throw new Error(`missing ${CONFIG_NAMESPACE}.${key}`)
+  }
+  return options as Options
+}
+
 // map commands to "use-case" implementations
 const commandHandlers: { [key: string]: CommandHandler } = {
   '/shelf': addSpotifyAlbumToShelfRepo,
