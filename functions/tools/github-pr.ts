@@ -24,7 +24,7 @@ async function main(): Promise<void> {
   console.warn(`✅ GitHub PR URL: ${pr.url}`)
 }
 
-main().catch(err => {
+main().catch((err) => {
   console.error(
     `❌  ${err.message} <-- ${err.request?.url}\n   ${err.request?.body}`
   )
