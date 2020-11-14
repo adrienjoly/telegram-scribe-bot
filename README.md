@@ -99,7 +99,6 @@ Follow these steps to deploy your bot to Firebase and make it accessible through
 - `$ npm run deploy:test` (to check that the function deployed on Firebase works as expected)
 - `$ npm run webhook:bind` (to bind that function to your Telegram bot)
 - `$ npm run webhook:test` (to check that the function's router URL was properly bound to your Telegram bot)
-- `$ npm run deploy:config` to upload your configuration (from `.config.json`) to the cloud function
 
 After making any change to your bot, don't forget to deploy again it using `$ npm run deploy`.
 
@@ -113,7 +112,7 @@ You can troubleshoot your bot using [your firebase console](https://console.fire
 
 ### Options
 
-Set `telegram.onlyfromuserid` in your `.config.json` file and call `$ npm run deploy:config` again if you want the bot to only respond to that Telegram user identifier.
+Set `telegram.onlyfromuserid` in your `.config.json` file and call `$ npm run deploy` again if you want the bot to only respond to that Telegram user identifier.
 
 ## ToDo / Next steps
 

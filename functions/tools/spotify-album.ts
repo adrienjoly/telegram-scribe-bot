@@ -2,7 +2,7 @@ import { Spotify, formatAlbum } from '../src/services/Spotify'
 import yaml from 'js-yaml'
 
 // Load credentials from config file
-const { clientid, secret } = require(`${__dirname}/../../.config.json`).spotify // eslint-disable-line @typescript-eslint/no-var-requires
+const { clientid, secret } = require(`${__dirname}/bot-config.js`).spotify // eslint-disable-line @typescript-eslint/no-var-requires
 
 async function main(): Promise<void> {
   const albumId = '62KA8cUOqlIg1gxbVqBieD'
