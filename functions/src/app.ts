@@ -40,7 +40,7 @@ type StarterParams = {
 }
 
 type Destroyable = {
-  destroy: Function
+  destroy: () => unknown
 }
 
 export const startApp = ({

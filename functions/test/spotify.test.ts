@@ -62,20 +62,20 @@ describe('spotify use cases', () => {
     it('extracts the albumId and generates a pull request', async () => {
       const message = createMessage({ rest: SAMPLE_URL })
       nock('https://accounts.spotify.com')
-        .post(uri => uri.includes(`/api/token`))
+        .post((uri) => uri.includes(`/api/token`))
         .reply(200, { token: 'token' })
       nock('https://api.spotify.com')
-        .get(uri => uri.includes(`/v1/albums/${SAMPLE_ALBUM_ID}`))
+        .get((uri) => uri.includes(`/v1/albums/${SAMPLE_ALBUM_ID}`))
         .reply(200, {
           title: 'coucou',
           artists: [{ name: 'artist' }],
           images: [{ url: '' }],
         })
       nock('https://api.github.com')
-        .get(uri => uri.includes(`/repos/adrienjoly/album-shelf/commits`)) // TODO: make the repo customizable
+        .get((uri) => uri.includes(`/repos/adrienjoly/album-shelf/commits`)) // TODO: make the repo customizable
         .reply(200, [{ sha: 'sha', commit: { tree: { sha: 'treesha' } } }])
       nock('https://api.github.com')
-        .get(uri =>
+        .get((uri) =>
           uri.includes(
             `/repos/adrienjoly/album-shelf/contents/_data%2Falbums.yaml`
           )
@@ -86,13 +86,15 @@ describe('spotify use cases', () => {
           sha: 'filesha',
         })
       nock('https://api.github.com')
-        .post(uri => uri.includes('/repos/adrienjoly/album-shelf/git/blobs'))
+        .post((uri) => uri.includes('/repos/adrienjoly/album-shelf/git/blobs'))
         .reply(200, { sha: 'blobsha' })
       nock('https://api.github.com')
-        .post(uri => uri.includes('/repos/adrienjoly/album-shelf/git/trees'))
+        .post((uri) => uri.includes('/repos/adrienjoly/album-shelf/git/trees'))
         .reply(200, { sha: 'newtreesha' })
       nock('https://api.github.com')
-        .post(uri => uri.includes('/repos/adrienjoly/album-shelf/git/commits'))
+        .post((uri) =>
+          uri.includes('/repos/adrienjoly/album-shelf/git/commits')
+        )
         .reply(200, { sha: 'commitsha' })
       nock('https://api.github.com')
         .post('/repos/adrienjoly/album-shelf/git/refs')
