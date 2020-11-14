@@ -1,5 +1,6 @@
 import assert from 'assert'
 import { Octokit } from '@octokit/rest' // API Ref Doc: https://octokit.github.io/rest.js/
+import { PullsCreateResponseData, ReposGetContentResponseData } from '@octokit/types'
 
 const USER_AGENT = 'telegram-scribe-bot'
 
@@ -34,7 +35,7 @@ export class GitHub {
       repo,
       path,
     })
-    const data = res.data as Octokit.ReposGetContentsResponseItem & {
+    const data = res.data as ReposGetContentResponseData & {
       encoding: string
       content: string
     }
@@ -64,7 +65,7 @@ export class GitHub {
     prTitle: string
     prBody: string
     log?: (s: string) => void
-  }): Promise<Octokit.PullsCreateResponse> {
+  }): Promise<PullsCreateResponseData> {
     const octokit = this.octokit
     log(`Fetch last commit from ${owner}/${repo}...`)
     const lastCommit = await (await octokit.repos.listCommits({ owner, repo }))
