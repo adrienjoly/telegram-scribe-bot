@@ -77,7 +77,7 @@ describe('spotify use cases', () => {
       nock('https://api.github.com')
         .get(uri =>
           uri.includes(
-            `/repos/adrienjoly/album-shelf/contents/_data/albums.yaml`
+            `/repos/adrienjoly/album-shelf/contents/_data%2Falbums.yaml`
           )
         )
         .reply(200, {

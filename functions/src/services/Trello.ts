@@ -9,7 +9,7 @@ export class Trello {
     this.trelloLib = new TrelloLib(apiKey, userToken)
   }
 
-  async getBoards(owner: string = 'me'): Promise<TrelloBoard[]> {
+  async getBoards(owner = 'me'): Promise<TrelloBoard[]> {
     return await this.trelloLib.getBoards(owner)
   }
 

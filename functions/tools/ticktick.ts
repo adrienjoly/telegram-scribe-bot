@@ -18,10 +18,10 @@ const main = async (): Promise<{ title: string; desc: string }> => {
 }
 
 main()
-  .then(task => {
+  .then((task) => {
     console.log('✅  Successfully added task:', task)
   })
-  .catch(err => {
+  .catch((err) => {
     console.error(err)
     process.exit(1)
   })

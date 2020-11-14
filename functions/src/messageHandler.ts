@@ -6,6 +6,7 @@ import {
 } from './use-cases/addTaskToTicktick'
 import { addAsTrelloComment, addAsTrelloTask } from './use-cases/addToTrello'
 import { addSpotifyAlbumToShelfRepo } from './use-cases/addSpotifyAlbumToShelfRepo'
+import { BotResponse } from './types'
 
 // map commands to "use-case" implementations
 const commandHandlers: { [key: string]: CommandHandler } = {
@@ -14,6 +15,9 @@ const commandHandlers: { [key: string]: CommandHandler } = {
   '/today': addTodayTaskToTicktick,
   '/note': addAsTrelloComment,
   '/next': addAsTrelloTask,
+  '/version': async (): Promise<BotResponse> => {
+    return { text: '✅  Version: 1.1.0' }
+  },
 }
 
 export async function processMessage(
