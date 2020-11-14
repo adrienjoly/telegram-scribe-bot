@@ -1,12 +1,10 @@
 # `telegram-scribe-bot`
 
-A (work-in-progress) chat-bot that can add comments to Trello cards, your TickTick todo-list and your Diigo bookmarks, from any Telegram client.
+A chat-bot for Telegram that can add comments to Trello cards, your TickTick todo-list and your Diigo bookmarks, from any Telegram client.
 
-**Is this yet another chatbot or virtual assistant supposedly supported by AI?** No. It's actually pretty dumb. Think of it more like a terminal, or like MacOS' Spotlight feature: it uses Telegram as a way to save text to other services, through their API. That's it.
+The first version of this bot was developed by following the steps provided in [Serverless Telegram Bot with Firebase - Francisco Gutiérrez - Medium](https://medium.com/@pikilon/serverless-telegram-bot-with-firebase-d11d07579d8a).
 
-**Why rely on Telegram?** Sending data from a mobile terminal to a server is far from trivial. For instance, your internet connection may be unstable (or unexistent) at the time when you want to save something. In that case, you'd expect your message to be automatically re-sent as soon as your internet connectivity is back. Telegram provides that out of the box! ✨
-
-**Supported commands**
+## Supported commands
 
 - `/todo <task> [#tag [#...]]` will add a ToDo/task to TickTick's inbox, for sorting
 - `/today <task> [#tag [#...]]` will add a ToDo/task to TickTick, due today
@@ -14,7 +12,10 @@ A (work-in-progress) chat-bot that can add comments to Trello cards, your TickTi
 - `/note <text> [#card [#...]]` will add a comment to the specified Trello card(s), for journaling
 - `/shelf <spotify_album_url>` will propose the addition of an album to the [adrienjoly/album-shelf](https://github.com/adrienjoly/album-shelf) GitHub repository (requires options: `spotify.clientid`, `spotify.secret` and `github.token` with "public repo" permissions)
 
-Note: the first version of this bot was developed by following the steps provided in [Serverless Telegram Bot with Firebase - Francisco Gutiérrez - Medium](https://medium.com/@pikilon/serverless-telegram-bot-with-firebase-d11d07579d8a).
+Notes:
+
+- You can find an up-to-date list of commands in the `commandHandlers` constant defined in [`src/messageHandler.ts`](https://github.com/adrienjoly/telegram-scribe-bot/blob/master/functions/src/messageHandler.ts);
+- You can find commands that I plan to add later in the [ToDo / Next steps](#todo--next-steps) section of this page.
 
 ## Clone and Install
 
@@ -128,3 +129,13 @@ Set `telegram.onlyfromuserid` in your `.config.json` file and call `$ npm run de
   - when waking up: invite to keep a note of the dream you were having
   - before going to sleep: invite to keep a note of how was your day (i.e. mood) and of what you did that day (i.e. journal), possibly with a photo to illustrate it
 - read [issues](https://github.com/adrienjoly/telegram-scribe-bot/issues) for more.
+
+## FAQ
+
+### Is this yet another chatbot or virtual assistant supposedly supported by AI?
+
+No. It's actually pretty dumb. Think of it more like a terminal, or like MacOS' Spotlight feature: it uses Telegram as a way to save text to other services, through their API. That's it.
+
+### Why rely on Telegram?
+
+Sending data from a mobile terminal to a server is far from trivial. For instance, your internet connection may be unstable (or unexistent) at the time when you want to save something. In that case, you'd expect your message to be automatically re-sent as soon as your internet connectivity is back. Telegram provides that out of the box! ✨
