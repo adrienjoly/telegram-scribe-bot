@@ -122,13 +122,22 @@ Set `telegram.onlyfromuserid` in your `.config.json` file and call `$ npm run de
 The steps are listed in the order I usually follow:
 
 1. In the `commandHandlers` array of `src/messageHandler.ts`, add an entry for your command. At first, make it return a simple `string`, like we did for the `/version` command. Deploy it and test it in production, just to make sure that you won't be blocked later at that critical step.
+
 2. Write an automated test in `src/use-cases/`, to define the expected reponse for a sample command. (see [example](https://github.com/adrienjoly/telegram-scribe-bot/pull/24/commits/d52320b905ad9392472dd28f26abbb4fdc07ee8e))
+
 3. Write a minimal `CommandHandler`, just to make the test pass, without calling any 3rd-party API yet. (see [example](https://github.com/adrienjoly/telegram-scribe-bot/pull/24/commits/cfc22c626b58c5e268d825aa1c2fff691ff16228))
+
 4. Write a small tool to examine the response from the 3rd-party API. (see [example](https://github.com/adrienjoly/telegram-scribe-bot/pull/24/commits/792fbf7d669e8386d5e17c8f50b23623156b99f9))
+
 5. Update the implementation of your `CommandHandler`, so it relies on the actual API response. Make sure that the test passes, when you provide your API credentials. (see [example](https://github.com/adrienjoly/telegram-scribe-bot/pull/24/commits/565cb21a10b8cfd1e44390227976541e62439d2c))
+
 6. Make the automated test mock the API request(s) so that it doesn't require API credentials to run. (see [example](https://github.com/adrienjoly/telegram-scribe-bot/pull/24/commits/b3f4a23a375c49fe152735df41bafef880b77abc))
 
-> In the last step, you can leverage the `⚠ no match for [...]` logs displayed when running your test from step 5, in order to know which URL(s) to mock.
+   > In that step, you can leverage the `⚠ no match for [...]` logs displayed when running your test from step 5, in order to know which URL(s) to mock.
+
+7. Test your command locally, using `$ npm run test:bot`.
+
+8. Deploy and test your command in production, as explained above.
 
 ## ToDo / Next steps
 

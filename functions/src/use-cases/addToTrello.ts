@@ -175,14 +175,23 @@ export const addAsTrelloComment: CommandHandler = (message, handlerOpts) =>
     .then(({ trello, targetedCards }) =>
       _addAsTrelloComment(message, trello, targetedCards)
     )
-    .catch((err) => ({ text: err }))
+    .catch((err) => ({ error: err, text: err }))
 
 export const addAsTrelloTask: CommandHandler = (message, handlerOpts) =>
   extractCardFromTags(message, handlerOpts)
     .then(({ trello, targetedCards, options }) =>
       _addAsTrelloTask(message, trello, targetedCards, options)
     )
-    .catch((err) => ({ text: err.message }))
+    .catch((err) => ({ error: err, text: err.message }))
 
 export const getNextTrelloTasks: CommandHandler = (message, handlerOpts) =>
-  _getNextTrelloTasks(handlerOpts).catch((err) => ({ text: err.message }))
+  _getNextTrelloTasks(handlerOpts).catch((err) => ({
+    error: err,
+    text: err.message,
+  }))
+
+export const getOrAddTrelloTasks: CommandHandler = (message, handlerOpts) =>
+  (message.rest === '' ? getNextTrelloTasks : addAsTrelloTask)(
+    message,
+    handlerOpts
+  )

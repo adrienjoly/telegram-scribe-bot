@@ -11,6 +11,7 @@ export type CommandHandler = (
 
 export type BotResponse = {
   text: string
+  error?: Error
 }
 
 export type TelegramRequest = {
