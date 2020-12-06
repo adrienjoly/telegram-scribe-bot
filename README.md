@@ -8,6 +8,7 @@ The first version of this bot was developed by following the steps provided in [
 
 - `/todo <task> [#tag [#...]]` will add a ToDo/task to TickTick's inbox, for sorting
 - `/today <task> [#tag [#...]]` will add a ToDo/task to TickTick, due today
+- `/next [#tag]` will list the next `task` for each Trello card associated with `#tag`
 - `/next <task> [#tag]` will add a `task` to the top of the check-list of the Trello card associated with `#tag`
 - `/note <text> [#card [#...]]` will add a comment to the specified Trello card(s), for journaling
 - `/shelf <spotify_album_url>` will propose the addition of an album to the [adrienjoly/album-shelf](https://github.com/adrienjoly/album-shelf) GitHub repository (requires options: `spotify.clientid`, `spotify.secret` and `github.token` with "public repo" permissions)
@@ -114,6 +115,14 @@ You can troubleshoot your bot using [your firebase console](https://console.fire
 ### Options
 
 Set `telegram.onlyfromuserid` in your `.config.json` file and call `$ npm run deploy` again if you want the bot to only respond to that Telegram user identifier.
+
+## How to add a command
+
+The steps are listed in the order I usually follow:
+
+1. In the `commandHandlers` array of `src/messageHandler.ts`, add an entry for your command. At first, make it return a simple `string`, like we did for the `/version` command. Deploy it and test it in production, just to make sure that you won't be blocked later at that critical step.
+2. Write an automated test in `src/use-cases/`, to define the expected reponse for a sample command. (see [example](https://github.com/adrienjoly/telegram-scribe-bot/pull/24/commits/d52320b905ad9392472dd28f26abbb4fdc07ee8e))
+3. Write a minimal `CommandHandler`, just to make the test pass, without calling any 3rd-party API yet.
 
 ## ToDo / Next steps
 
