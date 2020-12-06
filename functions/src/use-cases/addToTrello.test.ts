@@ -252,24 +252,19 @@ describe('trello use cases', () => {
       }
       // simulate a trello card that is associated with the tag
       nock('https://api.trello.com')
-        .get((uri) =>
-          uri.includes(`/1/boards/${FAKE_CREDS.trello.boardid}/cards`)
-        )
+        .get(`/1/boards/${FAKE_CREDS.trello.boardid}/cards`)
+        .query(true)
         .reply(200, [card])
       // simulate a checklist of that trello card
       nock('https://api.trello.com')
-        .get((uri) =>
-          uri.includes(
-            `/1/boards/${FAKE_CREDS.trello.boardid}/cards/${card.id}`
-          )
-        )
+        .get(`/1/boards/${FAKE_CREDS.trello.boardid}/cards/${card.id}`)
+        .query(true)
         .reply(200, { idChecklists: [checklistId] })
       // simulate a checklist of that trello card
       nock('https://api.trello.com')
-        .get((uri) => uri.includes(`/1/checklists/${checklistId}`))
+        .get(`/1/checklists/${checklistId}`)
+        .query(true)
         .reply(200, {
-          id: checklistId,
-          name: 'My checklist',
           checkItems: [
             {
               pos: 1,
