@@ -76,15 +76,17 @@ async function extractCardFromTags(
   }))
   const validTags = listValidTags(cardsWithTags)
   if (!validTags.length) {
-    throw `🤔  Please bind tags to your cards. How: https://github.com/adrienjoly/telegram-scribe-bot#2-bind-tags-to-trello-cards`
+    throw new Error(
+      `🤔  Please bind tags to your cards. How: https://github.com/adrienjoly/telegram-scribe-bot#2-bind-tags-to-trello-cards`
+    )
   }
   const noteTags = message.tags.map((tagEntity) => tagEntity.text)
   if (!noteTags.length) {
-    throw `🤔  Please specify at least one hashtag: ${validTags}`
+    throw new Error(`🤔  Please specify at least one hashtag: ${validTags}`)
   }
   const targetedCards = getCardsBoundToTags(cardsWithTags, noteTags)
   if (!targetedCards.length) {
-    throw `🤔  No cards match. Please pick another tag: ${validTags}`
+    throw new Error(`🤔  No cards match. Please pick another tag: ${validTags}`)
   }
   return { trello, targetedCards, options }
 }
