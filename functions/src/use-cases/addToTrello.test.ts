@@ -272,20 +272,20 @@ describe('trello use cases', () => {
     })
 
     it('returns the first tasks of both cards of a board', async () => {
-      const expectedNextSteps = [
+      const testCases = [
         { cardName: 'Health', itemName: 'go to dentist' },
         { cardName: 'Home', itemName: 'buy new kitch lights' },
       ]
-      const expectedResult = expectedNextSteps
+      const expectedResult = testCases
         .map((step) => `${step.cardName}: ${step.itemName}`)
         .join('\n')
       // run test
-      const cards = expectedNextSteps.map((testCase, i) => ({
-        id: `checklist${i}`,
+      const cards = testCases.map((testCase, i) => ({
+        id: `card${i}`,
         name: testCase.cardName,
       }))
       mockTrelloBoard(FAKE_CREDS.trello.boardid, cards)
-      expectedNextSteps.forEach((testCase, i) => {
+      testCases.forEach((testCase, i) => {
         mockTrelloCard(FAKE_CREDS.trello.boardid, {
           ...cards[i],
           idChecklists: [`checklist${i}`],
@@ -296,6 +296,42 @@ describe('trello use cases', () => {
             { pos: 1, state: 'incomplete', name: testCase.itemName },
           ] as TrelloChecklistItem[],
         })
+      })
+      const message = createMessage({
+        commands: [{ type: 'bot_command', text: '/next' }],
+        tags: [], // TODO: [{ type: 'hashtag', text: tagName }], // also test with a tag
+        rest: '',
+      })
+      const res = await getNextTrelloTasks(message, FAKE_CREDS)
+      // check expectation
+      expect(res.text).toMatch(expectedResult)
+    })
+
+    it(`skips cards that don't have a checklist`, async () => {
+      const testCases = [
+        { cardName: 'Health' },
+        { cardName: 'Home', itemName: 'buy new kitch lights' },
+      ]
+      const expectedResult = `${testCases[1].cardName}: ${testCases[1].itemName}`
+      // run test
+      const cards = testCases.map((testCase, i) => ({
+        id: `card${i}`,
+        name: testCase.cardName,
+      }))
+      mockTrelloBoard(FAKE_CREDS.trello.boardid, cards)
+      testCases.forEach((testCase, i) => {
+        mockTrelloCard(FAKE_CREDS.trello.boardid, {
+          ...cards[i],
+          idChecklists: [`checklist${i}`],
+        })
+        if (testCase.itemName) {
+          mockTrelloChecklist({
+            id: `checklist${i}`,
+            checkItems: [
+              { pos: 1, state: 'incomplete', name: testCase.itemName },
+            ] as TrelloChecklistItem[],
+          })
+        }
       })
       const message = createMessage({
         commands: [{ type: 'bot_command', text: '/next' }],
