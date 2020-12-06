@@ -15,6 +15,14 @@ type TrelloBoard = {
 type TrelloChecklist = {
   id: string
   name: string
+  checkItems: TrelloChecklistItem[]
+}
+
+// cf https://developer.atlassian.com/cloud/trello/rest/api-group-cards/#api-cards-id-checkitemstates-get
+type TrelloChecklistItem = {
+  name: string
+  pos: number
+  state: 'incomplete' & 'complete'
 }
 
 declare class TrelloLib {

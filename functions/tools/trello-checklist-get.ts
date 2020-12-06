@@ -30,8 +30,8 @@ const main = async (): Promise<string> => {
     const [checklistId] = await trello.getChecklistIds(boardId, card.id)
     if (!checklistId) continue
     const checklist = await trello.getChecklist(checklistId)
-    console.log(checklist) // temporary: display the full API response, to find useful properties
-    return `first checklist for card ${card.name}: ${checklist.name}`
+    const nextStep = await trello.getNextTodoItem(checklistId)
+    return `first checklist for card ${card.name}: "${checklist.name}", with next step: ${nextStep.name}`
   }
   throw `no cards with checklists were found of board ${boardId}`
 }
