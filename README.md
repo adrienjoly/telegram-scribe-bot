@@ -122,7 +122,8 @@ The steps are listed in the order I usually follow:
 
 1. In the `commandHandlers` array of `src/messageHandler.ts`, add an entry for your command. At first, make it return a simple `string`, like we did for the `/version` command. Deploy it and test it in production, just to make sure that you won't be blocked later at that critical step.
 2. Write an automated test in `src/use-cases/`, to define the expected reponse for a sample command. (see [example](https://github.com/adrienjoly/telegram-scribe-bot/pull/24/commits/d52320b905ad9392472dd28f26abbb4fdc07ee8e))
-3. Write a minimal `CommandHandler`, just to make the test pass, without calling any 3rd-party API yet.
+3. Write a minimal `CommandHandler`, just to make the test pass, without calling any 3rd-party API yet. (see [example](https://github.com/adrienjoly/telegram-scribe-bot/pull/24/commits/cfc22c626b58c5e268d825aa1c2fff691ff16228))
+4. Write a small tool to examine the response from the 3rd-party API. (see [example](https://github.com/adrienjoly/telegram-scribe-bot/pull/24/commits/792fbf7d669e8386d5e17c8f50b23623156b99f9))
 
 ## ToDo / Next steps
 
