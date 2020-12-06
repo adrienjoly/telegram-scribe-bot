@@ -146,10 +146,20 @@ const _addAsTrelloTask = async (
   }
 }
 
-async function _getNextTrelloTasks(): Promise<BotResponse> {
-  // TODO: fetch actual next steps from Trello API
+async function _getNextTrelloTasks(
+  handlerOpts: MessageHandlerOptions
+): Promise<BotResponse> {
+  const options = checkOptions(handlerOpts) // may throw
+  const trello = new Trello(options.trello.apikey, options.trello.usertoken)
+  const cards = await trello.getCards(options.trello.boardid)
+  const firstCard = cards[0] // TODO: apply for all cards
+  const [checklistId] = await trello.getChecklistIds(
+    options.trello.boardid,
+    firstCard.id
+  )
+  const nextStep = await trello.getNextTodoItem(checklistId)
   return {
-    text: `🌿 Santé: prendre rdv checkup dentiste`,
+    text: `🌿 Santé: ${nextStep.name}`,
   }
 }
 
@@ -168,4 +178,4 @@ export const addAsTrelloTask: CommandHandler = (message, handlerOpts) =>
     .catch((err) => ({ text: err.message }))
 
 export const getNextTrelloTasks: CommandHandler = (message, handlerOpts) =>
-  _getNextTrelloTasks().catch((err) => ({ text: err.message }))
+  _getNextTrelloTasks(handlerOpts).catch((err) => ({ text: err.message }))

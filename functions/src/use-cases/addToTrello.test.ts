@@ -250,7 +250,12 @@ describe('trello use cases', () => {
         tags: [], // TODO: [{ type: 'hashtag', text: tagName }], // also test with a tag
         rest: '',
       })
-      const res = await getNextTrelloTasks(message, FAKE_CREDS)
+
+      const {
+        trello, // TODO: after checking that the actual API-bound implementation works, mock API requests
+      } = require(`${__dirname}/../../tools/bot-config.js`) // eslint-disable-line @typescript-eslint/no-var-requires
+
+      const res = await getNextTrelloTasks(message, { trello })
       expect(res.text).toMatch('🌿 Santé: prendre rdv checkup dentiste')
     })
   })
