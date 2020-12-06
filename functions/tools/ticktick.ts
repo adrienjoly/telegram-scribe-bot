@@ -1,3 +1,8 @@
+#!./node_modules/.bin/ts-node
+
+// To test this API, run this command from the parent directory:
+// $ tools/ticktick.ts
+
 import { Ticktick } from '../src/services/Ticktick'
 
 // load credentials from config file

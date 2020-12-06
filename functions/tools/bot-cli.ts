@@ -1,3 +1,8 @@
+#!./node_modules/.bin/ts-node
+
+// To test the chatbot locally, run this command from the parent directory:
+// $ tools/bot-cli.ts
+
 import readline from 'readline'
 import { TelegramMessage, MessageEntity, TelegramUser } from './../src/Telegram'
 import { processMessage } from './../src/messageHandler'
@@ -50,7 +55,7 @@ const getAnswer = (prompt: string): Promise<string> =>
 
 const main = async (): Promise<void> => {
   console.warn(
-    `ℹ️  This bot client is connected to the accounts specified in .env`
+    `ℹ️  This bot client is connected to the accounts specified in .config.json`
   )
   for (;;) {
     const rawMessage = await getAnswer('type a message for the chatbot:')

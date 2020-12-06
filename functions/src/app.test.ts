@@ -2,7 +2,7 @@
 
 import expect from 'expect'
 import fetch from 'node-fetch'
-import { startApp } from './../src/app'
+import { startApp } from './app'
 
 const options = {}
 

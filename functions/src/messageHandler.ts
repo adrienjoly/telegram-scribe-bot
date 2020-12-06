@@ -4,7 +4,10 @@ import {
   addTaskToTicktick,
   addTodayTaskToTicktick,
 } from './use-cases/addTaskToTicktick'
-import { addAsTrelloComment, addAsTrelloTask } from './use-cases/addToTrello'
+import {
+  addAsTrelloComment,
+  getOrAddTrelloTasks,
+} from './use-cases/addToTrello'
 import { addSpotifyAlbumToShelfRepo } from './use-cases/addSpotifyAlbumToShelfRepo'
 import { BotResponse } from './types'
 
@@ -14,7 +17,7 @@ const commandHandlers: { [key: string]: CommandHandler } = {
   '/todo': addTaskToTicktick,
   '/today': addTodayTaskToTicktick,
   '/note': addAsTrelloComment,
-  '/next': addAsTrelloTask,
+  '/next': getOrAddTrelloTasks,
   '/version': async (_, options): Promise<BotResponse> => {
     return { text: `ℹ️  Version: ${options.bot.version}` }
   },
@@ -44,7 +47,11 @@ export async function processMessage(
         commandHandlers
       ).join(', ')}`
     } else {
-      text = (await commandHandler(entities, options)).text
+      const res = await commandHandler(entities, options)
+      if (res.error) {
+        console.error(res.error)
+      }
+      text = res.text
     }
   } catch (err) {
     text = `😕  Error while processing: ${err.message}`

@@ -8,6 +8,7 @@ The first version of this bot was developed by following the steps provided in [
 
 - `/todo <task> [#tag [#...]]` will add a ToDo/task to TickTick's inbox, for sorting
 - `/today <task> [#tag [#...]]` will add a ToDo/task to TickTick, due today
+- `/next` will list the next `task` for each Trello card
 - `/next <task> [#tag]` will add a `task` to the top of the check-list of the Trello card associated with `#tag`
 - `/note <text> [#card [#...]]` will add a comment to the specified Trello card(s), for journaling
 - `/shelf <spotify_album_url>` will propose the addition of an album to the [adrienjoly/album-shelf](https://github.com/adrienjoly/album-shelf) GitHub repository (requires options: `spotify.clientid`, `spotify.secret` and `github.token` with "public repo" permissions)
@@ -115,10 +116,33 @@ You can troubleshoot your bot using [your firebase console](https://console.fire
 
 Set `telegram.onlyfromuserid` in your `.config.json` file and call `$ npm run deploy` again if you want the bot to only respond to that Telegram user identifier.
 
+## How to add a command
+
+The steps are listed in the order I usually follow:
+
+1. In the `commandHandlers` array of `src/messageHandler.ts`, add an entry for your command. At first, make it return a simple `string`, like we did for the `/version` command. Deploy it and test it in production, just to make sure that you won't be blocked later at that critical step.
+
+2. Write an automated test in `src/use-cases/`, to define the expected reponse for a sample command. (see [example](https://github.com/adrienjoly/telegram-scribe-bot/pull/24/commits/d52320b905ad9392472dd28f26abbb4fdc07ee8e))
+
+3. Write a minimal `CommandHandler`, just to make the test pass, without calling any 3rd-party API yet. (see [example](https://github.com/adrienjoly/telegram-scribe-bot/pull/24/commits/cfc22c626b58c5e268d825aa1c2fff691ff16228))
+
+4. Write a small tool to examine the response from the 3rd-party API. (see [example](https://github.com/adrienjoly/telegram-scribe-bot/pull/24/commits/792fbf7d669e8386d5e17c8f50b23623156b99f9))
+
+5. Update the implementation of your `CommandHandler`, so it relies on the actual API response. Make sure that the test passes, when you provide your API credentials. (see [example](https://github.com/adrienjoly/telegram-scribe-bot/pull/24/commits/565cb21a10b8cfd1e44390227976541e62439d2c))
+
+6. Make the automated test mock the API request(s) so that it doesn't require API credentials to run. (see [example](https://github.com/adrienjoly/telegram-scribe-bot/pull/24/commits/b3f4a23a375c49fe152735df41bafef880b77abc))
+
+   > In that step, you can leverage the `⚠ no match for [...]` logs displayed when running your test from step 5, in order to know which URL(s) to mock.
+
+7. Test your command locally, using `$ npm run test:bot`.
+
+8. Deploy and test your command in production, as explained above.
+
 ## ToDo / Next steps
 
 - Make setup easier and faster, e.g. by automatizing some of the steps
 - ideas of "command" use cases to implement:
+  - `/next [#tag]` will list the next `task` for each Trello card associated with `#tag`
   - `/search <text> [#tag [#...]]` will search occurrences of `text` in comments of Trello cards, optionally filtered by `#tags`
   - `/openwhyd <track> [#tag] [desc]` will add a music track (e.g. YouTube URL) to Openwhyd.org, in a playlist corresponding to the `tag`, and may add a `desc`ription if provided
   - `/issue <repo>` will create a github issue on the provided repo

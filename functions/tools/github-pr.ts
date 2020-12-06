@@ -1,3 +1,8 @@
+#!./node_modules/.bin/ts-node
+
+// To test this API, run this command from the parent directory:
+// $ tools/github-pr.ts
+
 import { GitHub } from '../src/services/GitHub'
 
 // Load credentials from config file

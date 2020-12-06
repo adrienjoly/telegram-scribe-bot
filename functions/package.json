@@ -5,7 +5,7 @@
   "scripts": {
     "lint": "npx eslint .",
     "lint:fix": "npx eslint . --fix",
-    "test": "ts-mocha -p ./tsconfig.json ./test/*.test.ts",
+    "test": "ts-mocha -p ./tsconfig.json './**/*.test.ts'",
     "test:bot": "ts-node tools/bot-cli.ts",
     "start": "ts-node tools/start.ts",
     "clean": "rm -rf lib",
@@ -18,13 +18,7 @@
     "deploy:test": "source ../.env && curl -X POST -H \"Content-Type:application/json\" ${ROUTER_URL} -d '{}'",
     "webhook:bind": "source ../.env && curl https://api.telegram.org/bot${BOT_TOKEN}/setWebhook?url=${ROUTER_URL}",
     "webhook:test": "source ../.env && curl https://api.telegram.org/bot${BOT_TOKEN}/getWebhookInfo",
-    "logs": "firebase functions:log",
-    "spotify:test": "ts-node tools/spotify-album.ts",
-    "github:pr:test": "ts-node tools/github-pr.ts",
-    "ticktick:test": "ts-node tools/ticktick.ts",
-    "trello:test": "source ../.env && curl -LI \"https://api.trello.com/1/members/me/boards?key=${TRELLO_API_KEY}&token=${TRELLO_USER_TOKEN}\" -s | grep HTTP",
-    "trello:checklist": "ts-node tools/trello-checklist.ts",
-    "trello:boards": "ts-node tools/trello-boards.ts"
+    "logs": "firebase functions:log"
   },
   "engines": {
     "node": "12"
