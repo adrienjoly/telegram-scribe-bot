@@ -5,7 +5,7 @@
   "scripts": {
     "lint": "npx eslint .",
     "lint:fix": "npx eslint . --fix",
-    "test": "ts-mocha -p ./tsconfig.json ./test/*.test.ts",
+    "test": "ts-mocha -p ./tsconfig.json './**/*.test.ts'",
     "test:bot": "ts-node tools/bot-cli.ts",
     "start": "ts-node tools/start.ts",
     "clean": "rm -rf lib",

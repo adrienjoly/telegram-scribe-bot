@@ -6,8 +6,8 @@ import {
   TrelloOptions,
   addAsTrelloComment,
   addAsTrelloTask,
-} from './../src/use-cases/addToTrello'
-import { ParsedMessageEntities } from '../src/Telegram'
+} from './addToTrello'
+import { ParsedMessageEntities } from '../Telegram'
 
 const FAKE_CREDS: TrelloOptions = {
   trello: {

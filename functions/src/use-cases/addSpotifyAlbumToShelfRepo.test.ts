@@ -6,8 +6,8 @@ import {
   Options,
   parseAlbumId,
   addSpotifyAlbumToShelfRepo,
-} from './../src/use-cases/addSpotifyAlbumToShelfRepo'
-import { ParsedMessageEntities } from './../src/Telegram'
+} from './addSpotifyAlbumToShelfRepo'
+import { ParsedMessageEntities } from '../Telegram'
 
 const FAKE_CREDS: Options = {
   spotify: {
