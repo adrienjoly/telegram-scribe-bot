@@ -263,12 +263,12 @@ describe('trello use cases', () => {
       mockTrelloChecklist(checklist)
       const message = createMessage({
         commands: [{ type: 'bot_command', text: '/next' }],
-        tags: [], // TODO: [{ type: 'hashtag', text: tagName }], // also test with a tag
+        tags: [],
         rest: '',
       })
       const res = await getNextTrelloTasks(message, FAKE_CREDS)
       // check expectation
-      expect(res.text).toMatch(expectedResult)
+      expect(res.text).toEqual(expectedResult)
     })
 
     it('returns the first tasks of both cards of a board', async () => {
@@ -299,12 +299,12 @@ describe('trello use cases', () => {
       })
       const message = createMessage({
         commands: [{ type: 'bot_command', text: '/next' }],
-        tags: [], // TODO: [{ type: 'hashtag', text: tagName }], // also test with a tag
+        tags: [],
         rest: '',
       })
       const res = await getNextTrelloTasks(message, FAKE_CREDS)
       // check expectation
-      expect(res.text).toMatch(expectedResult)
+      expect(res.text).toEqual(expectedResult)
     })
 
     it(`skips cards that don't have a checklist`, async () => {
@@ -335,12 +335,12 @@ describe('trello use cases', () => {
       })
       const message = createMessage({
         commands: [{ type: 'bot_command', text: '/next' }],
-        tags: [], // TODO: [{ type: 'hashtag', text: tagName }], // also test with a tag
+        tags: [],
         rest: '',
       })
       const res = await getNextTrelloTasks(message, FAKE_CREDS)
       // check expectation
-      expect(res.text).toMatch(expectedResult)
+      expect(res.text).toEqual(expectedResult)
     })
   })
 })
