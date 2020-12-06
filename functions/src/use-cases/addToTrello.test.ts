@@ -32,6 +32,31 @@ const createMessage = ({ ...overrides }): ParsedMessageEntities => ({
   ...overrides,
 })
 
+const mockTrelloBoard = (boardId: string, cards: Partial<TrelloCard>[]) =>
+  nock('https://api.trello.com')
+    .get(`/1/boards/${boardId}/cards`)
+    .query(true)
+    .reply(200, cards)
+
+const mockTrelloCard = (boardId: string, card: Partial<TrelloCard>) =>
+  nock('https://api.trello.com')
+    .get(`/1/boards/${boardId}/cards/${card.id}`)
+    .query(true)
+    .reply(200, card)
+
+const mockTrelloChecklist = (checklist: Partial<TrelloChecklist>) =>
+  nock('https://api.trello.com')
+    .get(`/1/checklists/${checklist.id}`)
+    .query(true)
+    .reply(200, checklist)
+
+// simulate the response of adding a comment to a card
+const mockTrelloComment = () =>
+  nock('https://api.trello.com')
+    .post((uri) => uri.includes('/actions/comments'))
+    .query(true)
+    .reply(200, {})
+
 describe('trello use cases', () => {
   before(() => {
     nock.emitter.on('no match', ({ method, path }) =>
@@ -71,13 +96,8 @@ describe('trello use cases', () => {
     it('suggests existing tags if no tags were provided', async () => {
       const tags = ['#card1tag', '#card2tag']
       const cards = tags.map((tag) => trelloCardWithTag(tag))
+      mockTrelloBoard(FAKE_CREDS.trello.boardid, cards)
       const message = createMessage({ rest: 'coucou' })
-      // simulate trello cards
-      nock('https://api.trello.com')
-        .get((uri) =>
-          uri.includes(`/1/boards/${FAKE_CREDS.trello.boardid}/cards`)
-        )
-        .reply(200, cards)
       const res = await addAsTrelloComment(message, FAKE_CREDS)
       expect(res.text).toMatch('Please specify at least one hashtag')
       expect(res.text).toMatch(tags[0])
@@ -85,52 +105,42 @@ describe('trello use cases', () => {
     })
 
     it('suggests existing tags if no card matches the tag', async () => {
-      const tagName = '#anActualTag'.toLowerCase()
-      const card = trelloCardWithTag(tagName)
+      const tagName = '#anActualTag'
+      mockTrelloBoard(FAKE_CREDS.trello.boardid, [trelloCardWithTag(tagName)])
       const message = createMessage({
         rest: 'coucou',
         commands: [{ type: 'bot_command', text: '/note' }],
         tags: [{ type: 'hashtag', text: '#aRandomTag' }],
       })
-      nock('https://api.trello.com')
-        .get((uri) => uri.includes('/cards')) // actual path: /1/boards/trelloBoardId/cards?key=trelloApiKey&token=trelloUserToken
-        .reply(200, [card])
       const res = await addAsTrelloComment(message, FAKE_CREDS)
       expect(res.text).toMatch('No cards match')
       expect(res.text).toMatch('Please pick another tag')
-      expect(res.text).toMatch(tagName)
+      expect(res.text).toMatch(tagName.toLowerCase())
     })
 
     it('tolerates cards that are not associated with a tag', async () => {
-      const tagName = '#anActualTag'
-      const cards = [
-        trelloCardWithTag(tagName),
+      mockTrelloBoard(FAKE_CREDS.trello.boardid, [
+        trelloCardWithTag('#anActualTag'),
         { id: 'cardWithoutTag', name: `Card without tag`, desc: `` },
-      ]
+      ])
       const message = createMessage({
         rest: 'coucou',
         commands: [{ type: 'bot_command', text: '/note' }],
         tags: [{ type: 'hashtag', text: '#aRandomTag' }],
       })
-      nock('https://api.trello.com')
-        .get((uri) => uri.includes('/cards')) // actual path: /1/boards/trelloBoardId/cards?key=trelloApiKey&token=trelloUserToken
-        .reply(200, cards)
       const res = await addAsTrelloComment(message, FAKE_CREDS)
       expect(res.text).toMatch('No cards match')
     })
 
     it('invites to bind tags to card, if none were found', async () => {
-      const cards = [
+      mockTrelloBoard(FAKE_CREDS.trello.boardid, [
         { id: 'cardWithoutTag', name: `Card without tag`, desc: `` },
-      ]
+      ])
       const message = createMessage({
         rest: 'coucou',
         commands: [{ type: 'bot_command', text: '/note' }],
         tags: [{ type: 'hashtag', text: '#aRandomTag' }],
       })
-      nock('https://api.trello.com')
-        .get((uri) => uri.includes('/cards')) // actual path: /1/boards/trelloBoardId/cards?key=trelloApiKey&token=trelloUserToken
-        .reply(200, cards)
       const res = await addAsTrelloComment(message, FAKE_CREDS)
       expect(res.text).toMatch('Please bind tags to your cards')
     })
@@ -139,40 +149,32 @@ describe('trello use cases', () => {
   describe('addAsTrelloComment', () => {
     it('succeeds', async () => {
       const tagName = '#myTag'
+      // run test
+      mockTrelloBoard(FAKE_CREDS.trello.boardid, [trelloCardWithTag(tagName)])
+      mockTrelloComment()
       const message = createMessage({
         rest: 'coucou',
         commands: [{ type: 'bot_command', text: '/note' }],
         tags: [{ type: 'hashtag', text: tagName }],
       })
-      // simulate a trello card that is associated with the tag
-      nock('https://api.trello.com')
-        .get((uri) => uri.includes('/cards'))
-        .reply(200, [trelloCardWithTag(tagName)])
-      // simulate the response of adding a comment to that card
-      nock('https://api.trello.com')
-        .post((uri) => uri.includes('/actions/comments'))
-        .reply(200, {})
       const res = await addAsTrelloComment(message, FAKE_CREDS)
+      // check expectations
       expect(res.text).toMatch('Sent to Trello cards')
       expect(res.text).toMatch(tagName)
     })
 
     it('succeeds if tag is specified without hash, in the card', async () => {
       const tagName = 'myTag'
+      // run test
+      mockTrelloBoard(FAKE_CREDS.trello.boardid, [trelloCardWithTag(tagName)])
+      mockTrelloComment()
       const message = createMessage({
         rest: 'coucou',
         commands: [{ type: 'bot_command', text: '/note' }],
         tags: [{ type: 'hashtag', text: `#${tagName}` }],
       })
-      // simulate a trello card that is associated with the tag
-      nock('https://api.trello.com')
-        .get((uri) => uri.includes('/cards'))
-        .reply(200, [trelloCardWithTag(tagName)])
-      // simulate the response of adding a comment to that card
-      nock('https://api.trello.com')
-        .post((uri) => uri.includes('/actions/comments'))
-        .reply(200, {})
       const res = await addAsTrelloComment(message, FAKE_CREDS)
+      // check expectations
       expect(res.text).toMatch('Sent to Trello cards')
       expect(res.text).toMatch(tagName)
     })
@@ -180,63 +182,43 @@ describe('trello use cases', () => {
 
   describe('addAsTrelloTask', () => {
     it('fails if matching card has no checklist', async () => {
+      // run test
       const tagName = '#myTag'
+      const card = trelloCardWithTag(tagName)
+      mockTrelloBoard(FAKE_CREDS.trello.boardid, [card])
+      mockTrelloCard(FAKE_CREDS.trello.boardid, { ...card, idChecklists: [] }) // simulate the absence of checklists in that trello card
       const message = createMessage({
         rest: 'coucou',
         commands: [{ type: 'bot_command', text: '/note' }],
         tags: [{ type: 'hashtag', text: tagName }],
       })
-      const card = trelloCardWithTag(tagName)
-      // simulate a trello card that is associated with the tag
-      nock('https://api.trello.com')
-        .get((uri) =>
-          uri.includes(`/1/boards/${FAKE_CREDS.trello.boardid}/cards`)
-        )
-        .reply(200, [card])
-      // simulate the absence of checklists in that trello card
-      nock('https://api.trello.com')
-        .get((uri) =>
-          uri.includes(
-            `/1/boards/${FAKE_CREDS.trello.boardid}/cards/${card.id}`
-          )
-        )
-        .reply(200, { idChecklists: [] })
       const res = await addAsTrelloTask(message, FAKE_CREDS)
+      // check expectations
       expect(res.text).toMatch('No checklists were found for these tags')
     })
 
     it('succeeds', async () => {
+      // define environment and expectations
       const tagName = '#myTag'
+      const card = trelloCardWithTag(tagName)
+      // run test
       const checklistId = 'myChecklistId'
+      mockTrelloBoard(FAKE_CREDS.trello.boardid, [card])
+      mockTrelloCard(FAKE_CREDS.trello.boardid, {
+        ...card,
+        idChecklists: [checklistId],
+      })
+      mockTrelloChecklist({ id: checklistId, name: 'My checklist' })
+      nock('https://api.trello.com') // simulate the response of adding a task to that checklist
+        .post((uri) => uri.includes(`/1/checklists/${checklistId}/checkitems`))
+        .reply(200)
       const message = createMessage({
         rest: 'coucou',
         commands: [{ type: 'bot_command', text: '/next' }],
         tags: [{ type: 'hashtag', text: tagName }],
       })
-      const card = trelloCardWithTag(tagName)
-      // simulate a trello card that is associated with the tag
-      nock('https://api.trello.com')
-        .get((uri) =>
-          uri.includes(`/1/boards/${FAKE_CREDS.trello.boardid}/cards`)
-        )
-        .reply(200, [card])
-      // simulate a checklist of that trello card
-      nock('https://api.trello.com')
-        .get((uri) =>
-          uri.includes(
-            `/1/boards/${FAKE_CREDS.trello.boardid}/cards/${card.id}`
-          )
-        )
-        .reply(200, { idChecklists: [checklistId] })
-      // simulate a checklist of that trello card
-      nock('https://api.trello.com')
-        .get((uri) => uri.includes(`/1/checklists/${checklistId}`))
-        .reply(200, { id: checklistId, name: 'My checklist' })
-      // simulate the response of adding a task to that checklist
-      nock('https://api.trello.com')
-        .post((uri) => uri.includes(`/1/checklists/${checklistId}/checkitems`))
-        .reply(200)
       const res = await addAsTrelloTask(message, FAKE_CREDS)
+      // check expectations
       expect(res.text).toMatch('Added task at the top of these Trello cards')
       expect(res.text).toMatch(tagName)
       expect(res.text).toMatch(card.name)
@@ -244,24 +226,6 @@ describe('trello use cases', () => {
   })
 
   describe('getNextTrelloTasks', () => {
-    const mockTrelloBoard = (boardId: string, cards: Partial<TrelloCard>[]) =>
-      nock('https://api.trello.com')
-        .get(`/1/boards/${boardId}/cards`)
-        .query(true)
-        .reply(200, cards)
-
-    const mockTrelloCard = (boardId: string, card: Partial<TrelloCard>) =>
-      nock('https://api.trello.com')
-        .get(`/1/boards/${boardId}/cards/${card.id}`)
-        .query(true)
-        .reply(200, card)
-
-    const mockTrelloChecklist = (checklist: Partial<TrelloChecklist>) =>
-      nock('https://api.trello.com')
-        .get(`/1/checklists/${checklist.id}`)
-        .query(true)
-        .reply(200, checklist)
-
     it('returns the first task of the only card of a board', async () => {
       // define environment and expectations
       const card = {
