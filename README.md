@@ -8,7 +8,8 @@ The first version of this bot was developed by following the steps provided in [
 
 - `/todo <task> [#tag [#...]]` will add a ToDo/task to TickTick's inbox, for sorting
 - `/today <task> [#tag [#...]]` will add a ToDo/task to TickTick, due today
-- `/next [#tag]` will list the next `task` for each Trello card associated with `#tag`
+- `/next` will list the next `task` for each Trello card
+<!-- TODO: `/next [#tag]` will list the next `task` for each Trello card associated with `#tag` -->
 - `/next <task> [#tag]` will add a `task` to the top of the check-list of the Trello card associated with `#tag`
 - `/note <text> [#card [#...]]` will add a comment to the specified Trello card(s), for journaling
 - `/shelf <spotify_album_url>` will propose the addition of an album to the [adrienjoly/album-shelf](https://github.com/adrienjoly/album-shelf) GitHub repository (requires options: `spotify.clientid`, `spotify.secret` and `github.token` with "public repo" permissions)
