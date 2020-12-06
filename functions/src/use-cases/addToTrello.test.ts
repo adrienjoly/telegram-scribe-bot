@@ -322,7 +322,7 @@ describe('trello use cases', () => {
       testCases.forEach((testCase, i) => {
         mockTrelloCard(FAKE_CREDS.trello.boardid, {
           ...cards[i],
-          idChecklists: [`checklist${i}`],
+          idChecklists: testCase.itemName ? [`checklist${i}`] : [],
         })
         if (testCase.itemName) {
           mockTrelloChecklist({
