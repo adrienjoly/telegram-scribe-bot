@@ -159,7 +159,7 @@ async function _getNextTrelloTasks(
   )
   const nextStep = await trello.getNextTodoItem(checklistId)
   return {
-    text: `🌿 Santé: ${nextStep.name}`,
+    text: `${firstCard.name}: ${nextStep.name}`,
   }
 }
 
