@@ -136,10 +136,9 @@ const _addAsTrelloTask = async (
   )
   const populatedCards = consideredCards.filter((card) => card.checklistName)
   if (!populatedCards.length)
-    return {
-      text:
-        '🤔  No checklists were found for these tags. Please retry without another tag.',
-    }
+    throw new Error(
+      '🤔  No checklists were found for these tags. Please retry without another tag.'
+    )
   return {
     text: `✅  Added task at the top of these Trello cards' unique checklists: ${populatedCards
       .map((c) => c.cardName)
