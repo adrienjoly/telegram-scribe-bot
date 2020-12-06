@@ -152,14 +152,17 @@ async function _getNextTrelloTasks(
   const options = checkOptions(handlerOpts) // may throw
   const trello = new Trello(options.trello.apikey, options.trello.usertoken)
   const cards = await trello.getCards(options.trello.boardid)
-  const firstCard = cards[0] // TODO: apply for all cards
-  const [checklistId] = await trello.getChecklistIds(
-    options.trello.boardid,
-    firstCard.id
+  const boardId = options.trello.boardid
+  const nextSteps = Promise.all(
+    cards.map(async (card) => {
+      const [checklistId] = await trello.getChecklistIds(boardId, card.id)
+      return { card, nextStep: await trello.getNextTodoItem(checklistId) }
+    })
   )
-  const nextStep = await trello.getNextTodoItem(checklistId)
   return {
-    text: `${firstCard.name}: ${nextStep.name}`,
+    text: (await nextSteps)
+      .map(({ card, nextStep }) => `${card.name}: ${nextStep.name}`)
+      .join('\n'),
   }
 }
 
