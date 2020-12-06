@@ -342,5 +342,40 @@ describe('trello use cases', () => {
       // check expectation
       expect(res.text).toEqual(expectedResult)
     })
+
+    it(`skips cards that don't have a hashtag`, async () => {
+      const testCases = [
+        { cardName: 'Health', itemName: 'go to dentist', tag: 'myTag' },
+        { cardName: 'Home', itemName: 'buy new kitch lights' },
+      ]
+      const expectedResult = `${testCases[0].cardName}: ${testCases[0].itemName}`
+      // run test
+      const cards = testCases.map((testCase, i) => ({
+        ...(testCase.tag ? trelloCardWithTag(testCase.tag) : undefined),
+        id: `card${i}`,
+        name: testCase.cardName,
+      }))
+      mockTrelloBoard(FAKE_CREDS.trello.boardid, cards)
+      testCases.forEach((testCase, i) => {
+        mockTrelloCard(FAKE_CREDS.trello.boardid, {
+          ...cards[i],
+          idChecklists: [`checklist${i}`],
+        })
+        mockTrelloChecklist({
+          id: `checklist${i}`,
+          checkItems: [
+            { pos: 1, state: 'incomplete', name: testCase.itemName },
+          ] as TrelloChecklistItem[],
+        })
+      })
+      const message = createMessage({
+        commands: [{ type: 'bot_command', text: '/next' }],
+        tags: [],
+        rest: '',
+      })
+      const res = await getNextTrelloTasks(message, FAKE_CREDS)
+      // check expectation
+      expect(res.text).toEqual(expectedResult)
+    })
   })
 })
