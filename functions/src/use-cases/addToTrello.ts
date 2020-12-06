@@ -181,7 +181,7 @@ export const addAsTrelloComment: CommandHandler = (message, handlerOpts) =>
     .then(({ trello, targetedCards }) =>
       _addAsTrelloComment(message, trello, targetedCards)
     )
-    .catch((err) => ({ error: err, text: err }))
+    .catch((err) => ({ error: err, text: err.message }))
 
 export const addAsTrelloTask: CommandHandler = (message, handlerOpts) =>
   extractCardFromTags(message, handlerOpts)
