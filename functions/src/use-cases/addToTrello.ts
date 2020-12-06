@@ -172,10 +172,11 @@ async function _getNextTrelloTasks(
   const { trello, cardsWithTags, options } = await fetchCardsWithTags(
     handlerOpts
   ) // may throw
+  const cards = cardsWithTags.filter(({ tags }) => tags.length > 0)
   const boardId = options.trello.boardid
   const nextSteps: { cardName: string; nextStep: string }[] = []
   await Promise.all(
-    cardsWithTags.map(async ({ card }) => {
+    cards.map(async ({ card }) => {
       const checklistIds = await trello.getChecklistIds(boardId, card.id)
       if (checklistIds.length > 0) {
         const nextStep = await trello.getNextTodoItem(checklistIds[0])
