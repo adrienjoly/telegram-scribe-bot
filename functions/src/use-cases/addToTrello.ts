@@ -10,7 +10,7 @@ const CONFIG_KEYS = <const>['apikey', 'usertoken', 'boardid']
 
 type CONFIG_KEYS_ENUM = typeof CONFIG_KEYS[number]
 
-type TrelloOptions = {
+export type TrelloOptions = {
   [CONFIG_NAMESPACE]: { [key in CONFIG_KEYS_ENUM]: string }
 }
 
