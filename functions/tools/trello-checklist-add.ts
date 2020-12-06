@@ -1,3 +1,8 @@
+#!./node_modules/.bin/ts-node
+
+// To test this API, run this command from the parent directory:
+// $ tools/trello-checklist-add.ts
+
 import readline from 'readline'
 import { Trello } from '../src/services/Trello'
 

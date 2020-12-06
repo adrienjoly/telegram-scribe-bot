@@ -1,3 +1,8 @@
+#!./node_modules/.bin/ts-node
+
+// To test the chatbot locally, run this command from the parent directory:
+// $ tools/bot-cli.ts
+
 import readline from 'readline'
 import { TelegramMessage, MessageEntity, TelegramUser } from './../src/Telegram'
 import { processMessage } from './../src/messageHandler'

@@ -18,12 +18,7 @@
     "deploy:test": "source ../.env && curl -X POST -H \"Content-Type:application/json\" ${ROUTER_URL} -d '{}'",
     "webhook:bind": "source ../.env && curl https://api.telegram.org/bot${BOT_TOKEN}/setWebhook?url=${ROUTER_URL}",
     "webhook:test": "source ../.env && curl https://api.telegram.org/bot${BOT_TOKEN}/getWebhookInfo",
-    "logs": "firebase functions:log",
-    "spotify:test": "ts-node tools/spotify-album.ts",
-    "github:pr:test": "ts-node tools/github-pr.ts",
-    "ticktick:test": "ts-node tools/ticktick.ts",
-    "trello:checklist": "ts-node tools/trello-checklist.ts",
-    "trello:boards": "ts-node tools/trello-boards.ts"
+    "logs": "firebase functions:log"
   },
   "engines": {
     "node": "12"
