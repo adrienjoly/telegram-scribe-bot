@@ -6,6 +6,7 @@ import {
   TrelloOptions,
   addAsTrelloComment,
   addAsTrelloTask,
+  getNextTrelloTasks,
 } from './addToTrello'
 import { ParsedMessageEntities } from '../Telegram'
 
@@ -239,6 +240,18 @@ describe('trello use cases', () => {
       expect(res.text).toMatch('Added task at the top of these Trello cards')
       expect(res.text).toMatch(tagName)
       expect(res.text).toMatch(card.name)
+    })
+  })
+
+  describe('getNextTrelloTasks', () => {
+    it('returns the first task of the only card of a board', async () => {
+      const message = createMessage({
+        commands: [{ type: 'bot_command', text: '/next' }],
+        tags: [], // TODO: [{ type: 'hashtag', text: tagName }], // also test with a tag
+        rest: '',
+      })
+      const res = await getNextTrelloTasks(message, FAKE_CREDS)
+      expect(res.text).toMatch('🌿 Santé: prendre rdv checkup dentiste')
     })
   })
 })
