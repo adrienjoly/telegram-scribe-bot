@@ -50,7 +50,7 @@ const getAnswer = (prompt: string): Promise<string> =>
 
 const main = async (): Promise<void> => {
   console.warn(
-    `ℹ️  This bot client is connected to the accounts specified in .env`
+    `ℹ️  This bot client is connected to the accounts specified in .config.json`
   )
   for (;;) {
     const rawMessage = await getAnswer('type a message for the chatbot:')
