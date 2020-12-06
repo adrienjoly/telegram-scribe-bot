@@ -146,6 +146,13 @@ const _addAsTrelloTask = async (
   }
 }
 
+async function _getNextTrelloTasks(): Promise<BotResponse> {
+  // TODO: fetch actual next steps from Trello API
+  return {
+    text: `🌿 Santé: prendre rdv checkup dentiste`,
+  }
+}
+
 export const addAsTrelloComment: CommandHandler = (message, handlerOpts) =>
   extractCardFromTags(message, handlerOpts)
     .then(({ trello, targetedCards }) =>
@@ -159,3 +166,6 @@ export const addAsTrelloTask: CommandHandler = (message, handlerOpts) =>
       _addAsTrelloTask(message, trello, targetedCards, options)
     )
     .catch((err) => ({ text: err.message }))
+
+export const getNextTrelloTasks: CommandHandler = (message, handlerOpts) =>
+  _getNextTrelloTasks().catch((err) => ({ text: err.message }))
