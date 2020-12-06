@@ -35,7 +35,7 @@ const cleanTag = (tag: string): string =>
 const renderTag = (tag: string): string => `#${cleanTag(tag)}`
 
 const extractTagsFromBinding = (card: TrelloCard): string[] => {
-  const tagList = (card.desc.match(RE_TRELLO_CARD_BINDING) || [])[1]
+  const tagList = ((card.desc || '').match(RE_TRELLO_CARD_BINDING) || [])[1]
   return tagList ? tagList.split(',').map(cleanTag) : []
 }
 
@@ -149,15 +149,17 @@ const _addAsTrelloTask = async (
 }
 
 async function _getNextTrelloTasks(
+  message: ParsedMessageEntities,
   handlerOpts: MessageHandlerOptions
 ): Promise<BotResponse> {
-  const options = checkOptions(handlerOpts) // may throw
-  const trello = new Trello(options.trello.apikey, options.trello.usertoken)
-  const cards = await trello.getCards(options.trello.boardid)
+  const { trello, targetedCards, options } = await extractCardFromTags(
+    message,
+    handlerOpts
+  ) // may throw
   const boardId = options.trello.boardid
   const nextSteps: { cardName: string; nextStep: string }[] = []
   await Promise.all(
-    cards.map(async (card) => {
+    targetedCards.map(async (card) => {
       const checklistIds = await trello.getChecklistIds(boardId, card.id)
       if (checklistIds.length > 0) {
         const nextStep = await trello.getNextTodoItem(checklistIds[0])
@@ -189,7 +191,7 @@ export const addAsTrelloTask: CommandHandler = (message, handlerOpts) =>
     .catch((err) => ({ error: err, text: err.message }))
 
 export const getNextTrelloTasks: CommandHandler = (message, handlerOpts) =>
-  _getNextTrelloTasks(handlerOpts).catch((err) => ({
+  _getNextTrelloTasks(message, handlerOpts).catch((err) => ({
     error: err,
     text: err.message,
   }))
