@@ -270,5 +270,41 @@ describe('trello use cases', () => {
       // check expectation
       expect(res.text).toMatch(expectedResult)
     })
+
+    it('returns the first tasks of both cards of a board', async () => {
+      const expectedNextSteps = [
+        { cardName: 'Health', itemName: 'go to dentist' },
+        { cardName: 'Home', itemName: 'buy new kitch lights' },
+      ]
+      const expectedResult = expectedNextSteps
+        .map((step) => `${step.cardName}: ${step.itemName}`)
+        .join('\n')
+      // run test
+      const cards = expectedNextSteps.map((testCase, i) => ({
+        id: `checklist${i}`,
+        name: testCase.cardName,
+      }))
+      mockTrelloBoard(FAKE_CREDS.trello.boardid, cards)
+      expectedNextSteps.forEach((testCase, i) => {
+        mockTrelloCard(FAKE_CREDS.trello.boardid, {
+          ...cards[i],
+          idChecklists: [`checklist${i}`],
+        })
+        mockTrelloChecklist({
+          id: `checklist${i}`,
+          checkItems: [
+            { pos: 1, state: 'incomplete', name: testCase.itemName },
+          ] as TrelloChecklistItem[],
+        })
+      })
+      const message = createMessage({
+        commands: [{ type: 'bot_command', text: '/next' }],
+        tags: [], // TODO: [{ type: 'hashtag', text: tagName }], // also test with a tag
+        rest: '',
+      })
+      const res = await getNextTrelloTasks(message, FAKE_CREDS)
+      // check expectation
+      expect(res.text).toMatch(expectedResult)
+    })
   })
 })
