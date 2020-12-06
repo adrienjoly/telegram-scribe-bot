@@ -22,7 +22,7 @@ type TrelloChecklist = {
 type TrelloChecklistItem = {
   name: string
   pos: number
-  state: 'incomplete' & 'complete'
+  state: 'incomplete' | 'complete'
 }
 
 declare class TrelloLib {

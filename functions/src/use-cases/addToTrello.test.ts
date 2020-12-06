@@ -244,44 +244,55 @@ describe('trello use cases', () => {
   })
 
   describe('getNextTrelloTasks', () => {
+    const mockTrelloBoard = (boardId: string, cards: Partial<TrelloCard>[]) =>
+      nock('https://api.trello.com')
+        .get(`/1/boards/${boardId}/cards`)
+        .query(true)
+        .reply(200, cards)
+
+    const mockTrelloCard = (boardId: string, card: Partial<TrelloCard>) =>
+      nock('https://api.trello.com')
+        .get(`/1/boards/${boardId}/cards/${card.id}`)
+        .query(true)
+        .reply(200, card)
+
+    const mockTrelloChecklist = (checklist: Partial<TrelloChecklist>) =>
+      nock('https://api.trello.com')
+        .get(`/1/checklists/${checklist.id}`)
+        .query(true)
+        .reply(200, checklist)
+
     it('returns the first task of the only card of a board', async () => {
-      const checklistId = 'myChecklistId'
+      // define environment and expectations
       const card = {
         id: 'myCardId',
         name: `🌿 Santé`,
       }
-      // simulate a trello card that is associated with the tag
-      nock('https://api.trello.com')
-        .get(`/1/boards/${FAKE_CREDS.trello.boardid}/cards`)
-        .query(true)
-        .reply(200, [card])
-      // simulate a checklist of that trello card
-      nock('https://api.trello.com')
-        .get(`/1/boards/${FAKE_CREDS.trello.boardid}/cards/${card.id}`)
-        .query(true)
-        .reply(200, { idChecklists: [checklistId] })
-      // simulate a checklist of that trello card
-      nock('https://api.trello.com')
-        .get(`/1/checklists/${checklistId}`)
-        .query(true)
-        .reply(200, {
-          checkItems: [
-            {
-              pos: 1,
-              state: 'incomplete',
-              name: 'prendre rdv checkup dentiste',
-            },
-          ],
-        })
-
+      const checklistItem = {
+        pos: 1,
+        state: 'incomplete',
+        name: 'prendre rdv checkup dentiste',
+      }
+      const expectedResult = `${card.name}: ${checklistItem.name}`
+      // run test
+      const checklist = {
+        id: 'myChecklistId',
+        checkItems: [checklistItem] as TrelloChecklistItem[],
+      }
+      mockTrelloBoard(FAKE_CREDS.trello.boardid, [card])
+      mockTrelloCard(FAKE_CREDS.trello.boardid, {
+        ...card,
+        idChecklists: [checklist.id],
+      })
+      mockTrelloChecklist(checklist)
       const message = createMessage({
         commands: [{ type: 'bot_command', text: '/next' }],
         tags: [], // TODO: [{ type: 'hashtag', text: tagName }], // also test with a tag
         rest: '',
       })
-
       const res = await getNextTrelloTasks(message, FAKE_CREDS)
-      expect(res.text).toMatch('🌿 Santé: prendre rdv checkup dentiste')
+      // check expectation
+      expect(res.text).toMatch(expectedResult)
     })
   })
 })
