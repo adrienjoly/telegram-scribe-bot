@@ -3,13 +3,13 @@
 import expect from 'expect'
 import nock from 'nock'
 import {
-  Options,
+  TrelloOptions,
   addAsTrelloComment,
   addAsTrelloTask,
 } from './../src/use-cases/addToTrello'
 import { ParsedMessageEntities } from '../src/Telegram'
 
-const FAKE_CREDS: Options = {
+const FAKE_CREDS: TrelloOptions = {
   trello: {
     apikey: 'trelloApiKey',
     boardid: 'trelloBoardId',
@@ -56,7 +56,7 @@ describe('trello use cases', () => {
 
     it('fails if trello credentials are empty', async () => {
       const message = createMessage({ rest: 'coucou' })
-      const options: Options = {
+      const options: TrelloOptions = {
         trello: {
           apikey: '',
           boardid: '',

@@ -1,4 +1,4 @@
-import { MessageHandlerOptions, BotResponse } from './../types'
+import { CommandHandler, MessageHandlerOptions, BotResponse } from './../types'
 import { ParsedMessageEntities } from './../Telegram'
 import { Trello } from '../services/Trello'
 
@@ -10,7 +10,7 @@ const CONFIG_KEYS = <const>['apikey', 'usertoken', 'boardid']
 
 type CONFIG_KEYS_ENUM = typeof CONFIG_KEYS[number]
 
-export type Options = {
+type TrelloOptions = {
   [CONFIG_NAMESPACE]: { [key in CONFIG_KEYS_ENUM]: string }
 }
 
@@ -19,12 +19,14 @@ type TrelloCardWithTags = {
   tags: string[]
 }
 
-const checkOptions = (options: MessageHandlerOptions): Options => {
+// Populate TrelloOptions from MessageHandlerOptions.
+// Throws if any required option is missing.
+const checkOptions = (options: MessageHandlerOptions): TrelloOptions => {
   for (const key of Object.values(CONFIG_KEYS)) {
     if (!options?.[CONFIG_NAMESPACE]?.[key])
       throw new Error(`missing ${CONFIG_NAMESPACE}.${key}`)
   }
-  return options as Options
+  return options as TrelloOptions
 }
 
 const cleanTag = (tag: string): string =>
@@ -57,17 +59,14 @@ const getCardsBoundToTags = (
     .map(({ card }) => card)
 }
 
-type ActionFunction = (
-  message: ParsedMessageEntities,
-  trello: Trello,
-  targetedCards: TrelloCard[],
-  options: Options
-) => Promise<BotResponse>
-
-const wrap = (func: ActionFunction) => async (
+async function extractCardFromTags(
   message: ParsedMessageEntities,
   messageHandlerOptions: MessageHandlerOptions
-): Promise<BotResponse> => {
+): Promise<{
+  trello: Trello
+  targetedCards: TrelloCard[]
+  options: TrelloOptions
+}> {
   const options = checkOptions(messageHandlerOptions) // may throw
   const trello = new Trello(options.trello.apikey, options.trello.usertoken)
   const cards = await trello.getCards(options.trello.boardid)
@@ -77,19 +76,17 @@ const wrap = (func: ActionFunction) => async (
   }))
   const validTags = listValidTags(cardsWithTags)
   if (!validTags.length) {
-    return {
-      text: `🤔  Please bind tags to your cards. How: https://github.com/adrienjoly/telegram-scribe-bot#2-bind-tags-to-trello-cards`,
-    }
+    throw `🤔  Please bind tags to your cards. How: https://github.com/adrienjoly/telegram-scribe-bot#2-bind-tags-to-trello-cards`
   }
   const noteTags = message.tags.map((tagEntity) => tagEntity.text)
   if (!noteTags.length) {
-    return { text: `🤔  Please specify at least one hashtag: ${validTags}` }
+    throw `🤔  Please specify at least one hashtag: ${validTags}`
   }
   const targetedCards = getCardsBoundToTags(cardsWithTags, noteTags)
   if (!targetedCards.length) {
-    return { text: `🤔  No cards match. Please pick another tag: ${validTags}` }
+    throw `🤔  No cards match. Please pick another tag: ${validTags}`
   }
-  return await func(message, trello, targetedCards, options)
+  return { trello, targetedCards, options }
 }
 
 const _addAsTrelloComment = async (
@@ -113,7 +110,7 @@ const _addAsTrelloTask = async (
   message: ParsedMessageEntities,
   trello: Trello,
   targetedCards: TrelloCard[],
-  options: Options
+  options: TrelloOptions
 ): Promise<BotResponse> => {
   const getUniqueCardChecklist = async (
     checklistIds: string[]
@@ -150,5 +147,16 @@ const _addAsTrelloTask = async (
   }
 }
 
-export const addAsTrelloComment = wrap(_addAsTrelloComment)
-export const addAsTrelloTask = wrap(_addAsTrelloTask)
+export const addAsTrelloComment: CommandHandler = (message, handlerOpts) =>
+  extractCardFromTags(message, handlerOpts)
+    .then(({ trello, targetedCards }) =>
+      _addAsTrelloComment(message, trello, targetedCards)
+    )
+    .catch((err) => ({ text: err }))
+
+export const addAsTrelloTask: CommandHandler = (message, handlerOpts) =>
+  extractCardFromTags(message, handlerOpts)
+    .then(({ trello, targetedCards, options }) =>
+      _addAsTrelloTask(message, trello, targetedCards, options)
+    )
+    .catch((err) => ({ text: err.message }))

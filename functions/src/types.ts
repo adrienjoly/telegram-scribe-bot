@@ -7,7 +7,7 @@ export type MessageHandlerOptions = {
 export type CommandHandler = (
   message: ParsedMessageEntities,
   options: MessageHandlerOptions
-) => Promise<{ text: string }>
+) => Promise<BotResponse>
 
 export type BotResponse = {
   text: string
