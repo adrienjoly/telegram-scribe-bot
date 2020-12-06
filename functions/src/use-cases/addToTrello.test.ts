@@ -198,7 +198,6 @@ describe('trello use cases', () => {
     })
 
     it('succeeds', async () => {
-      // define environment and expectations
       const tagName = '#myTag'
       const card = trelloCardWithTag(tagName)
       // run test
@@ -226,22 +225,35 @@ describe('trello use cases', () => {
   })
 
   describe('getNextTrelloTasks', () => {
-    it('returns the first task of the only card of a board', async () => {
-      // define environment and expectations
+    it('returns the first incomplete task of the only card of a board', async () => {
+      const cardName = `🌿 Santé`
+      const expectedNextStep = 'prendre rdv checkup dentiste'
+      const expectedResult = `${cardName}: ${expectedNextStep}`
+      const checklistItems = [
+        {
+          pos: 3,
+          state: 'incomplete',
+          name: 'faire bilan santé',
+        },
+        {
+          pos: 1,
+          state: 'complete',
+          name: 'prendre rdv checkup médecin traitant',
+        },
+        {
+          pos: 2,
+          state: 'incomplete',
+          name: expectedNextStep,
+        },
+      ]
+      // run test
       const card = {
         id: 'myCardId',
-        name: `🌿 Santé`,
+        name: cardName,
       }
-      const checklistItem = {
-        pos: 1,
-        state: 'incomplete',
-        name: 'prendre rdv checkup dentiste',
-      }
-      const expectedResult = `${card.name}: ${checklistItem.name}`
-      // run test
       const checklist = {
         id: 'myChecklistId',
-        checkItems: [checklistItem] as TrelloChecklistItem[],
+        checkItems: checklistItems as TrelloChecklistItem[],
       }
       mockTrelloBoard(FAKE_CREDS.trello.boardid, [card])
       mockTrelloCard(FAKE_CREDS.trello.boardid, {
