@@ -247,10 +247,7 @@ describe('trello use cases', () => {
         },
       ]
       // run test
-      const card = {
-        id: 'myCardId',
-        name: cardName,
-      }
+      const card = { ...trelloCardWithTag('someTag'), name: cardName }
       const checklist = {
         id: 'myChecklistId',
         checkItems: checklistItems as TrelloChecklistItem[],
