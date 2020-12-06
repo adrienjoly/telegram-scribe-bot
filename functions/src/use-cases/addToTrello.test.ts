@@ -278,6 +278,7 @@ describe('trello use cases', () => {
         .join('\n')
       // run test
       const cards = testCases.map((testCase, i) => ({
+        ...trelloCardWithTag('someTag'),
         id: `card${i}`,
         name: testCase.cardName,
       }))
@@ -312,6 +313,7 @@ describe('trello use cases', () => {
       const expectedResult = `${testCases[1].cardName}: ${testCases[1].itemName}`
       // run test
       const cards = testCases.map((testCase, i) => ({
+        ...trelloCardWithTag('someTag'),
         id: `card${i}`,
         name: testCase.cardName,
       }))
