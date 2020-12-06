@@ -159,7 +159,9 @@ async function _getNextTrelloTasks(
       const checklistIds = await trello.getChecklistIds(boardId, card.id)
       if (checklistIds.length > 0) {
         const nextStep = await trello.getNextTodoItem(checklistIds[0])
-        nextSteps.push({ cardName: card.name, nextStep: nextStep.name })
+        if (nextStep && nextStep.name) {
+          nextSteps.push({ cardName: card.name, nextStep: nextStep.name })
+        }
       }
     })
   )
