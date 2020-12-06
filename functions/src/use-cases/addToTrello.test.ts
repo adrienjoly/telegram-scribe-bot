@@ -268,7 +268,6 @@ describe('trello use cases', () => {
       })
       const res = await getNextTrelloTasks(message, FAKE_CREDS)
       // check expectation
-      if (res.error) console.error(res.error)
       expect(res.text).toEqual(expectedResult)
     })
 
