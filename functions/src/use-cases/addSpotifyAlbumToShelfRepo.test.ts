@@ -104,7 +104,7 @@ describe('spotify use cases', () => {
         .reply(200, {})
       nock('https://api.github.com')
         .post('/repos/adrienjoly/album-shelf/pulls')
-        .reply(200, { url: '//successful-pr' })
+        .reply(200, { html_url: '//successful-pr' })
       const res = await addSpotifyAlbumToShelfRepo(message, FAKE_CREDS)
       expect(res).toHaveProperty('text', '✅  Submitted PR on //successful-pr')
     })
