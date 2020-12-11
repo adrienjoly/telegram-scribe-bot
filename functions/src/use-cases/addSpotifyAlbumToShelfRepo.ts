@@ -48,7 +48,6 @@ export const addSpotifyAlbumToShelfRepo = async (
     branchName: `scribe-bot-${Date.now()}`,
     prTitle: `add "${metadata.title}" to ${PR_TARGET.filePath}`,
     prBody: `Sent from Telegram-scribe-bot, on ${message.date}`,
-    log: console.warn,
   })
 
   return { text: `✅  Submitted PR on ${pr.url}` }

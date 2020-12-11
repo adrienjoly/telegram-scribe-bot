@@ -72,6 +72,9 @@ describe('spotify use cases', () => {
           images: [{ url: '' }],
         })
       nock('https://api.github.com')
+        .get((uri) => uri.includes(`/repos/adrienjoly/album-shelf`)) // TODO: make the repo customizable
+        .reply(200, { permissions: { push: true } })
+      nock('https://api.github.com')
         .get((uri) => uri.includes(`/repos/adrienjoly/album-shelf/commits`)) // TODO: make the repo customizable
         .reply(200, [{ sha: 'sha', commit: { tree: { sha: 'treesha' } } }])
       nock('https://api.github.com')
