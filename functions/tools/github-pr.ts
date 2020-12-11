@@ -25,7 +25,7 @@ async function main(): Promise<void> {
     prTitle: `add test to ${PULL_REQUEST_DATA.filePath}`,
     prBody: 'Submitted by `telegram-scribe-bot`',
   })
-  console.warn(`✅ GitHub PR URL: ${pr.url}`)
+  console.warn(`✅ GitHub PR URL: ${pr.html_url}`)
 }
 
 main().catch((err) => {

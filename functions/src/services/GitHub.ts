@@ -37,7 +37,7 @@ export class GitHub {
     branchName: string
     prTitle: string
     prBody: string
-  }): Promise<{ url: string }> {
+  }): Promise<{ url: string; html_url: string }> {
     // Returns a normal Octokit PR response
     // See https://octokit.github.io/rest.js/#octokit-routes-pulls-create
     const res = await this.octokit.createPullRequest({
@@ -70,7 +70,6 @@ export class GitHub {
         },
       ],
     })
-    console.warn(res)
     return res.data
   }
 }
