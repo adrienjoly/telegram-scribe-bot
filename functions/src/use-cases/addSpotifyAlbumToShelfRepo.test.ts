@@ -72,6 +72,9 @@ describe('spotify use cases', () => {
           images: [{ url: '' }],
         })
       nock('https://api.github.com')
+        .get((uri) => uri.includes(`/repos/adrienjoly/album-shelf`)) // TODO: make the repo customizable
+        .reply(200, { permissions: { push: true } })
+      nock('https://api.github.com')
         .get((uri) => uri.includes(`/repos/adrienjoly/album-shelf/commits`)) // TODO: make the repo customizable
         .reply(200, [{ sha: 'sha', commit: { tree: { sha: 'treesha' } } }])
       nock('https://api.github.com')
@@ -101,7 +104,7 @@ describe('spotify use cases', () => {
         .reply(200, {})
       nock('https://api.github.com')
         .post('/repos/adrienjoly/album-shelf/pulls')
-        .reply(200, { url: '//successful-pr' })
+        .reply(200, { html_url: '//successful-pr' })
       const res = await addSpotifyAlbumToShelfRepo(message, FAKE_CREDS)
       expect(res).toHaveProperty('text', '✅  Submitted PR on //successful-pr')
     })

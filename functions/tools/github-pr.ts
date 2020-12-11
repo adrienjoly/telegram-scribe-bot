@@ -24,9 +24,8 @@ async function main(): Promise<void> {
     branchName: `scribe-bot-${Date.now()}`,
     prTitle: `add test to ${PULL_REQUEST_DATA.filePath}`,
     prBody: 'Submitted by `telegram-scribe-bot`',
-    log: console.warn,
   })
-  console.warn(`✅ GitHub PR URL: ${pr.url}`)
+  console.warn(`✅ GitHub PR URL: ${pr.html_url}`)
 }
 
 main().catch((err) => {
