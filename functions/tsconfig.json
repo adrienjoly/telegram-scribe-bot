@@ -8,6 +8,7 @@
     "outDir": "./lib",
     "sourceMap": true,
     "strict": true,
+    "skipLibCheck": true, // to prevent TS type errors from octokit-plugin-create-pull-request
     "target": "es2017",
     "typeRoots": ["./node_modules/@types", "./typings"]
   },
