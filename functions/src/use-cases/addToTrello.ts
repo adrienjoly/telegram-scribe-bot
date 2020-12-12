@@ -185,31 +185,31 @@ class TrelloUseCases {
 
 // CommandHandlers
 
-export const addAsTrelloComment: CommandHandler = async (
-  message,
-  handlerOpts
-) => {
-  const trello = new TrelloUseCases(handlerOpts) // may throw
-  const targetedCards = await trello.fetchTargetedCards(message)
-  return trello.addAsTrelloComment(message, targetedCards)
-}
+export const commandHandlers: Record<string, CommandHandler> = {
+  async addAsTrelloComment(message, handlerOpts) {
+    const trello = new TrelloUseCases(handlerOpts) // may throw
+    const targetedCards = await trello.fetchTargetedCards(message)
+    return trello.addAsTrelloComment(message, targetedCards)
+  },
 
-export const addAsTrelloTask: CommandHandler = async (message, handlerOpts) => {
-  const trello = new TrelloUseCases(handlerOpts) // may throw
-  const targetedCards = await trello.fetchTargetedCards(message)
-  return trello.addAsTrelloTask(message, targetedCards)
-}
+  async addAsTrelloTask(message, handlerOpts) {
+    const trello = new TrelloUseCases(handlerOpts) // may throw
+    const targetedCards = await trello.fetchTargetedCards(message)
+    return trello.addAsTrelloTask(message, targetedCards)
+  },
 
-export const getNextTrelloTasks: CommandHandler = async (
-  message,
-  handlerOpts
-) => {
-  const trello = new TrelloUseCases(handlerOpts) // may throw
-  return trello.getNextTrelloTasks()
-}
+  async getNextTrelloTasks(message, handlerOpts) {
+    const trello = new TrelloUseCases(handlerOpts) // may throw
+    return trello.getNextTrelloTasks()
+  },
 
-export const getOrAddTrelloTasks: CommandHandler = (message, handlerOpts) =>
-  (message.rest === '' ? getNextTrelloTasks : addAsTrelloTask)(
-    message,
-    handlerOpts
-  )
+  async getOrAddTrelloTasks(message, handlerOpts) {
+    const trello = new TrelloUseCases(handlerOpts) // may throw
+    if (message.rest === '') {
+      return trello.getNextTrelloTasks()
+    } else {
+      const targetedCards = await trello.fetchTargetedCards(message)
+      return trello.addAsTrelloTask(message, targetedCards)
+    }
+  },
+}

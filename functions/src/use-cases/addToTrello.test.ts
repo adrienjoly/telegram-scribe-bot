@@ -2,13 +2,14 @@
 
 import expect from 'expect'
 import nock from 'nock'
-import {
-  TrelloOptions,
+import { TrelloOptions, commandHandlers } from './addToTrello'
+import { ParsedMessageEntities } from '../Telegram'
+
+const {
+  getNextTrelloTasks,
   addAsTrelloComment,
   addAsTrelloTask,
-  getNextTrelloTasks,
-} from './addToTrello'
-import { ParsedMessageEntities } from '../Telegram'
+} = commandHandlers
 
 const FAKE_CREDS: TrelloOptions = {
   trello: {

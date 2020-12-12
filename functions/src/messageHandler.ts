@@ -4,7 +4,7 @@ import {
   addTaskToTicktick,
   addTodayTaskToTicktick,
 } from './use-cases/addTaskToTicktick'
-import * as trello from './use-cases/addToTrello'
+import { commandHandlers as trello } from './use-cases/addToTrello'
 import { addSpotifyAlbumToShelfRepo } from './use-cases/addSpotifyAlbumToShelfRepo'
 import { BotResponse } from './types'
 
