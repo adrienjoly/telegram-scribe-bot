@@ -4,11 +4,9 @@ import {
   MessageHandlerOptions,
   BotResponse,
 } from './../types'
+import { checkServiceOptions } from './../helpers'
 import { ParsedMessageEntities } from './../Telegram'
 import { Trello } from '../services/Trello'
-
-// string to include in Trello card(s), to bind them with some tags
-const RE_TRELLO_CARD_BINDING = /telegram-scribe-bot:addCommentsFromTaggedNotes\(([^)]+)\)/
 
 export const CONFIG_NAMESPACE = <const>'trello'
 export const CONFIG_KEYS = <const>['apikey', 'usertoken', 'boardid']
@@ -23,23 +21,8 @@ type TrelloCardWithTags = {
   tags: string[]
 }
 
-// Validates a Service's options object by checking its required properties.
-// Throws if any required option is missing.
-const checkServiceOptions = <
-  Namespace extends string,
-  Keys extends readonly string[],
-  ResultingServiceOptionsType extends ServiceOptions<Namespace, Keys>
->(
-  serviceConfigNamespace: Namespace,
-  serviceConfigKeys: Keys,
-  options: MessageHandlerOptions
-): ResultingServiceOptionsType => {
-  for (const key of Object.values(serviceConfigKeys)) {
-    if (!options?.[serviceConfigNamespace]?.[key])
-      throw new Error(`missing ${serviceConfigNamespace}.${key}`)
-  }
-  return options as ResultingServiceOptionsType
-}
+// string to include in Trello card(s), to bind them with some tags
+const RE_TRELLO_CARD_BINDING = /telegram-scribe-bot:addCommentsFromTaggedNotes\(([^)]+)\)/
 
 // Populate TrelloOptions from MessageHandlerOptions.
 // Throws if any required option is missing.
