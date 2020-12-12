@@ -77,7 +77,7 @@ describe('trello use cases', () => {
     it('fails if trello credentials are not provided', async () => {
       const message = createMessage({ rest: 'coucou' })
       const promise = addAsTrelloComment(message, {})
-      expect(promise).rejects.toThrow('missing trello.apikey')
+      await expect(promise).rejects.toThrow('missing trello.apikey')
     })
 
     it('fails if trello credentials are empty', async () => {
@@ -90,7 +90,7 @@ describe('trello use cases', () => {
         },
       }
       const promise = addAsTrelloComment(message, options)
-      expect(promise).rejects.toThrow('missing trello.apikey')
+      await expect(promise).rejects.toThrow('missing trello.apikey')
     })
 
     it('suggests existing tags if no tags were provided', async () => {
