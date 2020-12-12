@@ -6,7 +6,7 @@ import {
 } from './../types'
 import { checkServiceOptions } from './../helpers'
 import { ParsedMessageEntities } from './../Telegram'
-import { Trello } from '../services/Trello'
+import { Trello as TrelloAPI } from '../services/Trello'
 
 export const CONFIG_NAMESPACE = <const>'trello'
 export const CONFIG_KEYS = <const>['apikey', 'usertoken', 'boardid']
@@ -60,19 +60,19 @@ const getCardsBoundToTags = (
 }
 
 class TrelloUseCases {
-  private options: TrelloOptions
-  private trello: Trello
+  private options: TrelloOptions['trello']
+  private trelloAPI: TrelloAPI
 
   constructor(options: MessageHandlerOptions) {
-    this.options = checkOptions(options)
-    this.trello = new Trello(options.trello.apikey, options.trello.usertoken)
+    this.options = checkOptions(options).trello
+    this.trelloAPI = new TrelloAPI(this.options.apikey, this.options.usertoken)
   }
 
   async fetchCardsWithTags(): Promise<{
     cardsWithTags: { card: TrelloCard; tags: string[] }[]
     validTags: string
   }> {
-    const cards = await this.trello.getCards(this.options.trello.boardid)
+    const cards = await this.trelloAPI.getCards(this.options.boardid)
     const cardsWithTags = cards.map((card) => ({
       card,
       tags: extractTagsFromBinding(card),
@@ -109,7 +109,7 @@ class TrelloUseCases {
   ): Promise<BotResponse> {
     await Promise.all(
       targetedCards.map((card) =>
-        this.trello.addComment(card.id, { text: message.rest })
+        this.trelloAPI.addComment(card.id, { text: message.rest })
       )
     )
     return {
@@ -128,17 +128,17 @@ class TrelloUseCases {
     ): Promise<TrelloChecklist | null> =>
       checklistIds.length !== 1
         ? null
-        : this.trello.getChecklist(checklistIds[0])
+        : this.trelloAPI.getChecklist(checklistIds[0])
     const taskName = message.rest
     const consideredCards = await Promise.all(
       targetedCards.map(async (card) => {
-        const checklistIds = await this.trello.getChecklistIds(
-          this.options.trello.boardid,
+        const checklistIds = await this.trelloAPI.getChecklistIds(
+          this.options.boardid,
           card.id
         )
         const checklist = await getUniqueCardChecklist(checklistIds)
         const addedItem = checklist
-          ? await this.trello.addChecklistItem(checklist.id, taskName, 'top')
+          ? await this.trelloAPI.addChecklistItem(checklist.id, taskName, 'top')
           : null
         return {
           cardName: card.name,
@@ -162,13 +162,16 @@ class TrelloUseCases {
   async getNextTrelloTasks(): Promise<BotResponse> {
     const { cardsWithTags } = await this.fetchCardsWithTags() // may throw
     const cards = cardsWithTags.filter(({ tags }) => tags.length > 0)
-    const boardId = this.options.trello.boardid
+    const boardId = this.options.boardid
     const nextSteps: { cardName: string; nextStep: string }[] = []
     await Promise.all(
       cards.map(async ({ card }) => {
-        const checklistIds = await this.trello.getChecklistIds(boardId, card.id)
+        const checklistIds = await this.trelloAPI.getChecklistIds(
+          boardId,
+          card.id
+        )
         if (checklistIds.length > 0) {
-          const nextStep = await this.trello.getNextTodoItem(checklistIds[0])
+          const nextStep = await this.trelloAPI.getNextTodoItem(checklistIds[0])
           if (nextStep && nextStep.name) {
             nextSteps.push({ cardName: card.name, nextStep: nextStep.name })
           }
