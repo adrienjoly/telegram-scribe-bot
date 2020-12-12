@@ -123,12 +123,20 @@ class TrelloUseCases {
     message: ParsedMessageEntities,
     targetedCards: TrelloCard[]
   ): Promise<BotResponse> {
-    const getUniqueCardChecklist = async (
+    const getTopChecklist = async (
       checklistIds: string[]
-    ): Promise<TrelloChecklist | null> =>
-      checklistIds.length !== 1
-        ? null
-        : this.trelloAPI.getChecklist(checklistIds[0])
+    ): Promise<TrelloChecklist | null> => {
+      if (checklistIds.length === 0) return null
+      const checklists = await Promise.all(
+        checklistIds.map((checklistId) =>
+          this.trelloAPI.getChecklist(checklistId)
+        )
+      )
+      // find the checklist with lowest pos value
+      return checklists.sort(
+        (a: TrelloChecklist, b: TrelloChecklist) => a.pos - b.pos
+      )[0]
+    }
     const taskName = message.rest
     const consideredCards = await Promise.all(
       targetedCards.map(async (card) => {
@@ -136,7 +144,7 @@ class TrelloUseCases {
           this.options.boardid,
           card.id
         )
-        const checklist = await getUniqueCardChecklist(checklistIds)
+        const checklist = await getTopChecklist(checklistIds)
         const addedItem = checklist
           ? await this.trelloAPI.addChecklistItem(checklist.id, taskName, 'top')
           : null
@@ -153,7 +161,7 @@ class TrelloUseCases {
         '🤔  No checklists were found for these tags. Please retry without another tag.'
       )
     return {
-      text: `✅  Added task at the top of these Trello cards' unique checklists: ${populatedCards
+      text: `✅  Added task at the top of these Trello cards' checklist(s): ${populatedCards
         .map((c) => c.cardName)
         .join(', ')}`,
     }
