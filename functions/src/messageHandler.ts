@@ -45,9 +45,6 @@ export async function processMessage(
       ).join(', ')}`
     } else {
       const res = await commandHandler(entities, options)
-      if (res.error) {
-        console.error(res.error)
-      }
       text = res.text
     }
   } catch (err) {
