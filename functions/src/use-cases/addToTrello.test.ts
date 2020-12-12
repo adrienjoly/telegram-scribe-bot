@@ -260,7 +260,7 @@ describe('trello use cases', () => {
         { id: 'myChecklistId1', name: 'My first checklist', pos: 2 },
         { id: 'myChecklistId2', name: 'My latest checklist', pos: 1 },
       ]
-      const expectedChecklist = checklists[0] // because its position is the highest
+      const expectedChecklist = checklists[1] // because its position is the lowest (i.e. top)
       // run test
       mockTrelloBoard(FAKE_CREDS.trello.boardid, [card])
       mockTrelloCard(FAKE_CREDS.trello.boardid, {
@@ -281,8 +281,6 @@ describe('trello use cases', () => {
       const res = await addAsTrelloTask(message, FAKE_CREDS)
       // check expectations
       expect(res.text).toMatch('Added task at the top of these Trello cards')
-      expect(res.text).toMatch(tagName)
-      expect(res.text).toMatch(expectedChecklist.name)
     })
   })
 
