@@ -162,12 +162,11 @@ class TrelloUseCases {
   async getNextTrelloTasks(): Promise<BotResponse> {
     const { cardsWithTags } = await this.fetchCardsWithTags() // may throw
     const cards = cardsWithTags.filter(({ tags }) => tags.length > 0)
-    const boardId = this.options.boardid
     const nextSteps: { cardName: string; nextStep: string }[] = []
     await Promise.all(
       cards.map(async ({ card }) => {
         const checklistIds = await this.trelloAPI.getChecklistIds(
-          boardId,
+          this.options.boardid,
           card.id
         )
         if (checklistIds.length > 0) {
@@ -184,11 +183,27 @@ class TrelloUseCases {
         .join('\n'),
     }
   }
+
+  async listTags(): Promise<BotResponse> {
+    const { cardsWithTags } = await this.fetchCardsWithTags() // may throw
+    return {
+      text: cardsWithTags
+        .map(
+          ({ card, tags }) => `${card.name}: ${tags.map(renderTag).join(', ')}`
+        )
+        .join('\n'),
+    }
+  }
 }
 
 // CommandHandlers
 
 export const commandHandlers: Record<string, CommandHandler> = {
+  async listTags(message, handlerOpts) {
+    const trello = new TrelloUseCases(handlerOpts) // may throw
+    return trello.listTags()
+  },
+
   async addAsTrelloComment(message, handlerOpts) {
     const trello = new TrelloUseCases(handlerOpts) // may throw
     const targetedCards = await trello.fetchTargetedCards(message)
