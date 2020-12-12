@@ -29,6 +29,15 @@ export class Trello {
     )) as TrelloChecklist
   }
 
+  async getNextTodoItem(checklistId: string): Promise<TrelloChecklistItem> {
+    const { checkItems } = await this.getChecklist(checklistId)
+    return checkItems
+      .filter((a: TrelloChecklistItem) => a.state === 'incomplete')
+      .sort(
+        (a: TrelloChecklistItem, b: TrelloChecklistItem) => a.pos - b.pos
+      )[0]
+  }
+
   async addComment(cardId: string, { text }: { text: string }) {
     return await this.trelloLib.makeRequest(
       'post',

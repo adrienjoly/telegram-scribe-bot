@@ -4,5 +4,13 @@
     "source.fixAll.eslint": true
   },
   "prettier.configPath": ".prettierrc.js",
-  "editor.defaultFormatter": "esbenp.prettier-vscode"
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "lib/": true,
+  }
 }

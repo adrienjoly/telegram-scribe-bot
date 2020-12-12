@@ -1,3 +1,8 @@
+#!./node_modules/.bin/ts-node
+
+// To test this API, run this command from the parent directory:
+// $ tools/spotify-albums.ts
+
 import { Spotify, formatAlbum } from '../src/services/Spotify'
 import yaml from 'js-yaml'
 
