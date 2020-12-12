@@ -13,6 +13,7 @@ const commandHandlers: { [key: string]: CommandHandler } = {
   '/shelf': addSpotifyAlbumToShelfRepo,
   '/todo': addTaskToTicktick,
   '/today': addTodayTaskToTicktick,
+  '/tags': trello.listTags,
   '/note': trello.addAsTrelloComment,
   '/next': trello.getOrAddTrelloTasks,
   '/version': async (_, options): Promise<BotResponse> => {
