@@ -151,12 +151,14 @@ describe('trello use cases', () => {
   })
 
   describe('listTags', () => {
-    it('succeeds', async () => {
+    it('should list tags associated with each Trello card', async () => {
       const testCases = [
         { cardName: 'Health & well-being', tags: ['#health'] },
+        { cardName: 'Car', tags: [] }, // no tags
         { cardName: 'Home & Furniture', tags: ['#home'] },
       ]
       const expectedResult = testCases
+        .filter((step) => step.tags.length > 0) // no tags => card not included in list
         .map((step) => `${step.cardName}: ${step.tags.join(', ')}`)
         .join('\n')
       // run test
