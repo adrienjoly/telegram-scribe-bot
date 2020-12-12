@@ -227,7 +227,7 @@ describe('trello use cases', () => {
       )
     })
 
-    it('succeeds', async () => {
+    it('should add the task to the checklist of a card', async () => {
       const tagName = '#myTag'
       const card = trelloCardWithTag(tagName)
       // run test
@@ -251,6 +251,38 @@ describe('trello use cases', () => {
       expect(res.text).toMatch('Added task at the top of these Trello cards')
       expect(res.text).toMatch(tagName)
       expect(res.text).toMatch(card.name)
+    })
+
+    it('should add the task to the top checklist of a card', async () => {
+      const tagName = '#myTag'
+      const card = trelloCardWithTag(tagName)
+      const checklists = [
+        { id: 'myChecklistId1', name: 'My first checklist', pos: 2 },
+        { id: 'myChecklistId2', name: 'My latest checklist', pos: 1 },
+      ]
+      const expectedChecklist = checklists[0] // because its position is the highest
+      // run test
+      mockTrelloBoard(FAKE_CREDS.trello.boardid, [card])
+      mockTrelloCard(FAKE_CREDS.trello.boardid, {
+        ...card,
+        idChecklists: checklists.map((checklist) => checklist.id),
+      })
+      checklists.forEach((checklist) => mockTrelloChecklist(checklist))
+      nock('https://api.trello.com') // simulate the response of adding a task to that checklist
+        .post(
+          (uri) =>
+            uri.includes(`/1/checklists/${expectedChecklist.id}/checkitems`) // TODO: simplify path
+        )
+        .reply(200)
+      const message = createMessage({
+        commands: [{ type: 'bot_command', text: '/next' }],
+        tags: [{ type: 'hashtag', text: tagName }],
+      })
+      const res = await addAsTrelloTask(message, FAKE_CREDS)
+      // check expectations
+      expect(res.text).toMatch('Added task at the top of these Trello cards')
+      expect(res.text).toMatch(tagName)
+      expect(res.text).toMatch(expectedChecklist.name)
     })
   })
 
