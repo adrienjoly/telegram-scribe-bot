@@ -6,6 +6,7 @@ import { TrelloOptions, commandHandlers } from './addToTrello'
 import { ParsedMessageEntities } from '../Telegram'
 
 const {
+  listTags,
   getNextTrelloTasks,
   addAsTrelloComment,
   addAsTrelloTask,
@@ -19,11 +20,13 @@ const FAKE_CREDS: TrelloOptions = {
   },
 }
 
-const trelloCardWithTag = (tag: string) => ({
+const trelloCardWithTags = (tags: string[]) => ({
   id: 'myCardId',
-  name: `Dummy card associated with ${tag}`,
-  desc: `telegram-scribe-bot:addCommentsFromTaggedNotes(${tag})`,
+  name: `Dummy card associated with ${tags}`,
+  desc: `telegram-scribe-bot:addCommentsFromTaggedNotes(${tags.join(',')})`,
 })
+
+const trelloCardWithTag = (tag: string) => trelloCardWithTags([tag])
 
 const createMessage = ({ ...overrides }): ParsedMessageEntities => ({
   date: new Date(),
@@ -144,6 +147,29 @@ describe('trello use cases', () => {
       await expect(addAsTrelloComment(message, FAKE_CREDS)).rejects.toThrow(
         'Please bind tags to your cards'
       )
+    })
+  })
+
+  describe('listTags', () => {
+    it('succeeds', async () => {
+      const testCases = [
+        { cardName: 'Health & well-being', tags: ['#health'] },
+        { cardName: 'Home & Furniture', tags: ['#home'] },
+      ]
+      const expectedResult = testCases
+        .map((step) => `${step.cardName}: ${step.tags.join(', ')}`)
+        .join('\n')
+      // run test
+      const cards = testCases.map(({ cardName, tags }) => ({
+        ...trelloCardWithTags(tags),
+        name: cardName,
+      }))
+      mockTrelloBoard(FAKE_CREDS.trello.boardid, cards)
+      const message = createMessage({
+        commands: [{ type: 'bot_command', text: '/tags' }],
+      })
+      const res = await listTags(message, FAKE_CREDS)
+      expect(res.text).toEqual(expectedResult)
     })
   })
 
