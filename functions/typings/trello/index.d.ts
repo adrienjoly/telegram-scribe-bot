@@ -16,6 +16,7 @@ type TrelloChecklist = {
   id: string
   name: string
   checkItems: TrelloChecklistItem[]
+  pos: float
 }
 
 // cf https://developer.atlassian.com/cloud/trello/rest/api-group-cards/#api-cards-id-checkitemstates-get
