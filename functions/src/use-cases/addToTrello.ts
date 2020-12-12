@@ -1,33 +1,33 @@
-import { CommandHandler, MessageHandlerOptions, BotResponse } from './../types'
+import {
+  ServiceOptions,
+  CommandHandler,
+  MessageHandlerOptions,
+  BotResponse,
+} from './../types'
+import { checkServiceOptions } from './../helpers'
 import { ParsedMessageEntities } from './../Telegram'
-import { Trello } from '../services/Trello'
+import { Trello as TrelloAPI } from '../services/Trello'
 
-// string to include in Trello card(s), to bind them with some tags
-const RE_TRELLO_CARD_BINDING = /telegram-scribe-bot:addCommentsFromTaggedNotes\(([^)]+)\)/
+export const CONFIG_NAMESPACE = <const>'trello'
+export const CONFIG_KEYS = <const>['apikey', 'usertoken', 'boardid']
 
-const CONFIG_NAMESPACE = 'trello'
-const CONFIG_KEYS = <const>['apikey', 'usertoken', 'boardid']
-
-type CONFIG_KEYS_ENUM = typeof CONFIG_KEYS[number]
-
-export type TrelloOptions = {
-  [CONFIG_NAMESPACE]: { [key in CONFIG_KEYS_ENUM]: string }
-}
+export type TrelloOptions = ServiceOptions<
+  typeof CONFIG_NAMESPACE,
+  typeof CONFIG_KEYS
+>
 
 type TrelloCardWithTags = {
   card: TrelloCard
   tags: string[]
 }
 
+// string to include in Trello card(s), to bind them with some tags
+const RE_TRELLO_CARD_BINDING = /telegram-scribe-bot:addCommentsFromTaggedNotes\(([^)]+)\)/
+
 // Populate TrelloOptions from MessageHandlerOptions.
 // Throws if any required option is missing.
-const checkOptions = (options: MessageHandlerOptions): TrelloOptions => {
-  for (const key of Object.values(CONFIG_KEYS)) {
-    if (!options?.[CONFIG_NAMESPACE]?.[key])
-      throw new Error(`missing ${CONFIG_NAMESPACE}.${key}`)
-  }
-  return options as TrelloOptions
-}
+const checkOptions = (options: MessageHandlerOptions) =>
+  checkServiceOptions(CONFIG_NAMESPACE, CONFIG_KEYS, options)
 
 const cleanTag = (tag: string): string =>
   tag.replace('#', '').trim().toLowerCase()
@@ -59,162 +59,160 @@ const getCardsBoundToTags = (
     .map(({ card }) => card)
 }
 
-async function fetchCardsWithTags(
-  handlerOpts: MessageHandlerOptions
-): Promise<{
-  trello: Trello
-  options: TrelloOptions
-  cardsWithTags: { card: TrelloCard; tags: string[] }[]
-  validTags: string
-}> {
-  const options = checkOptions(handlerOpts) // may throw
-  const trello = new Trello(options.trello.apikey, options.trello.usertoken)
-  const cards = await trello.getCards(options.trello.boardid)
-  const cardsWithTags = cards.map((card) => ({
-    card,
-    tags: extractTagsFromBinding(card),
-  }))
-  const validTags = listValidTags(cardsWithTags)
-  if (!validTags.length) {
-    throw new Error(
-      `🤔  Please bind tags to your cards. How: https://github.com/adrienjoly/telegram-scribe-bot#2-bind-tags-to-trello-cards`
-    )
-  }
-  return { trello, options, cardsWithTags, validTags }
-}
+class TrelloUseCases {
+  private options: TrelloOptions['trello']
+  private trelloAPI: TrelloAPI
 
-async function fetchTargetedCards(
-  message: ParsedMessageEntities,
-  handlerOpts: MessageHandlerOptions
-): Promise<{
-  trello: Trello
-  options: TrelloOptions
-  targetedCards: TrelloCard[]
-}> {
-  const {
-    trello,
-    options,
-    cardsWithTags,
-    validTags,
-  } = await fetchCardsWithTags(handlerOpts)
-  const noteTags = message.tags.map((tagEntity) => tagEntity.text)
-  if (!noteTags.length) {
-    throw new Error(`🤔  Please specify at least one hashtag: ${validTags}`)
+  constructor(options: MessageHandlerOptions) {
+    this.options = checkOptions(options).trello
+    this.trelloAPI = new TrelloAPI(this.options.apikey, this.options.usertoken)
   }
-  const targetedCards = getCardsBoundToTags(cardsWithTags, noteTags)
-  if (!targetedCards.length) {
-    throw new Error(`🤔  No cards match. Please pick another tag: ${validTags}`)
-  }
-  return { trello, options, targetedCards }
-}
 
-const _addAsTrelloComment = async (
-  message: ParsedMessageEntities,
-  trello: Trello,
-  targetedCards: TrelloCard[]
-): Promise<BotResponse> => {
-  await Promise.all(
-    targetedCards.map((card) =>
-      trello.addComment(card.id, { text: message.rest })
-    )
-  )
-  return {
-    text: `✅  Sent to Trello cards: ${targetedCards
-      .map((c) => c.name)
-      .join(', ')}`,
-  }
-}
-
-const _addAsTrelloTask = async (
-  message: ParsedMessageEntities,
-  trello: Trello,
-  targetedCards: TrelloCard[],
-  options: TrelloOptions
-): Promise<BotResponse> => {
-  const getUniqueCardChecklist = async (
-    checklistIds: string[]
-  ): Promise<TrelloChecklist | null> =>
-    checklistIds.length !== 1 ? null : trello.getChecklist(checklistIds[0])
-  const taskName = message.rest
-  const consideredCards = await Promise.all(
-    targetedCards.map(async (card) => {
-      const checklistIds = await trello.getChecklistIds(
-        options.trello.boardid,
-        card.id
+  async fetchCardsWithTags(): Promise<{
+    cardsWithTags: { card: TrelloCard; tags: string[] }[]
+    validTags: string
+  }> {
+    const cards = await this.trelloAPI.getCards(this.options.boardid)
+    const cardsWithTags = cards.map((card) => ({
+      card,
+      tags: extractTagsFromBinding(card),
+    }))
+    const validTags = listValidTags(cardsWithTags)
+    if (!validTags.length) {
+      throw new Error(
+        `🤔  Please bind tags to your cards. How: https://github.com/adrienjoly/telegram-scribe-bot#2-bind-tags-to-trello-cards`
       )
-      const checklist = await getUniqueCardChecklist(checklistIds)
-      const addedItem = checklist
-        ? await trello.addChecklistItem(checklist.id, taskName, 'top')
-        : null
-      return {
-        cardName: card.name,
-        checklistName: checklist?.name,
-        addedTaskName: addedItem?.name,
-      }
-    })
-  )
-  const populatedCards = consideredCards.filter((card) => card.checklistName)
-  if (!populatedCards.length)
-    throw new Error(
-      '🤔  No checklists were found for these tags. Please retry without another tag.'
-    )
-  return {
-    text: `✅  Added task at the top of these Trello cards' unique checklists: ${populatedCards
-      .map((c) => c.cardName)
-      .join(', ')}`,
+    }
+    return { cardsWithTags, validTags }
   }
-}
 
-async function _getNextTrelloTasks(
-  message: ParsedMessageEntities,
-  handlerOpts: MessageHandlerOptions
-): Promise<BotResponse> {
-  const { trello, cardsWithTags, options } = await fetchCardsWithTags(
-    handlerOpts
-  ) // may throw
-  const cards = cardsWithTags.filter(({ tags }) => tags.length > 0)
-  const boardId = options.trello.boardid
-  const nextSteps: { cardName: string; nextStep: string }[] = []
-  await Promise.all(
-    cards.map(async ({ card }) => {
-      const checklistIds = await trello.getChecklistIds(boardId, card.id)
-      if (checklistIds.length > 0) {
-        const nextStep = await trello.getNextTodoItem(checklistIds[0])
-        if (nextStep && nextStep.name) {
-          nextSteps.push({ cardName: card.name, nextStep: nextStep.name })
+  async fetchTargetedCards(
+    message: ParsedMessageEntities
+  ): Promise<TrelloCard[]> {
+    const { cardsWithTags, validTags } = await this.fetchCardsWithTags()
+    const noteTags = message.tags.map((tagEntity) => tagEntity.text)
+    if (!noteTags.length) {
+      throw new Error(`🤔  Please specify at least one hashtag: ${validTags}`)
+    }
+    const targetedCards = getCardsBoundToTags(cardsWithTags, noteTags)
+    if (!targetedCards.length) {
+      throw new Error(
+        `🤔  No cards match. Please pick another tag: ${validTags}`
+      )
+    }
+    return targetedCards
+  }
+
+  async addAsTrelloComment(
+    message: ParsedMessageEntities,
+    targetedCards: TrelloCard[]
+  ): Promise<BotResponse> {
+    await Promise.all(
+      targetedCards.map((card) =>
+        this.trelloAPI.addComment(card.id, { text: message.rest })
+      )
+    )
+    return {
+      text: `✅  Sent to Trello cards: ${targetedCards
+        .map((c) => c.name)
+        .join(', ')}`,
+    }
+  }
+
+  async addAsTrelloTask(
+    message: ParsedMessageEntities,
+    targetedCards: TrelloCard[]
+  ): Promise<BotResponse> {
+    const getUniqueCardChecklist = async (
+      checklistIds: string[]
+    ): Promise<TrelloChecklist | null> =>
+      checklistIds.length !== 1
+        ? null
+        : this.trelloAPI.getChecklist(checklistIds[0])
+    const taskName = message.rest
+    const consideredCards = await Promise.all(
+      targetedCards.map(async (card) => {
+        const checklistIds = await this.trelloAPI.getChecklistIds(
+          this.options.boardid,
+          card.id
+        )
+        const checklist = await getUniqueCardChecklist(checklistIds)
+        const addedItem = checklist
+          ? await this.trelloAPI.addChecklistItem(checklist.id, taskName, 'top')
+          : null
+        return {
+          cardName: card.name,
+          checklistName: checklist?.name,
+          addedTaskName: addedItem?.name,
         }
-      }
-    })
-  )
-  return {
-    text: nextSteps
-      .map(({ cardName, nextStep }) => `${cardName}: ${nextStep}`)
-      .join('\n'),
+      })
+    )
+    const populatedCards = consideredCards.filter((card) => card.checklistName)
+    if (!populatedCards.length)
+      throw new Error(
+        '🤔  No checklists were found for these tags. Please retry without another tag.'
+      )
+    return {
+      text: `✅  Added task at the top of these Trello cards' unique checklists: ${populatedCards
+        .map((c) => c.cardName)
+        .join(', ')}`,
+    }
+  }
+
+  async getNextTrelloTasks(): Promise<BotResponse> {
+    const { cardsWithTags } = await this.fetchCardsWithTags() // may throw
+    const cards = cardsWithTags.filter(({ tags }) => tags.length > 0)
+    const boardId = this.options.boardid
+    const nextSteps: { cardName: string; nextStep: string }[] = []
+    await Promise.all(
+      cards.map(async ({ card }) => {
+        const checklistIds = await this.trelloAPI.getChecklistIds(
+          boardId,
+          card.id
+        )
+        if (checklistIds.length > 0) {
+          const nextStep = await this.trelloAPI.getNextTodoItem(checklistIds[0])
+          if (nextStep && nextStep.name) {
+            nextSteps.push({ cardName: card.name, nextStep: nextStep.name })
+          }
+        }
+      })
+    )
+    return {
+      text: nextSteps
+        .map(({ cardName, nextStep }) => `${cardName}: ${nextStep}`)
+        .join('\n'),
+    }
   }
 }
 
-export const addAsTrelloComment: CommandHandler = (message, handlerOpts) =>
-  fetchTargetedCards(message, handlerOpts)
-    .then(({ trello, targetedCards }) =>
-      _addAsTrelloComment(message, trello, targetedCards)
-    )
-    .catch((err) => ({ error: err, text: err.message }))
+// CommandHandlers
 
-export const addAsTrelloTask: CommandHandler = (message, handlerOpts) =>
-  fetchTargetedCards(message, handlerOpts)
-    .then(({ trello, targetedCards, options }) =>
-      _addAsTrelloTask(message, trello, targetedCards, options)
-    )
-    .catch((err) => ({ error: err, text: err.message }))
+export const commandHandlers: Record<string, CommandHandler> = {
+  async addAsTrelloComment(message, handlerOpts) {
+    const trello = new TrelloUseCases(handlerOpts) // may throw
+    const targetedCards = await trello.fetchTargetedCards(message)
+    return trello.addAsTrelloComment(message, targetedCards)
+  },
 
-export const getNextTrelloTasks: CommandHandler = (message, handlerOpts) =>
-  _getNextTrelloTasks(message, handlerOpts).catch((err) => ({
-    error: err,
-    text: err.message,
-  }))
+  async addAsTrelloTask(message, handlerOpts) {
+    const trello = new TrelloUseCases(handlerOpts) // may throw
+    const targetedCards = await trello.fetchTargetedCards(message)
+    return trello.addAsTrelloTask(message, targetedCards)
+  },
 
-export const getOrAddTrelloTasks: CommandHandler = (message, handlerOpts) =>
-  (message.rest === '' ? getNextTrelloTasks : addAsTrelloTask)(
-    message,
-    handlerOpts
-  )
+  async getNextTrelloTasks(message, handlerOpts) {
+    const trello = new TrelloUseCases(handlerOpts) // may throw
+    return trello.getNextTrelloTasks()
+  },
+
+  async getOrAddTrelloTasks(message, handlerOpts) {
+    const trello = new TrelloUseCases(handlerOpts) // may throw
+    if (message.rest === '') {
+      return trello.getNextTrelloTasks()
+    } else {
+      const targetedCards = await trello.fetchTargetedCards(message)
+      return trello.addAsTrelloTask(message, targetedCards)
+    }
+  },
+}

@@ -54,9 +54,9 @@ describe('spotify use cases', () => {
 
     it('fails if no albumId was found in the message', async () => {
       const message = createMessage({ rest: 'coucou' })
-      expect(addSpotifyAlbumToShelfRepo(message, FAKE_CREDS)).rejects.toThrow(
-        /failed to find albumId in this URL/
-      )
+      await expect(
+        addSpotifyAlbumToShelfRepo(message, FAKE_CREDS)
+      ).rejects.toThrow(/failed to find albumId in this URL/)
     })
 
     it('extracts the albumId and generates a pull request', async () => {

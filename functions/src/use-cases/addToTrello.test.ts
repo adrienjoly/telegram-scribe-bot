@@ -2,13 +2,14 @@
 
 import expect from 'expect'
 import nock from 'nock'
-import {
-  TrelloOptions,
+import { TrelloOptions, commandHandlers } from './addToTrello'
+import { ParsedMessageEntities } from '../Telegram'
+
+const {
+  getNextTrelloTasks,
   addAsTrelloComment,
   addAsTrelloTask,
-  getNextTrelloTasks,
-} from './addToTrello'
-import { ParsedMessageEntities } from '../Telegram'
+} = commandHandlers
 
 const FAKE_CREDS: TrelloOptions = {
   trello: {
@@ -77,7 +78,7 @@ describe('trello use cases', () => {
     it('fails if trello credentials are not provided', async () => {
       const message = createMessage({ rest: 'coucou' })
       const promise = addAsTrelloComment(message, {})
-      expect(promise).rejects.toThrow('missing trello.apikey')
+      await expect(promise).rejects.toThrow('missing trello.apikey')
     })
 
     it('fails if trello credentials are empty', async () => {
@@ -90,7 +91,7 @@ describe('trello use cases', () => {
         },
       }
       const promise = addAsTrelloComment(message, options)
-      expect(promise).rejects.toThrow('missing trello.apikey')
+      await expect(promise).rejects.toThrow('missing trello.apikey')
     })
 
     it('suggests existing tags if no tags were provided', async () => {
@@ -98,10 +99,9 @@ describe('trello use cases', () => {
       const cards = tags.map((tag) => trelloCardWithTag(tag))
       mockTrelloBoard(FAKE_CREDS.trello.boardid, cards)
       const message = createMessage({ rest: 'coucou' })
-      const res = await addAsTrelloComment(message, FAKE_CREDS)
-      expect(res.text).toMatch('Please specify at least one hashtag')
-      expect(res.text).toMatch(tags[0])
-      expect(res.text).toMatch(tags[1])
+      await expect(addAsTrelloComment(message, FAKE_CREDS)).rejects.toThrow(
+        `Please specify at least one hashtag: ${tags.join(', ')}`
+      )
     })
 
     it('suggests existing tags if no card matches the tag', async () => {
@@ -112,10 +112,9 @@ describe('trello use cases', () => {
         commands: [{ type: 'bot_command', text: '/note' }],
         tags: [{ type: 'hashtag', text: '#aRandomTag' }],
       })
-      const res = await addAsTrelloComment(message, FAKE_CREDS)
-      expect(res.text).toMatch('No cards match')
-      expect(res.text).toMatch('Please pick another tag')
-      expect(res.text).toMatch(tagName.toLowerCase())
+      await expect(addAsTrelloComment(message, FAKE_CREDS)).rejects.toThrow(
+        `No cards match. Please pick another tag: ${tagName.toLowerCase()}`
+      )
     })
 
     it('tolerates cards that are not associated with a tag', async () => {
@@ -128,8 +127,9 @@ describe('trello use cases', () => {
         commands: [{ type: 'bot_command', text: '/note' }],
         tags: [{ type: 'hashtag', text: '#aRandomTag' }],
       })
-      const res = await addAsTrelloComment(message, FAKE_CREDS)
-      expect(res.text).toMatch('No cards match')
+      await expect(addAsTrelloComment(message, FAKE_CREDS)).rejects.toThrow(
+        'No cards match'
+      )
     })
 
     it('invites to bind tags to card, if none were found', async () => {
@@ -141,8 +141,9 @@ describe('trello use cases', () => {
         commands: [{ type: 'bot_command', text: '/note' }],
         tags: [{ type: 'hashtag', text: '#aRandomTag' }],
       })
-      const res = await addAsTrelloComment(message, FAKE_CREDS)
-      expect(res.text).toMatch('Please bind tags to your cards')
+      await expect(addAsTrelloComment(message, FAKE_CREDS)).rejects.toThrow(
+        'Please bind tags to your cards'
+      )
     })
   })
 
@@ -192,9 +193,10 @@ describe('trello use cases', () => {
         commands: [{ type: 'bot_command', text: '/note' }],
         tags: [{ type: 'hashtag', text: tagName }],
       })
-      const res = await addAsTrelloTask(message, FAKE_CREDS)
       // check expectations
-      expect(res.text).toMatch('No checklists were found for these tags')
+      await expect(addAsTrelloTask(message, FAKE_CREDS)).rejects.toThrow(
+        'No checklists were found for these tags'
+      )
     })
 
     it('succeeds', async () => {
