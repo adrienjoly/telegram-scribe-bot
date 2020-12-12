@@ -8,6 +8,7 @@ The first version of this bot was developed by following the steps provided in [
 
 - `/todo <task> [#tag [#...]]` will add a ToDo/task to TickTick's inbox, for sorting
 - `/today <task> [#tag [#...]]` will add a ToDo/task to TickTick, due today
+- `/tags` will list the tags associated to each Trello card
 - `/next` will list the next `task` for each Trello card
 - `/next <task> [#tag]` will add a `task` to the top of the check-list of the Trello card associated with `#tag`
 - `/note <text> [#card [#...]]` will add a comment to the specified Trello card(s), for journaling
