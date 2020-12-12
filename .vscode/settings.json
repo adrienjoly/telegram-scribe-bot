@@ -1,4 +1,5 @@
 {
+  "eslint.workingDirectories": ["functions/"],
   "eslint.nodePath": "functions/",
   "editor.formatOnSave": true
 }
