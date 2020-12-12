@@ -98,7 +98,7 @@ describe('trello use cases', () => {
       const cards = tags.map((tag) => trelloCardWithTag(tag))
       mockTrelloBoard(FAKE_CREDS.trello.boardid, cards)
       const message = createMessage({ rest: 'coucou' })
-      expect(() => addAsTrelloComment(message, FAKE_CREDS)).rejects.toThrow(
+      await expect(addAsTrelloComment(message, FAKE_CREDS)).rejects.toThrow(
         `Please specify at least one hashtag: ${tags.join(', ')}`
       )
     })
@@ -111,7 +111,7 @@ describe('trello use cases', () => {
         commands: [{ type: 'bot_command', text: '/note' }],
         tags: [{ type: 'hashtag', text: '#aRandomTag' }],
       })
-      expect(() => addAsTrelloComment(message, FAKE_CREDS)).rejects.toThrow(
+      await expect(addAsTrelloComment(message, FAKE_CREDS)).rejects.toThrow(
         `No cards match. Please pick another tag: ${tagName.toLowerCase()}`
       )
     })
@@ -126,7 +126,7 @@ describe('trello use cases', () => {
         commands: [{ type: 'bot_command', text: '/note' }],
         tags: [{ type: 'hashtag', text: '#aRandomTag' }],
       })
-      expect(() => addAsTrelloComment(message, FAKE_CREDS)).rejects.toThrow(
+      await expect(addAsTrelloComment(message, FAKE_CREDS)).rejects.toThrow(
         'No cards match'
       )
     })
@@ -140,7 +140,7 @@ describe('trello use cases', () => {
         commands: [{ type: 'bot_command', text: '/note' }],
         tags: [{ type: 'hashtag', text: '#aRandomTag' }],
       })
-      expect(() => addAsTrelloComment(message, FAKE_CREDS)).rejects.toThrow(
+      await expect(addAsTrelloComment(message, FAKE_CREDS)).rejects.toThrow(
         'Please bind tags to your cards'
       )
     })
@@ -193,7 +193,7 @@ describe('trello use cases', () => {
         tags: [{ type: 'hashtag', text: tagName }],
       })
       // check expectations
-      expect(() => addAsTrelloTask(message, FAKE_CREDS)).rejects.toThrow(
+      await expect(addAsTrelloTask(message, FAKE_CREDS)).rejects.toThrow(
         'No checklists were found for these tags'
       )
     })
