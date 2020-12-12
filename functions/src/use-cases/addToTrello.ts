@@ -188,6 +188,7 @@ class TrelloUseCases {
     const { cardsWithTags } = await this.fetchCardsWithTags() // may throw
     return {
       text: cardsWithTags
+        .filter((card) => card.tags.length > 0) // no tags => card not included in list
         .map(
           ({ card, tags }) => `${card.name}: ${tags.map(renderTag).join(', ')}`
         )
