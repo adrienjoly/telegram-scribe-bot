@@ -1,5 +1,5 @@
 import {
-  ProviderOptions,
+  ServiceOptions,
   CommandHandler,
   MessageHandlerOptions,
   BotResponse,
@@ -13,7 +13,7 @@ const RE_TRELLO_CARD_BINDING = /telegram-scribe-bot:addCommentsFromTaggedNotes\(
 export const CONFIG_NAMESPACE = <const>'trello'
 export const CONFIG_KEYS = <const>['apikey', 'usertoken', 'boardid']
 
-export type TrelloOptions = ProviderOptions<
+export type TrelloOptions = ServiceOptions<
   typeof CONFIG_NAMESPACE,
   typeof CONFIG_KEYS
 >

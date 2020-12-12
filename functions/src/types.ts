@@ -2,7 +2,7 @@ import { ParsedMessageEntities } from './Telegram'
 
 type Enum<T extends readonly string[]> = T[number]
 
-export type ProviderOptions<
+export type ServiceOptions<
   Namespace extends string,
   Keys extends readonly string[]
 > = {
