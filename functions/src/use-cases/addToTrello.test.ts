@@ -98,10 +98,9 @@ describe('trello use cases', () => {
       const cards = tags.map((tag) => trelloCardWithTag(tag))
       mockTrelloBoard(FAKE_CREDS.trello.boardid, cards)
       const message = createMessage({ rest: 'coucou' })
-      const res = await addAsTrelloComment(message, FAKE_CREDS)
-      expect(res.text).toMatch('Please specify at least one hashtag')
-      expect(res.text).toMatch(tags[0])
-      expect(res.text).toMatch(tags[1])
+      expect(() => addAsTrelloComment(message, FAKE_CREDS)).rejects.toThrow(
+        `Please specify at least one hashtag: ${tags.join(', ')}`
+      )
     })
 
     it('suggests existing tags if no card matches the tag', async () => {
@@ -112,10 +111,9 @@ describe('trello use cases', () => {
         commands: [{ type: 'bot_command', text: '/note' }],
         tags: [{ type: 'hashtag', text: '#aRandomTag' }],
       })
-      const res = await addAsTrelloComment(message, FAKE_CREDS)
-      expect(res.text).toMatch('No cards match')
-      expect(res.text).toMatch('Please pick another tag')
-      expect(res.text).toMatch(tagName.toLowerCase())
+      expect(() => addAsTrelloComment(message, FAKE_CREDS)).rejects.toThrow(
+        `No cards match. Please pick another tag: ${tagName.toLowerCase()}`
+      )
     })
 
     it('tolerates cards that are not associated with a tag', async () => {
@@ -128,8 +126,9 @@ describe('trello use cases', () => {
         commands: [{ type: 'bot_command', text: '/note' }],
         tags: [{ type: 'hashtag', text: '#aRandomTag' }],
       })
-      const res = await addAsTrelloComment(message, FAKE_CREDS)
-      expect(res.text).toMatch('No cards match')
+      expect(() => addAsTrelloComment(message, FAKE_CREDS)).rejects.toThrow(
+        'No cards match'
+      )
     })
 
     it('invites to bind tags to card, if none were found', async () => {
@@ -141,8 +140,9 @@ describe('trello use cases', () => {
         commands: [{ type: 'bot_command', text: '/note' }],
         tags: [{ type: 'hashtag', text: '#aRandomTag' }],
       })
-      const res = await addAsTrelloComment(message, FAKE_CREDS)
-      expect(res.text).toMatch('Please bind tags to your cards')
+      expect(() => addAsTrelloComment(message, FAKE_CREDS)).rejects.toThrow(
+        'Please bind tags to your cards'
+      )
     })
   })
 
@@ -192,9 +192,10 @@ describe('trello use cases', () => {
         commands: [{ type: 'bot_command', text: '/note' }],
         tags: [{ type: 'hashtag', text: tagName }],
       })
-      const res = await addAsTrelloTask(message, FAKE_CREDS)
       // check expectations
-      expect(res.text).toMatch('No checklists were found for these tags')
+      expect(() => addAsTrelloTask(message, FAKE_CREDS)).rejects.toThrow(
+        'No checklists were found for these tags'
+      )
     })
 
     it('succeeds', async () => {

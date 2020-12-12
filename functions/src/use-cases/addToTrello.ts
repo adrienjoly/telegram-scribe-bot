@@ -194,24 +194,20 @@ async function _getNextTrelloTasks(
 }
 
 export const addAsTrelloComment: CommandHandler = (message, handlerOpts) =>
-  fetchTargetedCards(message, handlerOpts)
-    .then(({ trello, targetedCards }) =>
-      _addAsTrelloComment(message, trello, targetedCards)
-    )
-    .catch((err) => ({ error: err, text: err.message }))
+  fetchTargetedCards(message, handlerOpts).then(({ trello, targetedCards }) =>
+    _addAsTrelloComment(message, trello, targetedCards)
+  )
 
 export const addAsTrelloTask: CommandHandler = (message, handlerOpts) =>
-  fetchTargetedCards(message, handlerOpts)
-    .then(({ trello, targetedCards, options }) =>
-      _addAsTrelloTask(message, trello, targetedCards, options)
-    )
-    .catch((err) => ({ error: err, text: err.message }))
+  fetchTargetedCards(
+    message,
+    handlerOpts
+  ).then(({ trello, targetedCards, options }) =>
+    _addAsTrelloTask(message, trello, targetedCards, options)
+  )
 
 export const getNextTrelloTasks: CommandHandler = (message, handlerOpts) =>
-  _getNextTrelloTasks(message, handlerOpts).catch((err) => ({
-    error: err,
-    text: err.message,
-  }))
+  _getNextTrelloTasks(message, handlerOpts)
 
 export const getOrAddTrelloTasks: CommandHandler = (message, handlerOpts) =>
   (message.rest === '' ? getNextTrelloTasks : addAsTrelloTask)(
