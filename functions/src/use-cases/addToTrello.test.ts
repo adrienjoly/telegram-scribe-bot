@@ -61,6 +61,13 @@ const mockTrelloComment = () =>
     .query(true)
     .reply(200, {})
 
+// simulate the response of adding a task to that checklist
+const mockTrelloTaskCreation = (checklistId: string) =>
+  nock('https://api.trello.com')
+    .post(`/1/checklists/${checklistId}/checkitems`)
+    .query(true)
+    .reply(200)
+
 describe('trello use cases', () => {
   before(() => {
     nock.emitter.on('no match', ({ method, path }) =>
@@ -238,9 +245,7 @@ describe('trello use cases', () => {
         idChecklists: [checklistId],
       })
       mockTrelloChecklist({ id: checklistId, name: 'My checklist' })
-      nock('https://api.trello.com') // simulate the response of adding a task to that checklist
-        .post((uri) => uri.includes(`/1/checklists/${checklistId}/checkitems`))
-        .reply(200)
+      mockTrelloTaskCreation(checklistId)
       const message = createMessage({
         rest: 'coucou',
         commands: [{ type: 'bot_command', text: '/next' }],
@@ -268,10 +273,7 @@ describe('trello use cases', () => {
         idChecklists: checklists.map((checklist) => checklist.id),
       })
       checklists.forEach((checklist) => mockTrelloChecklist(checklist))
-      nock('https://api.trello.com') // simulate the response of adding a task to that checklist
-        .post(`/1/checklists/${expectedChecklist.id}/checkitems`)
-        .query(true)
-        .reply(200)
+      mockTrelloTaskCreation(expectedChecklist.id)
       const message = createMessage({
         commands: [{ type: 'bot_command', text: '/next' }],
         tags: [{ type: 'hashtag', text: tagName }],
