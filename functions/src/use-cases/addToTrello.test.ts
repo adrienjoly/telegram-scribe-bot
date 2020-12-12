@@ -269,10 +269,8 @@ describe('trello use cases', () => {
       })
       checklists.forEach((checklist) => mockTrelloChecklist(checklist))
       nock('https://api.trello.com') // simulate the response of adding a task to that checklist
-        .post(
-          (uri) =>
-            uri.includes(`/1/checklists/${expectedChecklist.id}/checkitems`) // TODO: simplify path
-        )
+        .post(`/1/checklists/${expectedChecklist.id}/checkitems`)
+        .query(true)
         .reply(200)
       const message = createMessage({
         commands: [{ type: 'bot_command', text: '/next' }],
