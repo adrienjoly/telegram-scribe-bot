@@ -1,4 +1,9 @@
-import { CommandHandler, MessageHandlerOptions, BotResponse } from './../types'
+import {
+  Enum,
+  CommandHandler,
+  MessageHandlerOptions,
+  BotResponse,
+} from './../types'
 import { ParsedMessageEntities } from './../Telegram'
 import { Trello } from '../services/Trello'
 
@@ -8,10 +13,8 @@ const RE_TRELLO_CARD_BINDING = /telegram-scribe-bot:addCommentsFromTaggedNotes\(
 export const CONFIG_NAMESPACE = <const>'trello'
 export const CONFIG_KEYS = <const>['apikey', 'usertoken', 'boardid']
 
-type CONFIG_KEYS_ENUM = typeof CONFIG_KEYS[number]
-
 export type TrelloOptions = {
-  [CONFIG_NAMESPACE]: { [key in CONFIG_KEYS_ENUM]: string }
+  [CONFIG_NAMESPACE]: { [key in Enum<typeof CONFIG_KEYS>]: string }
 }
 
 type TrelloCardWithTags = {

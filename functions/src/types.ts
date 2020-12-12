@@ -1,5 +1,7 @@
 import { ParsedMessageEntities } from './Telegram'
 
+export type Enum<T extends readonly string[]> = T[number]
+
 export type MessageHandlerOptions = {
   [namespace: string]: { [key: string]: string }
 }
