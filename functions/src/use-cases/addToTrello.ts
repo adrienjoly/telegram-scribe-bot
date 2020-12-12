@@ -23,22 +23,28 @@ type TrelloCardWithTags = {
   tags: string[]
 }
 
-const checkServiceOptions = <T extends MessageHandlerOptions>(
-  options: MessageHandlerOptions,
-  serviceConfigNamespace: string,
-  serviceConfigKeys: readonly string[]
-): T => {
+// Validates a Service's options object by checking its required properties.
+// Throws if any required option is missing.
+const checkServiceOptions = <
+  Namespace extends string,
+  Keys extends readonly string[],
+  ResultingServiceOptionsType extends ServiceOptions<Namespace, Keys>
+>(
+  serviceConfigNamespace: Namespace,
+  serviceConfigKeys: Keys,
+  options: MessageHandlerOptions
+): ResultingServiceOptionsType => {
   for (const key of Object.values(serviceConfigKeys)) {
     if (!options?.[serviceConfigNamespace]?.[key])
       throw new Error(`missing ${serviceConfigNamespace}.${key}`)
   }
-  return options as T
+  return options as ResultingServiceOptionsType
 }
 
 // Populate TrelloOptions from MessageHandlerOptions.
 // Throws if any required option is missing.
-const checkOptions = (options: MessageHandlerOptions): TrelloOptions =>
-  checkServiceOptions(options, CONFIG_NAMESPACE, CONFIG_KEYS)
+const checkOptions = (options: MessageHandlerOptions) =>
+  checkServiceOptions(CONFIG_NAMESPACE, CONFIG_KEYS, options)
 
 const cleanTag = (tag: string): string =>
   tag.replace('#', '').trim().toLowerCase()
