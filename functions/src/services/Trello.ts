@@ -38,7 +38,10 @@ export class Trello {
       )[0]
   }
 
-  async addComment(cardId: string, { text }: { text: string }) {
+  async addComment(
+    cardId: string,
+    { text }: { text: string }
+  ): Promise<unknown> {
     return await this.trelloLib.makeRequest(
       'post',
       `/1/cards/${cardId}/actions/comments`,
