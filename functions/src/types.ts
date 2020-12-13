@@ -31,8 +31,10 @@ export type BotResponse = {
   text: string
 }
 
+// cf API documentation: https://core.telegram.org/bots/api#sendmessage
 export type TelegramRequest = {
   method: 'sendMessage'
   chat_id: number
+  parse_mode?: 'HTML' | 'Markdown' | 'MarkdownV2' // cf https://core.telegram.org/bots/api#formatting-options
   text: string
 }

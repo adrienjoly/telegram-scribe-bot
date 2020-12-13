@@ -1,8 +1,10 @@
 import express from 'express'
 import cors from 'cors'
-import { TelegramMessage, parseMessage } from './Telegram'
+import { parseMessage } from './Telegram'
 import { processMessage } from './messageHandler'
 import { MessageHandlerOptions } from './types'
+
+const LOGGING = process.env.NODE_ENV !== 'test'
 
 const errorCodes: { [s: string]: number } = {
   'not a telegram message': 400,
@@ -23,10 +25,13 @@ export function makeApp(options: MessageHandlerOptions): express.Express {
   // our single entry point for every message
   app.post('/', async (req, res) => {
     try {
-      const message: TelegramMessage = parseMessage(req.body) // can throw 'not a telegram message'
+      LOGGING && console.log('▶ Request body:', req.body)
+      const message = parseMessage(req.body) // can throw 'not a telegram message'
       const responsePayload = await processMessage(message, options)
-      res.status(200).send(responsePayload)
+      LOGGING && console.log('◀ Response payload:', responsePayload)
+      res.status(200).send(responsePayload) // cf https://core.telegram.org/bots/api#making-requests-when-getting-updates
     } catch (err) {
+      LOGGING && console.error('◀ Error:', err, err.stack)
       res.status(errorCodes[err.message] || 500).send({ status: err.message })
     }
   })

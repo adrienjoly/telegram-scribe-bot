@@ -7,6 +7,7 @@ import {
 import { commandHandlers as trello } from './use-cases/addToTrello'
 import { addSpotifyAlbumToShelfRepo } from './use-cases/addSpotifyAlbumToShelfRepo'
 import { BotResponse } from './types'
+import markdown from 'nano-markdown'
 
 // map commands to "use-case" implementations
 const commandHandlers: { [key: string]: CommandHandler } = {
@@ -31,35 +32,25 @@ export async function processMessage(
   if (onlyFromUserId && message.from.id !== onlyFromUserId)
     throw new Error('this sender is not allowed')
 
-  console.log('received message from Telegram:', message)
-
   let text
-  try {
-    const entities = parseEntities(message)
-    console.log('entities:', entities)
+  const entities = parseEntities(message)
 
-    const command = (entities.commands[0] || {}).text
-    const commandHandler = commandHandlers[command]
-    if (!commandHandler) {
-      text = `🤔  Please retry with a valid command: ${Object.keys(
-        commandHandlers
-      ).join(', ')}`
-    } else {
-      const res = await commandHandler(entities, options)
-      text = res.text
-    }
-  } catch (err) {
-    text = `😕  Error while processing: ${err.message}`
-    console.error(`❌ `, err, err.stack)
+  const command = (entities.commands[0] || {}).text
+  const commandHandler = commandHandlers[command]
+  if (!commandHandler) {
+    text = `🤔  Please retry with a valid command: ${Object.keys(
+      commandHandlers
+    ).join(', ')}`
+  } else {
+    const res = await commandHandler(entities, options)
+    text = res.text
   }
 
-  console.log(`=> ${text}`)
-
+  // cf API documentation: https://core.telegram.org/bots/api#sendmessage
   return {
     method: 'sendMessage',
     chat_id: message.chat.id,
-    text,
+    parse_mode: 'HTML', // Note: response will not be sent if the text is not valid
+    text: markdown(text), // let's compile the markdown ourselves, because Telegram's parser is strict and it fails silently
   }
 }
-
-// reference: https://core.telegram.org/bots/api

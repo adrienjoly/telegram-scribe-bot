@@ -19,24 +19,6 @@ const postJSON = (url: string, json: unknown) =>
   })
 
 describe('app', () => {
-  const consoleBackup = {
-    log: console.log,
-    warn: console.warn,
-    error: console.error,
-  }
-
-  before(() => {
-    console.log = () => {} // eslint-disable-line @typescript-eslint/no-empty-function
-    console.warn = () => {} // eslint-disable-line @typescript-eslint/no-empty-function
-    console.error = () => {} // eslint-disable-line @typescript-eslint/no-empty-function
-  })
-
-  after(() => {
-    console.log = consoleBackup.log
-    console.warn = consoleBackup.warn
-    console.error = consoleBackup.error
-  })
-
   it('responds to GET /', async () => {
     const port = allocatePort()
     const server = await startApp({ port, options })
@@ -110,9 +92,9 @@ describe('app', () => {
       options: { ...options, trello: { apikey: 'incorrect' } },
     })
     const res = await postJSON(`http://localhost:${port}/`, { message })
-    expect(res.status).toEqual(200)
-    const payload = await res.json()
-    expect(payload.text).toMatch('missing trello.usertoken')
+    expect(res.status).toEqual(500)
+    const payload = await res.text()
+    expect(payload).toMatch('missing trello.usertoken')
     server.destroy()
   })
 })
