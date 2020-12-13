@@ -7,7 +7,7 @@ import {
 import { commandHandlers as trello } from './use-cases/addToTrello'
 import { addSpotifyAlbumToShelfRepo } from './use-cases/addSpotifyAlbumToShelfRepo'
 import { BotResponse } from './types'
-import markdown from 'nano-markdown'
+// import markdown from 'nano-markdown' // TODO: find a way to make sure HTML responses are accepted by Telegram
 
 // map commands to "use-case" implementations
 const commandHandlers: { [key: string]: CommandHandler } = {
@@ -50,7 +50,7 @@ export async function processMessage(
   return {
     method: 'sendMessage',
     chat_id: message.chat.id,
-    parse_mode: 'HTML', // Note: response will not be sent if the text is not valid
-    text: markdown(text), // let's compile the markdown ourselves, because Telegram's parser is strict and it fails silently
+    //parse_mode: 'HTML', // Note: response will not be sent if the text is not valid
+    text: /*markdown*/ text, // let's compile the markdown ourselves, because Telegram's parser is strict and it fails silently
   }
 }
