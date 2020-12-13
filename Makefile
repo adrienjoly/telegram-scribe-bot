@@ -16,6 +16,11 @@ test: install ## Run automated tests
 lint: install ## Run ESLint
 	@cd functions; npm run lint 
 
+release: install test build
+	@echo "Making sure that you're on the main branch..."
+	@git checkout | grep "master"
+	@cd functions; npx release-it
+
 deploy-firebase: setup-firebase install test build ## Deploy to Firebase Functions
 	@cd functions; node tools/bot-config-firebase.js
 	@cd functions; npx firebase deploy --only functions
@@ -40,4 +45,4 @@ help: ## This help.
 	@echo 'Available targets:'
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
-.PHONY: install build test lint deploy-firebase setup-firebase test-firebase bind-firebase-webhook test-firebase-webhook firebase-logs help
+.PHONY: install build test lint release deploy-firebase setup-firebase test-firebase bind-firebase-webhook test-firebase-webhook firebase-logs help
