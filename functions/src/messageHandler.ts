@@ -7,6 +7,7 @@ import {
 import { commandHandlers as trello } from './use-cases/addToTrello'
 import { addSpotifyAlbumToShelfRepo } from './use-cases/addSpotifyAlbumToShelfRepo'
 import { BotResponse } from './types'
+import markdown from 'nano-markdown'
 
 // map commands to "use-case" implementations
 const commandHandlers: { [key: string]: CommandHandler } = {
@@ -45,11 +46,11 @@ export async function processMessage(
     text = res.text
   }
 
+  // cf API documentation: https://core.telegram.org/bots/api#sendmessage
   return {
     method: 'sendMessage',
     chat_id: message.chat.id,
-    text,
+    parse_mode: 'HTML', // Note: response will not be sent if the text is not valid
+    text: markdown(text), // let's compile the markdown ourselves, because Telegram's parser is strict and it fails silently
   }
 }
-
-// reference: https://core.telegram.org/bots/api

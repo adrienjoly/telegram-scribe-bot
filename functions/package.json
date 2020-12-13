@@ -34,6 +34,7 @@
     "firebase-admin": "^9.4.1",
     "firebase-functions": "^3.12.0",
     "js-yaml": "^3.14.0",
+    "nano-markdown": "^1.2.1",
     "octokit-plugin-create-pull-request": "^3.9.0",
     "spotify-web-api-node": "^5.0.0",
     "ticktick-wrapper": "0.2.0",
