@@ -4,6 +4,8 @@ import { parseMessage } from './Telegram'
 import { processMessage } from './messageHandler'
 import { MessageHandlerOptions } from './types'
 
+const LOGGING = process.env.NODE_ENV !== 'test'
+
 const errorCodes: { [s: string]: number } = {
   'not a telegram message': 400,
   'this sender is not allowed': 403,
@@ -23,13 +25,13 @@ export function makeApp(options: MessageHandlerOptions): express.Express {
   // our single entry point for every message
   app.post('/', async (req, res) => {
     try {
-      console.log('▶ Request body:', req.body)
+      LOGGING && console.log('▶ Request body:', req.body)
       const message = parseMessage(req.body) // can throw 'not a telegram message'
       const responsePayload = await processMessage(message, options)
-      console.log('◀ Response payload:', responsePayload)
+      LOGGING && console.log('◀ Response payload:', responsePayload)
       res.status(200).send(responsePayload)
     } catch (err) {
-      console.error('◀ Error:', err, err.stack)
+      LOGGING && console.error('◀ Error:', err, err.stack)
       res.status(errorCodes[err.message] || 500).send({ status: err.message })
     }
   })
