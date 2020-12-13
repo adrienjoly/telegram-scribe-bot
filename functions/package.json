@@ -3,8 +3,6 @@
   "version": "1.6.0",
   "description": "A chat-bot that can add comments to Trello cards, from any Telegram client.",
   "scripts": {
-    "lint": "npx eslint .",
-    "lint:fix": "npx eslint . --fix",
     "test": "ts-mocha -p ./tsconfig.json './**/*.test.ts'",
     "test:bot": "ts-node tools/bot-cli.ts",
     "start": "ts-node tools/start.ts",
