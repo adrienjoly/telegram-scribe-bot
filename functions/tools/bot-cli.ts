@@ -58,13 +58,13 @@ const main = async (): Promise<void> => {
     `ℹ️  This bot client is connected to the accounts specified in .config.json`
   )
   for (;;) {
-    const rawMessage = await getAnswer('type a message for the chatbot:')
+    const rawMessage = await getAnswer('\nSend a message to the chatbot:')
     try {
       const message = makeTelegramMessage(rawMessage)
       const responsePayload = await processMessage(message, options)
-      console.warn(`=> ${responsePayload.text}`)
+      console.warn(`=> Response: ${responsePayload.text}`)
     } catch (err) {
-      console.warn(`❌ => ${err.message}`)
+      console.warn('=> ❌ Error:', err.message, err.stack)
     }
   }
 }

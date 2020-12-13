@@ -31,29 +31,19 @@ export async function processMessage(
   if (onlyFromUserId && message.from.id !== onlyFromUserId)
     throw new Error('this sender is not allowed')
 
-  console.log('received message from Telegram:', message)
-
   let text
-  try {
-    const entities = parseEntities(message)
-    console.log('entities:', entities)
+  const entities = parseEntities(message)
 
-    const command = (entities.commands[0] || {}).text
-    const commandHandler = commandHandlers[command]
-    if (!commandHandler) {
-      text = `🤔  Please retry with a valid command: ${Object.keys(
-        commandHandlers
-      ).join(', ')}`
-    } else {
-      const res = await commandHandler(entities, options)
-      text = res.text
-    }
-  } catch (err) {
-    text = `😕  Error while processing: ${err.message}`
-    console.error(`❌ `, err, err.stack)
+  const command = (entities.commands[0] || {}).text
+  const commandHandler = commandHandlers[command]
+  if (!commandHandler) {
+    text = `🤔  Please retry with a valid command: ${Object.keys(
+      commandHandlers
+    ).join(', ')}`
+  } else {
+    const res = await commandHandler(entities, options)
+    text = res.text
   }
-
-  console.log(`=> ${text}`)
 
   return {
     method: 'sendMessage',

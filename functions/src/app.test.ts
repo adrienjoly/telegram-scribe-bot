@@ -110,9 +110,9 @@ describe('app', () => {
       options: { ...options, trello: { apikey: 'incorrect' } },
     })
     const res = await postJSON(`http://localhost:${port}/`, { message })
-    expect(res.status).toEqual(200)
-    const payload = await res.json()
-    expect(payload.text).toMatch('missing trello.usertoken')
+    expect(res.status).toEqual(500)
+    const payload = await res.text()
+    expect(payload).toMatch('missing trello.usertoken')
     server.destroy()
   })
 })

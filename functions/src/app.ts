@@ -1,6 +1,6 @@
 import express from 'express'
 import cors from 'cors'
-import { TelegramMessage, parseMessage } from './Telegram'
+import { parseMessage } from './Telegram'
 import { processMessage } from './messageHandler'
 import { MessageHandlerOptions } from './types'
 
@@ -23,10 +23,13 @@ export function makeApp(options: MessageHandlerOptions): express.Express {
   // our single entry point for every message
   app.post('/', async (req, res) => {
     try {
-      const message: TelegramMessage = parseMessage(req.body) // can throw 'not a telegram message'
+      console.log('▶ Request body:', req.body)
+      const message = parseMessage(req.body) // can throw 'not a telegram message'
       const responsePayload = await processMessage(message, options)
+      console.log('◀ Response payload:', responsePayload)
       res.status(200).send(responsePayload)
     } catch (err) {
+      console.error('◀ Error:', err, err.stack)
       res.status(errorCodes[err.message] || 500).send({ status: err.message })
     }
   })
