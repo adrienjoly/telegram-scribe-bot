@@ -9,16 +9,7 @@
     "test:bot": "ts-node tools/bot-cli.ts",
     "start": "ts-node tools/start.ts",
     "clean": "rm -rf lib",
-    "build": "tsc",
-    "serve": "npm run build && firebase serve --only functions",
-    "shell": "npm run build && firebase functions:shell",
-    "deploy": "npm run deploy:config && firebase deploy --only functions",
-    "deploy:setup": "firebase login && echo \"Don't forget to specify your Firebase app id in .firebaserc, cf README.md\"",
-    "deploy:config": "firebase functions:config:set config=\"$(node tools/bot-config-for-firebase.js)\"",
-    "deploy:test": "source ../.env && curl -X POST -H \"Content-Type:application/json\" ${ROUTER_URL} -d '{}'",
-    "webhook:bind": "source ../.env && curl https://api.telegram.org/bot${BOT_TOKEN}/setWebhook?url=${ROUTER_URL}",
-    "webhook:test": "source ../.env && curl https://api.telegram.org/bot${BOT_TOKEN}/getWebhookInfo",
-    "logs": "firebase functions:log"
+    "build": "tsc"
   },
   "engines": {
     "node": "12"

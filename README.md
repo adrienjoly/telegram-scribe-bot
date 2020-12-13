@@ -50,9 +50,8 @@ Trello credentials must be provided in a `.config.json` file, at the root direct
 1. Get started by copying the provided template: `$ cp .config.example.json .config.json`
 2. Copy your Trello API Key (from [trello.com/app-key](https://trello.com/app-key)) and paste it as the value of the `trello.apikey` variable, in your `.config.json` file
 3. Manually generate a Token (a link is provided on [trello.com/app-key](https://trello.com/app-key), below the Trello API Key) and paste it as the value of the `trello.usertoken` variable, still in your `.config.json` file
-4. Run `$ npm run trello:test` to make sure that these credentials give access to Trello's API
-5. Run `$ npm run trello:boards` to display the list of the Trello boards you have access to
-6. Copy the 24-characters-long identifier of the Trello board that you want your bot to edit, and paste it as the value of the `trello.boardid` variable of your `.config.json` file
+4. Run `$ tools/trello-boards.ts` to make sure that these credentials give access to Trello's API and display the list of the Trello boards you have access to
+5. Copy the 24-characters-long identifier of the Trello board that you want your bot to edit, and paste it as the value of the `trello.boardid` variable of your `.config.json` file
 
 If you want to also connect to your TickTick account, fill the `ticktick.email` and `ticktick.password` variables accordingly.
 
@@ -85,7 +84,7 @@ Follow these steps to deploy your bot to Firebase and make it accessible through
 - Go to [your firebase console](https://console.firebase.google.com)
 - Add a new project
 - In the `.firebaserc` file, replace `telegram-scribe-bot` by the id of that project
-- `$ npm run deploy:setup` (to login to your Firebase account)
+- `$ make setup-firebase` (to login to your Firebase account)
 
 ### 2. Create a Telegram bot
 
@@ -97,13 +96,13 @@ Follow these steps to deploy your bot to Firebase and make it accessible through
 
 ### 3. Deploy and bind the bot to Telegram
 
-- `$ npm run deploy` (will upload the source code to your Firebase project)
+- `$ make deploy-firebase` (will upload the source code to your Firebase project)
 - In the `.env` file, replace the default `ROUTER_URL` value by the one printed when deploying (previous step), it must end with `/router/`
-- `$ npm run deploy:test` (to check that the function deployed on Firebase works as expected)
-- `$ npm run webhook:bind` (to bind that function to your Telegram bot)
-- `$ npm run webhook:test` (to check that the function's router URL was properly bound to your Telegram bot)
+- `$ make test-firebase` (to check that the function deployed on Firebase responds)
+- `$ make bind-firebase-webhook` (to bind that function to your Telegram bot)
+- `$ make test-firebase-webhook` (to check that the function's router URL was properly bound to your Telegram bot)
 
-After making any change to your bot, don't forget to deploy again it using `$ npm run deploy`.
+After making any change to your bot, don't forget to deploy again it using `$ make deploy-firebase`.
 
 ### 4. Test your bot
 
@@ -115,7 +114,7 @@ You can troubleshoot your bot using [your firebase console](https://console.fire
 
 ### Options
 
-Set `telegram.onlyfromuserid` in your `.config.json` file and call `$ npm run deploy` again if you want the bot to only respond to that Telegram user identifier.
+Set `telegram.onlyfromuserid` in your `.config.json` file and call `$ make deploy-firebase` again if you want the bot to only respond to that Telegram user identifier.
 
 ## How to add a command
 
