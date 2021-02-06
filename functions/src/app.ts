@@ -6,11 +6,6 @@ import { MessageHandlerOptions } from './types'
 
 const LOGGING = process.env.NODE_ENV !== 'test'
 
-const errorCodes: { [s: string]: number } = {
-  'not a telegram message': 400,
-  'this sender is not allowed': 403,
-}
-
 export function makeApp(options: MessageHandlerOptions): express.Express {
   const app = express()
 
@@ -30,7 +25,9 @@ export function makeApp(options: MessageHandlerOptions): express.Express {
       message = parseMessage(req.body) // can throw 'not a telegram message'
     } catch (err) {
       LOGGING && console.error('◀ Telegram Error:', err, err.stack)
-      res.status(errorCodes[err.message] || 500).send({ status: err.message })
+      res
+        .status(err.message.includes('not a telegram message') ? 400 : 500)
+        .send({ status: err.message })
       return
     }
     try {

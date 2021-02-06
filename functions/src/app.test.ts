@@ -33,7 +33,8 @@ describe('app', () => {
     const server = await startApp({ port, options })
     const res = await postJSON(`http://localhost:${port}/`, {})
     expect(res.status).toEqual(400)
-    expect(await res.json()).toHaveProperty('status', 'not a telegram message')
+    const payload = await res.json()
+    expect(payload.status).toContain('not a telegram message')
     server.destroy()
   })
 

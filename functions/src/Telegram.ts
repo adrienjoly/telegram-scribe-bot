@@ -39,7 +39,7 @@ export function parseMessage(container: TelegramBody): TelegramMessage {
   try {
     return container.message.chat && container.message.from && container.message
   } catch (err) {
-    throw new Error('not a telegram message')
+    throw new Error(`not a telegram message: ${err.message}`)
   }
 }
 
