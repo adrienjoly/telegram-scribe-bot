@@ -40,7 +40,7 @@ test-firebase-webhook: ## Checks that the Firebase Function's router URL was pro
 	@curl --silent https://api.telegram.org/bot${BOT_TOKEN}/getWebhookInfo | grep --color=always "\"ok\":true"
 
 firebase-logs: ## Reads logs from Firebase Functions
-	@cd functions; npx firebase functions:log
+	@cd functions; npx firebase functions:log -n 1000
 
 help: ## This help.
 	@echo 'Available targets:'
