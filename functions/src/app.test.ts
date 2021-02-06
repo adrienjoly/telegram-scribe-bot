@@ -53,7 +53,7 @@ describe('app', () => {
     server.destroy()
   })
 
-  it('responds 403 to telegram message from other user', async () => {
+  it('warns in case of telegram message from unauthorized user', async () => {
     const port = allocatePort()
     const onlyFromUserId = 1
     const message = {
@@ -71,9 +71,9 @@ describe('app', () => {
       },
     })
     const res = await postJSON(`http://localhost:${port}/`, { message })
-    expect(res.status).toEqual(403)
+    expect(res.status).toEqual(200)
     expect(await res.json()).toHaveProperty(
-      'status',
+      'text',
       'this sender is not allowed'
     )
     server.destroy()
@@ -92,9 +92,9 @@ describe('app', () => {
       options: { ...options, trello: { apikey: 'incorrect' } },
     })
     const res = await postJSON(`http://localhost:${port}/`, { message })
-    expect(res.status).toEqual(500)
-    const payload = await res.text()
-    expect(payload).toMatch('missing trello.usertoken')
+    expect(res.status).toEqual(200)
+    const payload = await res.json()
+    expect(payload).toHaveProperty('text', 'missing trello.usertoken')
     server.destroy()
   })
 })

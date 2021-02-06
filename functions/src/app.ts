@@ -24,15 +24,22 @@ export function makeApp(options: MessageHandlerOptions): express.Express {
 
   // our single entry point for every message
   app.post('/', async (req, res) => {
+    let message
     try {
       LOGGING && console.log('▶ Request body:', req.body)
-      const message = parseMessage(req.body) // can throw 'not a telegram message'
+      message = parseMessage(req.body) // can throw 'not a telegram message'
+    } catch (err) {
+      LOGGING && console.error('◀ Telegram Error:', err, err.stack)
+      res.status(errorCodes[err.message] || 500).send({ status: err.message })
+      return
+    }
+    try {
       const responsePayload = await processMessage(message, options)
       LOGGING && console.log('◀ Response payload:', responsePayload)
       res.status(200).send(responsePayload) // cf https://core.telegram.org/bots/api#making-requests-when-getting-updates
     } catch (err) {
-      LOGGING && console.error('◀ Error:', err, err.stack)
-      res.status(errorCodes[err.message] || 500).send({ status: err.message })
+      LOGGING && console.error('◀ Use Case Error:', err)
+      res.status(200).send({ text: err.message }) // we want to return this kind of errors back to the user
     }
   })
 
