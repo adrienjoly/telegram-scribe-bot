@@ -63,6 +63,7 @@ describe('app', () => {
         id: onlyFromUserId + 1, // this message is not sent by the expected user
         first_name: 'test_name',
       },
+      text: 'dummy',
     }
     const server = await startApp({
       port,
@@ -72,11 +73,11 @@ describe('app', () => {
       },
     })
     const res = await postJSON(`http://localhost:${port}/`, { message })
-    expect(res.status).toEqual(200)
     expect(await res.json()).toHaveProperty(
       'text',
       'this sender is not allowed'
     )
+    expect(res.status).toEqual(200)
     server.destroy()
   })
 
