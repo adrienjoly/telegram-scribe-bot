@@ -2,7 +2,7 @@ import express from 'express'
 import cors from 'cors'
 import { parseMessage } from './Telegram'
 import { processMessage } from './messageHandler'
-import { MessageHandlerOptions } from './types'
+import { MessageHandlerOptions, TelegramRequest } from './types'
 
 const LOGGING = process.env.NODE_ENV !== 'test'
 
@@ -30,14 +30,20 @@ export function makeApp(options: MessageHandlerOptions): express.Express {
         .send({ status: err.message })
       return
     }
+    let responsePayload: TelegramRequest
     try {
-      const responsePayload = await processMessage(message, options)
+      responsePayload = await processMessage(message, options)
       LOGGING && console.log('◀ Response payload:', responsePayload)
       res.status(200).send(responsePayload) // cf https://core.telegram.org/bots/api#making-requests-when-getting-updates
     } catch (err) {
       LOGGING && console.error('◀ Use Case Error:', err)
-      res.status(200).send({ text: err.message }) // we want to return this kind of errors back to the user
+      responsePayload = {
+        method: 'sendMessage',
+        chat_id: message.chat.id,
+        text: /*markdown*/ err.message, // we want to return this kind of errors back to the user
+      }
     }
+    res.status(200).send(responsePayload)
   })
 
   return app
