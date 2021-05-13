@@ -4,7 +4,7 @@ import { createPullRequest } from 'octokit-plugin-create-pull-request'
 const USER_AGENT = 'telegram-scribe-bot'
 
 export class GitHub {
-  octokit: Octokit
+  octokit: Octokit & ReturnType<typeof createPullRequest>
 
   constructor({
     token,
@@ -37,7 +37,7 @@ export class GitHub {
     branchName: string
     prTitle: string
     prBody: string
-  }): Promise<{ url: string; html_url: string }> {
+  }): Promise<{ url: string; html_url: string } | undefined> {
     // Returns a normal Octokit PR response
     // See https://octokit.github.io/rest.js/#octokit-routes-pulls-create
     const res = await this.octokit.createPullRequest({
@@ -70,6 +70,6 @@ export class GitHub {
         },
       ],
     })
-    return res.data
+    return res?.data
   }
 }

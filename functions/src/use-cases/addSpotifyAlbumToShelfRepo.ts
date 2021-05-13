@@ -49,6 +49,6 @@ export const addSpotifyAlbumToShelfRepo = async (
     prTitle: `add "${metadata.title}" to ${PR_TARGET.filePath}`,
     prBody: `Sent from Telegram-scribe-bot, on ${message.date}`,
   })
-
+  if (!pr) throw new Error('failed to submit PR')
   return { text: `✅  Submitted PR on ${pr.html_url}` }
 }
