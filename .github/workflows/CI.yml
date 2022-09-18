@@ -13,19 +13,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v1
-      - name: Setup Node.js
-        uses: actions/setup-node@v1
+      - uses: actions/checkout@v2
+      - uses: browniebroke/read-nvmrc-action@v1 # Read node version from `.nvmrc` file
+        id: nvmrc
+      - uses: actions/setup-node@v2.2.0
         with:
-          node-version: 12
-      - name: check npm cache
-        uses: actions/cache@v1
-        with:
-          path: node_modules
-          key: ${{ runner.OS }}-build-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.OS }}-build-${{ env.cache-name }}-
-            ${{ runner.OS }}-build-
+          node-version: "${{ steps.nvmrc.outputs.node_version }}"
+          cache: "npm"
       - name: npm install
         env:
           CI: true
