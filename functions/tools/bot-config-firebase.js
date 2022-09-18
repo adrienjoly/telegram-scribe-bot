@@ -7,7 +7,7 @@ const botConfig = require(`${__dirname}/bot-config.js`) // eslint-disable-line @
 const flattened = Object.entries(botConfig)
   .map(([key, value]) =>
     Object.entries(value)
-      .map(([k, v]) => `${key}.${k}=${v}`)
+      .map(([k, v]) => `config.${key}.${k}=${v}`)
       .join(' ')
   )
   .join(' ')
