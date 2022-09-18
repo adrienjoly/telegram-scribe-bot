@@ -26,7 +26,6 @@ export function makeMessageHandler(options: MessageHandlerOptions) {
     try {
       responsePayload = await processMessage(message, options)
       LOGGING && console.log('◀ Response payload:', responsePayload)
-      res.status(200).send(responsePayload) // cf https://core.telegram.org/bots/api#making-requests-when-getting-updates
     } catch (err) {
       LOGGING && console.error('◀ Use Case Error:', err)
       responsePayload = {
@@ -35,7 +34,7 @@ export function makeMessageHandler(options: MessageHandlerOptions) {
         text: /*markdown*/ err.message, // we want to return this kind of errors back to the user
       }
     }
-    res.status(200).send(responsePayload)
+    res.status(200).send(responsePayload) // cf https://core.telegram.org/bots/api#making-requests-when-getting-updates
   }
 }
 
