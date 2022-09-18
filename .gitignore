@@ -70,3 +70,4 @@ functions/lib/**/*.js
 functions/lib/**/*.js.map
 
 dumps/*.json
+.runtimeconfig.json

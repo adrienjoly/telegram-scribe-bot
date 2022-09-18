@@ -26,12 +26,20 @@ deploy-firebase: setup-firebase install test build ## Deploy to Firebase Functio
 	@cd functions; node tools/bot-config-firebase.js
 	@cd functions; npx firebase-tools deploy
 
+emulate-firebase: build ## Starts a local Firebase server
+	@cd functions; node tools/bot-config-firebase.js
+	@cd functions; npx firebase-tools functions:config:get > .runtimeconfig.json
+	@cd functions; npx firebase-tools emulators:start
+
 setup-firebase: ## Logs you into your Firebase account
 	@cd functions; npx firebase-tools login
 	@echo "Don't forget to specify your Firebase app id in .firebaserc, cf README.md"
 
 test-firebase: ## Checks that the Firebase Function's responds
 	@curl --silent -X POST -H "Content-Type:application/json" ${ROUTER_URL} -d '{"message":{"chat":{"id":1},"from":{"id":199893686,"first_name":"test_name"},"entities":[{"type":"bot_command","offset":0,"length": 8}],"text":"/version"}}'
+
+test-firebase-local: ## Checks that the Firebase Function's responds
+	@curl --silent -X POST -H "Content-Type:application/json" http://localhost:5001/telegram-scribe-bot/us-central1/router -d '{"message":{"chat":{"id":1},"from":{"id":199893686,"first_name":"test_name"},"entities":[{"type":"bot_command","offset":0,"length": 8}],"text":"/version"}}'
 
 bind-firebase-webhook: ## Binds the Firebase Function to your Telegram bot
 	@curl --silent https://api.telegram.org/bot${BOT_TOKEN}/setWebhook?url=${ROUTER_URL} | grep --color=always "\"ok\":true"
