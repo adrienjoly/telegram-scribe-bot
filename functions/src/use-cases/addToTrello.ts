@@ -22,7 +22,8 @@ type TrelloCardWithTags = {
 }
 
 // string to include in Trello card(s), to bind them with some tags
-const RE_TRELLO_CARD_BINDING = /telegram-scribe-bot:addCommentsFromTaggedNotes\(([^)]+)\)/
+const RE_TRELLO_CARD_BINDING =
+  /telegram-scribe-bot:addCommentsFromTaggedNotes\(([^)]+)\)/
 
 // Populate TrelloOptions from MessageHandlerOptions.
 // Throws if any required option is missing.

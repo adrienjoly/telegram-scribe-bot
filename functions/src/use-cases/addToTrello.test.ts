@@ -5,12 +5,8 @@ import nock from 'nock'
 import { TrelloOptions, commandHandlers } from './addToTrello'
 import { ParsedMessageEntities } from '../Telegram'
 
-const {
-  listTags,
-  getNextTrelloTasks,
-  addAsTrelloComment,
-  addAsTrelloTask,
-} = commandHandlers
+const { listTags, getNextTrelloTasks, addAsTrelloComment, addAsTrelloTask } =
+  commandHandlers
 
 const FAKE_CREDS: TrelloOptions = {
   trello: {
