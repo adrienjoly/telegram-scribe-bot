@@ -22,7 +22,7 @@
     "@types/cors": "^2.8.10",
     "cors": "^2.8.5",
     "express": "^4.17.1",
-    "firebase-admin": "^9.8.0",
+    "firebase-admin": "^11.0.1",
     "firebase-functions": "^3.14.0",
     "js-yaml": "^4.1.0",
     "nano-markdown": "^1.2.1",
