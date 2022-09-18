@@ -6,19 +6,11 @@ import { MessageHandlerOptions, TelegramRequest } from './types'
 
 const LOGGING = process.env.NODE_ENV !== 'test'
 
-export function makeApp(options: MessageHandlerOptions): express.Express {
-  const app = express()
-
-  app.use(express.json()) // Firebase already does that, but it's required for tests
-
-  // Automatically allow cross-origin requests
-  app.use(cors({ origin: true }))
-
-  // default/root entry point for testing from web browsers
-  app.get('/', (req, res) => res.send({ ok: true }))
-
-  // our single entry point for every message
-  app.post('/', async (req, res) => {
+export function makeMessageHandler(options: MessageHandlerOptions) {
+  return async function (
+    req: express.Request,
+    res: express.Response
+  ): Promise<void> {
     let message
     try {
       LOGGING && console.log('▶ Request body:', req.body)
@@ -44,7 +36,24 @@ export function makeApp(options: MessageHandlerOptions): express.Express {
       }
     }
     res.status(200).send(responsePayload)
-  })
+  }
+}
+
+export function makeApp(options: MessageHandlerOptions): express.Express {
+  const app = express()
+
+  app.use(express.json()) // Firebase already does that, but it's required for tests
+
+  // Automatically allow cross-origin requests
+  app.use(cors({ origin: true }))
+
+  // default/root entry point for testing from web browsers
+  app.get('/', (req, res) =>
+    res.send({ ok: true, version: options.bot.version })
+  )
+
+  // our single entry point for every message
+  app.post('/', makeMessageHandler(options))
 
   return app
 }
