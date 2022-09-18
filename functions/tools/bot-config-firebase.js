@@ -3,7 +3,15 @@
 
 const { execSync } = require('child_process') // eslint-disable-line @typescript-eslint/no-var-requires
 const botConfig = require(`${__dirname}/bot-config.js`) // eslint-disable-line @typescript-eslint/no-var-requires
-const json = JSON.stringify(botConfig, null, 2)
-execSync(`npx firebase functions:config:set config='${json}'`, {
+
+const flattened = Object.entries(botConfig)
+  .map(([key, value]) =>
+    Object.entries(value)
+      .map(([k, v]) => `${key}.${k}=${v}`)
+      .join(' ')
+  )
+  .join(' ')
+
+execSync(`npx firebase functions:config:set ${flattened}`, {
   stdio: 'inherit',
 })
