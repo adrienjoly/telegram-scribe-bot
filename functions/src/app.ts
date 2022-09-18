@@ -46,11 +46,6 @@ export function makeApp(options: MessageHandlerOptions): express.Express {
   // Automatically allow cross-origin requests
   app.use(cors({ origin: true }))
 
-  // default/root entry point for testing from web browsers
-  app.get('/', (req, res) =>
-    res.send({ ok: true, version: options.bot.version })
-  )
-
   // our single entry point for every message
   app.post('/', makeMessageHandler(options))
 

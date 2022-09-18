@@ -19,15 +19,6 @@ const postJSON = (url: string, json: unknown) =>
   })
 
 describe('app', () => {
-  it('responds to GET /', async () => {
-    const port = allocatePort()
-    const server = await startApp({ port, options })
-    const res = await fetch(`http://localhost:${port}/`)
-    expect(res.status).toEqual(200)
-    expect(await res.json()).toHaveProperty('ok', true)
-    server.destroy()
-  })
-
   it('responds 400 to invalid telegram message', async () => {
     const port = allocatePort()
     const server = await startApp({ port, options })
