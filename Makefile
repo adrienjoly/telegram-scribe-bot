@@ -14,12 +14,12 @@ test: install ## Run automated tests
 	@cd functions; npm test
 
 lint: install ## Run ESLint
-	@cd functions; npm run lint 
+	@cd functions; npm run lint
 
 release: install test build
 	@echo "Making sure that you're on the main branch..."
 	@git checkout | grep "master"
-	@cd functions; npx release-it --no-npm
+	@cd functions; npx release-it --no-npm.publish
 	@echo "Now, go to https://github.com/adrienjoly/telegram-scribe-bot/tags, to create the Release"
 
 deploy-firebase: setup-firebase install test build ## Deploy to Firebase Functions
