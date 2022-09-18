@@ -12,6 +12,6 @@ const flattened = Object.entries(botConfig)
   )
   .join(' ')
 
-execSync(`npx firebase functions:config:set ${flattened}`, {
+execSync(`npx firebase-tools functions:config:set ${flattened}`, {
   stdio: 'inherit',
 })

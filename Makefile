@@ -24,10 +24,10 @@ release: install test build
 
 deploy-firebase: setup-firebase install test build ## Deploy to Firebase Functions
 	@cd functions; node tools/bot-config-firebase.js
-	@cd functions; npx firebase deploy
+	@cd functions; npx firebase-tools deploy
 
 setup-firebase: ## Logs you into your Firebase account
-	@cd functions; npx firebase login
+	@cd functions; npx firebase-tools login
 	@echo "Don't forget to specify your Firebase app id in .firebaserc, cf README.md"
 
 test-firebase: ## Checks that the Firebase Function's responds
@@ -40,7 +40,7 @@ test-firebase-webhook: ## Checks that the Firebase Function's router URL was pro
 	@curl --silent https://api.telegram.org/bot${BOT_TOKEN}/getWebhookInfo | grep --color=always "\"ok\":true"
 
 firebase-logs: ## Reads logs from Firebase Functions
-	@cd functions; npx firebase functions:log -n 1000
+	@cd functions; npx firebase-tools functions:log -n 1000
 
 help: ## This help.
 	@echo 'Available targets:'
