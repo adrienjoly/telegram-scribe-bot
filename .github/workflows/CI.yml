@@ -13,13 +13,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: browniebroke/read-nvmrc-action@v1 # Read node version from `.nvmrc` file
         id: nvmrc
-      - uses: actions/setup-node@v2.2.0
+      - uses: actions/setup-node@v3
         with:
           node-version: "${{ steps.nvmrc.outputs.node_version }}"
           cache: "npm"
+          cache-dependency-path: functions/package-lock.json
       - name: npm install
         env:
           CI: true
