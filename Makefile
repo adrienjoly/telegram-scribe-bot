@@ -13,6 +13,9 @@ build: install ## Transpile TypeScript files into JavaScript
 test: install ## Run automated tests
 	@cd functions; npm test
 
+test-bot: install ## Interact with the bot locally
+	@cd functions; npm run test:bot
+
 lint: install ## Run ESLint
 	@cd functions; npm run lint
 
