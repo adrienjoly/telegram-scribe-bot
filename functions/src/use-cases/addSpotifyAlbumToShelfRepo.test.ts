@@ -105,6 +105,16 @@ describe('spotify use cases', () => {
       nock('https://api.github.com')
         .post('/repos/adrienjoly/album-shelf/pulls')
         .reply(200, { html_url: '//successful-pr' })
+      nock('https://api.github.com')
+        .post('/graphql') // body: '{"query":"\n    query ($owner: String!, $repo: String!, $head: String!) {\n      repository(name: $repo, owner: $owner) {\n        ref(qualifiedName: $head) {\n          associatedPullRequests(first: 1, states: OPEN) {\n            edges {\n              node {\n                id\n                number\n                url\n              }\n            }\n          }\n        }\n      }\n    }","variables":{"owner":"adrienjoly","repo":"album-shelf","head":"scribe-bot-1673102657943"}}'
+        .reply(200, { data: { repository: { ref: 'coucou' } } })
+      nock('https://api.github.com')
+        .patch((uri) =>
+          uri.includes(
+            '/repos/adrienjoly/album-shelf/git/refs/heads%2Fscribe-bot-'
+          )
+        )
+        .reply(200, { data: {} })
       const res = await addSpotifyAlbumToShelfRepo(message, FAKE_CREDS)
       expect(res).toHaveProperty('text', '✅  Submitted PR on //successful-pr')
     })

@@ -39,9 +39,8 @@ To get started, you just need `git`, NodeJS and to follow these instructions:
 $ git clone https://github.com/adrienjoly/telegram-scribe-bot.git
 $ cd telegram-scribe-bot
 $ nvm use # to use the project's expected Node.js version
-$ cd functions
-$ npm install
-$ npm test # run automated test suites
+$ make install
+$ make test # run automated test suites
 ```
 
 ## Local setup and testing
@@ -49,7 +48,7 @@ $ npm test # run automated test suites
 Before making your chat-bot accessible through Telegram, you can test it locally:
 
 ```sh
-$ npm run test:bot
+$ make test-bot
 ```
 
 This command will start a CLI that will allow you to interact with the bot (e.g. to test the connection with Trello and other services) without having to put it online.
@@ -158,7 +157,7 @@ The steps are listed in the order I usually follow:
 
    > In that step, you can leverage the `⚠ no match for [...]` logs displayed when running your test from step 5, in order to know which URL(s) to mock.
 
-7. Test your command locally, using `$ npm run test:bot`.
+7. Test your command locally, using `$ make test-bot`.
 
 8. Deploy and test your command in production, as explained above.
 

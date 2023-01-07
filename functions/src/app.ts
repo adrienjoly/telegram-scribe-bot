@@ -15,7 +15,8 @@ export function makeMessageHandler(options: MessageHandlerOptions) {
     try {
       LOGGING && console.log('▶ Request body:', req.body)
       message = parseMessage(req.body) // can throw 'not a telegram message'
-    } catch (err) {
+    } catch (error) {
+      const err = error as Error
       LOGGING && console.error('◀ Telegram Error:', err, err.stack)
       res
         .status(err.message.includes('not a telegram message') ? 400 : 500)
@@ -26,7 +27,8 @@ export function makeMessageHandler(options: MessageHandlerOptions) {
     try {
       responsePayload = await processMessage(message, options)
       LOGGING && console.log('◀ Response payload:', responsePayload)
-    } catch (err) {
+    } catch (error) {
+      const err = error as Error
       LOGGING && console.error('◀ Use Case Error:', err)
       responsePayload = {
         method: 'sendMessage',
@@ -41,6 +43,8 @@ export function makeMessageHandler(options: MessageHandlerOptions) {
 export function makeApp(options: MessageHandlerOptions): express.Express {
   const app = express()
 
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   app.use(express.json()) // Firebase already does that, but it's required for tests
 
   // Automatically allow cross-origin requests

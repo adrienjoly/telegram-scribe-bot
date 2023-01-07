@@ -18,13 +18,18 @@ const postJSON = (url: string, json: unknown) =>
     body: JSON.stringify(json),
   })
 
+type BotResponse = {
+  status: string
+  text: string
+}
+
 describe('app', () => {
   it('responds 400 to invalid telegram message', async () => {
     const port = allocatePort()
     const server = await startApp({ port, options })
     const res = await postJSON(`http://localhost:${port}/`, {})
     expect(res.status).toEqual(400)
-    const payload = await res.json()
+    const payload = (await res.json()) as BotResponse
     expect(payload.status).toContain('not a telegram message')
     server.destroy()
   })
@@ -38,7 +43,7 @@ describe('app', () => {
       text: 'Hello world!',
     }
     const res = await postJSON(`http://localhost:${port}/`, { message })
-    const payload = await res.json()
+    const payload = (await res.json()) as BotResponse
     expect(payload.status).toBeUndefined()
     expect(res.status).toEqual(200)
     expect(payload.text).toMatch(/Please retry with a valid command/)

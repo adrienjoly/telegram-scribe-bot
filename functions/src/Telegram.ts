@@ -46,7 +46,8 @@ export function parseMessage(container: TelegramBody): TelegramMessage {
     if (!message.from) throw new Error('missing property: message.from')
     if (!message.text) throw new Error('missing property: message.text')
     return message
-  } catch (err) {
+  } catch (error) {
+    const err = error as Error
     throw new Error(`not a telegram message: ${err.message}`)
   }
 }

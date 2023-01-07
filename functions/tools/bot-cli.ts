@@ -64,7 +64,8 @@ const main = async (): Promise<void> => {
       const responsePayload = await processMessage(message, options)
       console.warn(`=> Response: ${responsePayload.text}`)
       // TODO: also write a CLI that reacts exactly like a Telegram client => let app.ts do the error handling
-    } catch (err) {
+    } catch (error) {
+      const err = error as Error
       console.warn('=> ❌ Error:', err.stack) // the stack includes the error message
     }
   }

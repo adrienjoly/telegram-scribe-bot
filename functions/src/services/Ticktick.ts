@@ -10,7 +10,8 @@ export class Ticktick {
   async connect(): Promise<void> {
     try {
       await ticktick.login({ email: this.emailCreds })
-    } catch (err) {
+    } catch (error) {
+      const err = error as Error
       throw new Error(
         `Error while trying to login to ticktick.com: ${err.stack}`
       )
@@ -25,7 +26,8 @@ export class Ticktick {
   ): Promise<void> {
     try {
       await ticktick.Inbox.addSimpleTask(title, desc, date, isAllDay)
-    } catch (err) {
+    } catch (error) {
+      const err = error as Error
       throw new Error(
         `Error while trying to add a task to ticktick.com: ${err.stack}`
       )
