@@ -6,13 +6,25 @@ The first version of this bot was developed by following the steps provided in [
 
 ## Supported commands
 
-- `/todo <task> [#tag [#...]]` will add a ToDo/task to TickTick's inbox, for sorting
-- `/today <task> [#tag [#...]]` will add a ToDo/task to TickTick, due today
-- `/tags` will list the tags associated to each Trello card
-- `/next` will list the next `task` for each Trello card
-- `/next <task> [#tag]` will add a `task` to the top of the check-list of the Trello card associated with `#tag`
-- `/note <text> [#card [#...]]` will add a comment to the specified Trello card(s), for journaling
-- `/shelf <spotify_album_url>` will propose the addition of an album to the [adrienjoly/album-shelf](https://github.com/adrienjoly/album-shelf) GitHub repository (requires options: `spotify.clientid`, `spotify.secret` and `github.token` with "public repo" permissions)
+### TickTick commands
+
+- `/todo <task> [#tag [#...]]` adds a ToDo/task to TickTick's inbox, for sorting
+- `/today <task> [#tag [#...]]` adds a ToDo/task to TickTick, due today
+
+### Trello commands
+
+- `/tags` lists the tags associated to each Trello card
+- `/next` lists the next `task` for each Trello card
+- `/next <task> [#tag]` adds a `task` to the top of the check-list of the Trello card associated with `#tag`
+- `/note <text> [#card [#...]]` adds a comment to the specified Trello card(s), for journaling
+
+### GitHub commands
+
+- `/shelf <spotify_album_url>` proposes the addition of an album to the [adrienjoly/album-shelf](https://github.com/adrienjoly/album-shelf) GitHub repository (requires options: `spotify.clientid`, `spotify.secret` and `github.token` with "public repo" permissions)
+
+### Other commands
+
+- `/version` returns the version of the Bot
 
 Notes:
 
