@@ -40,21 +40,24 @@ Before making your chat-bot accessible through Telegram, you can test it locally
 $ npm run test:bot
 ```
 
-This command will start a CLI that will allow you to interact with the bot without having to put it online.
+This command will start a CLI that will allow you to interact with the bot (e.g. to test the connection with Trello and other services) without having to put it online.
 
 Let's see how to set it up.
 
+### 0. Create the configuration file
+
+Credentials of your services must be provided in a `.config.json` file, at the root directory of the project.
+
+Initialize it based on the provided template: `$ cp .config.example.json .config.json`
+
 ### 1. Connect to a Trello board
 
-Trello credentials must be provided in a `.config.json` file, at the root directory of the project.
+Trello credentials must be provided in your `.config.json` file.
 
-1. Get started by copying the provided template: `$ cp .config.example.json .config.json`
-2. Copy your Trello API Key (from [trello.com/app-key](https://trello.com/app-key)) and paste it as the value of the `trello.apikey` variable, in your `.config.json` file
-3. Manually generate a Token (a link is provided on [trello.com/app-key](https://trello.com/app-key), below the Trello API Key) and paste it as the value of the `trello.usertoken` variable, still in your `.config.json` file
-4. Run `$ tools/trello-boards.ts` to make sure that these credentials give access to Trello's API and display the list of the Trello boards you have access to
-5. Copy the 24-characters-long identifier of the Trello board that you want your bot to edit, and paste it as the value of the `trello.boardid` variable of your `.config.json` file
-
-If you want to also connect to your TickTick account, fill the `ticktick.email` and `ticktick.password` variables accordingly.
+1. Copy your Trello API Key (from [trello.com/app-key](https://trello.com/app-key)) and paste it as the value of the `trello.apikey` variable, in your `.config.json` file
+2. Manually generate a Token (a link is provided on [trello.com/app-key](https://trello.com/app-key), below the Trello API Key) and paste it as the value of the `trello.usertoken` variable, still in your `.config.json` file
+3. Run `$ tools/trello-boards.ts` to make sure that these credentials give access to Trello's API and display the list of the Trello boards you have access to
+4. Copy the 24-characters-long identifier of the Trello board that you want your bot to edit, and paste it as the value of the `trello.boardid` variable of your `.config.json` file
 
 ### 2. Bind tags to Trello cards
 
@@ -72,31 +75,39 @@ For instance, if you have a card in which you want to store your `#diary` notes 
 telegram-scribe-bot:addCommentsFromTaggedNotes(#diary)
 ```
 
-After doing that, the following chat message will add a comment to that card:
+After doing that, sending the following chat message should add a comment to that card:
 
 > /note I had a great day today! #diary
+
+### 3. Provide credentials for other services
+
+Complete your `.config.json` file by providing the credentials of the services you want the bot to interact with:
+
+- Your Telegram user ID can be retrieved by sending `/start` to https://web.telegram.org/k/#@userinfobot
+- Spotify credentials can be generated from https://developer.spotify.com/dashboard/applications
+- GitHub token (with `public_repo` scope) can be generated from https://github.com/settings/tokens
 
 ## Production Setup
 
 Follow these steps to deploy your bot to Firebase and make it accessible through Telegram.
 
-### 1. Create a Firebase project
+### 1. Create a Telegram bot
+
+- In your Telegram app, start a conversation with [@BotFather](https://telegram.me/BotFather)
+- Write the command `/newBot` and follow the provided steps
+- Initialize the `.env` file (at the root directory of the project), based on the provided template: `$ cp .env.example .env`
+- In the `.env` file, replace the default `BOT_TOKEN` value by the Secret Token provided by that bot
+- Also, take note of the name of your bot (ends with `bot`), we'll need it later
+
+### 2. Create a Firebase project
 
 - Go to [your firebase console](https://console.firebase.google.com)
 - Add a new project
 - In the `.firebaserc` file, replace `telegram-scribe-bot` by the id of that project
-- `$ make setup-firebase` (to login to your Firebase account)
-
-### 2. Create a Telegram bot
-
-- In your Telegram app, start a conversation with [@BotFather](https://telegram.me/BotFather)
-- Write the command `/newBot` and follow the provided steps
-- Initialize the `.env` file, based on the provided template: `$ cp .env.example .env`
-- In the `.env` file, replace the default `BOT_TOKEN` value by the Secret Token provided by that bot
-- Also, take note of the name of your bot (ends with `bot`), we'll need it later
 
 ### 3. Deploy and bind the bot to Telegram
 
+- `$ make setup-firebase` (to login to your Firebase account)
 - `$ make deploy-firebase` (will upload the source code to your Firebase project)
 - In the `.env` file, replace the default `ROUTER_URL` value by the one printed when deploying (previous step), it must end with `/router/`
 - `$ make test-firebase` (to check that the function deployed on Firebase responds)
