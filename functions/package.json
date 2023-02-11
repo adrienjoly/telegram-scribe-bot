@@ -44,7 +44,7 @@
     "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-prettier": "^4.2.1",
     "expect": "^29.3.1",
-    "firebase-tools": "^11.20.0",
+    "firebase-tools": "^11.22.0",
     "mocha": "^10.2.0",
     "nock": "^13.2.9",
     "node-fetch": "^3.3.0",
