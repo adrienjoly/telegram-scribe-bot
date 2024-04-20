@@ -12,7 +12,7 @@
     "build": "tsc"
   },
   "engines": {
-    "node": "16"
+    "node": "20"
   },
   "main": "lib/src/index.js",
   "author": "Adrien Joly",
