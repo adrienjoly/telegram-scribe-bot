@@ -1,5 +1,4 @@
-/// <reference types="mocha" />
-
+import { describe, it, before, after, beforeEach } from 'node:test'
 import expect from 'expect'
 import nock from 'nock'
 import {
