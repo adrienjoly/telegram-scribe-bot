@@ -5,7 +5,7 @@
   "scripts": {
     "lint": "npx eslint .",
     "lint:fix": "npx eslint . --fix",
-    "test": "NODE_OPTIONS='--loader ts-node/esm' NODE_ENV='test' node --test src/**/*.test.ts",
+    "test": "NODE_ENV='test' ts-node src/**/*.test.ts",
     "test:bot": "ts-node tools/bot-cli.ts",
     "start": "ts-node tools/start.ts",
     "clean": "rm -rf lib",
