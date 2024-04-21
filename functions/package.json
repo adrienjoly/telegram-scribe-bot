@@ -1,18 +1,18 @@
 {
   "name": "telegram-scribe-bot",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "description": "A chat-bot that can add comments to Trello cards, from any Telegram client.",
   "scripts": {
     "lint": "npx eslint .",
     "lint:fix": "npx eslint . --fix",
-    "test": "NODE_OPTIONS='--loader ts-node/esm' NODE_ENV='test' mocha src/**/*.test.ts",
+    "test": "NODE_ENV='test' node -r ts-node/register --test src/**/*.test.ts",
     "test:bot": "ts-node tools/bot-cli.ts",
     "start": "ts-node tools/start.ts",
     "clean": "rm -rf lib",
     "build": "tsc"
   },
   "engines": {
-    "node": "16"
+    "node": "20"
   },
   "main": "lib/src/index.js",
   "author": "Adrien Joly",
@@ -34,7 +34,6 @@
   "devDependencies": {
     "@types/expect": "^1.20.4",
     "@types/js-yaml": "^4.0.5",
-    "@types/mocha": "^10.0.1",
     "@types/node": "^18.11.18",
     "@types/node-fetch": "^2.6.2",
     "@types/spotify-web-api-node": "^5.0.7",
@@ -44,9 +43,8 @@
     "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-prettier": "^4.2.1",
     "expect": "^29.3.1",
-    "firebase-tools": "^11.20.0",
-    "mocha": "^10.2.0",
-    "nock": "^13.2.9",
+    "firebase-tools": "^13.7.3",
+    "nock": "^14.0.0-beta.6",
     "node-fetch": "^3.3.0",
     "prettier": "^2.8.2",
     "ts-node": "^10.9.1",

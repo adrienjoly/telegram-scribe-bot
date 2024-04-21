@@ -1,5 +1,4 @@
-/// <reference types="mocha" />
-
+import { describe, it } from 'node:test'
 import expect from 'expect'
 import fetch from 'node-fetch'
 import { startApp } from './app'
