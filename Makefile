@@ -27,7 +27,7 @@ release: install test build
 
 deploy-firebase: setup-firebase install test build ## Deploy to Firebase Functions
 	@cd functions; node tools/bot-config-firebase.js
-	@cd functions; npx firebase-tools deploy
+	@cd functions; npx firebase-tools deploy --no-gen2
 
 emulate-firebase: build ## Starts a local Firebase server
 	@cd functions; node tools/bot-config-firebase.js
