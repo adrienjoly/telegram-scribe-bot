@@ -1,6 +1,6 @@
 // This file is intended to run the app in production
 
-import * as functions from 'firebase-functions'
+import * as functions from 'firebase-functions/v1'
 import { makeMessageHandler } from './app'
 
 const { config } = functions.config() // load credentials and options from firebase config
