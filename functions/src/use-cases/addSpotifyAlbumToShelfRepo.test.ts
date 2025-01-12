@@ -34,6 +34,11 @@ describe('spotify use cases', () => {
     it('detects album id from URL', async () => {
       expect(parseAlbumId(SAMPLE_URL)).toEqual(SAMPLE_ALBUM_ID)
     })
+    it('detects album id from URL that includes locale and query params', async () => {
+      const albumId = '3fatZKCQZShmBuJMY4hvsY'
+      const url = `https://open.spotify.com/intl-fr/album/${albumId}?si=H5uJywBDTxSGw_iOjzePnw&nd=1&dlsi=61e452ecb9384e53`
+      expect(parseAlbumId(url)).toEqual(albumId)
+    })
   })
   describe('addSpotifyAlbumToShelfRepo', () => {
     before(() => {
