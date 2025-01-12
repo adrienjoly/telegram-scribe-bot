@@ -22,7 +22,7 @@ export type Options = {
 
 export const parseAlbumId = (str: string): string | undefined =>
   (
-    str.match(/https:\/\/open\.spotify\.com\/album\/([a-zA-Z0-9_-]+)/) || []
+    str.match(/https:\/\/open\.spotify\.com\/.*album\/([a-zA-Z0-9_-]+)/) || []
   ).pop()
 
 export const addSpotifyAlbumToShelfRepo = async (
