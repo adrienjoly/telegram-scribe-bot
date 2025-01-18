@@ -1,4 +1,8 @@
 {
+  "openwhyd": {
+    "username": "",
+    "password": ""
+  },
   "spotify": {
     "clientid": "",
     "secret": ""
