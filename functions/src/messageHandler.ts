@@ -7,10 +7,12 @@ import {
 import { commandHandlers as trello } from './use-cases/addToTrello'
 import { addSpotifyAlbumToShelfRepo } from './use-cases/addSpotifyAlbumToShelfRepo'
 import { BotResponse } from './types'
+import { postYouTubeTrackOnOpenwhyd } from './use-cases/postYouTubeTrackOnOpenwhyd'
 // import markdown from 'nano-markdown' // TODO: find a way to make sure HTML responses are accepted by Telegram
 
 // map commands to "use-case" implementations
 const commandHandlers: { [key: string]: CommandHandler } = {
+  '/openwhyd': postYouTubeTrackOnOpenwhyd,
   '/shelf': addSpotifyAlbumToShelfRepo,
   '/todo': addTaskToTicktick,
   '/today': addTodayTaskToTicktick,

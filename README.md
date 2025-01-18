@@ -6,6 +6,10 @@ The first version of this bot was developed by following the steps provided in [
 
 ## Supported commands
 
+### Openwhyd commands
+
+- `/openwhyd <youtube_video_url> [description]` post a YouTube video on Openwhyd.org
+
 ### TickTick commands
 
 - `/todo <task> [#tag [#...]]` adds a ToDo/task to TickTick's inbox, for sorting
