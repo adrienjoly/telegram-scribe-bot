@@ -1,5 +1,6 @@
 import { MessageHandlerOptions, BotResponse } from './../types'
 import { ParsedMessageEntities } from './../Telegram'
+import ytdl from '@distube/ytdl-core'
 
 export type Options = {
   openwhyd: {
@@ -19,6 +20,13 @@ export const parseYouTubeURL = (str: string) => {
     url.match(/youtube.googleapis.com\/v\/([a-zA-Z0-9_-]+)/)
   if (!match) return null
   return { url, id: match.pop() }
+}
+
+export const extractVideoInfo = async (youtubeURL: string) => {
+  const { videoDetails } = await ytdl.getBasicInfo(youtubeURL)
+  return {
+    title: videoDetails.title,
+  }
 }
 
 export const postYouTubeTrackOnOpenwhyd = async (

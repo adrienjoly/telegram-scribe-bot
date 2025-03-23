@@ -3,6 +3,7 @@ import expect from 'expect'
 import nock from 'nock'
 import { ParsedMessageEntities } from '../Telegram'
 import {
+  extractVideoInfo,
   Options,
   parseYouTubeURL,
   postYouTubeTrackOnOpenwhyd,
@@ -31,6 +32,15 @@ describe('openwhyd use cases', () => {
         url: 'https://www.youtube.com/watch?v=GpBFOJ3R0M4',
         id: 'GpBFOJ3R0M4',
       })
+    })
+  })
+
+  describe('extractVideoInfo', () => {
+    it('extracts the title of the YouTube video', async () => {
+      const res = await extractVideoInfo(
+        'https://www.youtube.com/watch?v=GpBFOJ3R0M4'
+      )
+      expect(res.title).toBe('Garbage - Only Happy When It Rains')
     })
   })
 
