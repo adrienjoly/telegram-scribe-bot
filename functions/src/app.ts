@@ -1,3 +1,4 @@
+import util from 'node:util'
 import express from 'express'
 import cors from 'cors'
 import { parseMessage } from './Telegram'
@@ -13,7 +14,11 @@ export function makeMessageHandler(options: MessageHandlerOptions) {
   ): Promise<void> {
     let message
     try {
-      LOGGING && console.log('▶ Request body:', req.body)
+      LOGGING &&
+        console.log(
+          '▶ Request body:',
+          util.inspect(req.body, false, null, false)
+        )
       message = parseMessage(req.body) // can throw 'not a telegram message'
     } catch (error) {
       const err = error as Error
