@@ -10,11 +10,10 @@ export type Options = {
 }
 
 type OpenwhydPostRequest = {
-  eId: string
   url: string
-  name: string
-  img?: string
-  desc?: string
+  title: string
+  thumbnail?: string
+  description?: string
 }
 
 export const parseYouTubeURL = (str: string) => {
@@ -58,11 +57,10 @@ export const postYouTubeTrackOnOpenwhyd = async (
   console.info(`YouTube track metadata: ${JSON.stringify(metadata)}`)
 
   const openwhydPostRequest: OpenwhydPostRequest = {
-    eId: `/yt/${youtubeVideo.id}`,
     url: `https://youtube.com/watch?v=${youtubeVideo.id}`,
-    name: metadata.title,
-    img: metadata.thumbnailURL,
-    desc: message.rest.replace(youtubeVideo.url, '').trim(),
+    title: metadata.title,
+    thumbnail: metadata.thumbnailURL,
+    description: message.rest.replace(youtubeVideo.url, '').trim(),
   }
   console.info(`Openwhyd API request: ${JSON.stringify(openwhydPostRequest)}`)
 
