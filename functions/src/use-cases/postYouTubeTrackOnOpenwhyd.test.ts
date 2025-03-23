@@ -36,11 +36,16 @@ describe('openwhyd use cases', () => {
   })
 
   describe('extractVideoInfo', () => {
-    it('extracts the title of the YouTube video', async () => {
+    it('extracts the metadata of the YouTube video', async () => {
       const res = await extractVideoInfo(
         'https://www.youtube.com/watch?v=GpBFOJ3R0M4'
       )
-      expect(res.title).toBe('Garbage - Only Happy When It Rains')
+      expect(res).toMatchObject({
+        id: 'GpBFOJ3R0M4',
+        title: 'Garbage - Only Happy When It Rains',
+        channelName: 'GarbageVEVO',
+        thumbnailURL: expect.stringMatching(/^https:\/\/.*GpBFOJ3R0M4.*\.jpg/),
+      })
     })
   })
 

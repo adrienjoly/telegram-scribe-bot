@@ -25,7 +25,11 @@ export const parseYouTubeURL = (str: string) => {
 export const extractVideoInfo = async (youtubeURL: string) => {
   const { videoDetails } = await ytdl.getBasicInfo(youtubeURL)
   return {
+    id: videoDetails.videoId,
     title: videoDetails.title,
+    channelName: videoDetails.ownerChannelName,
+    thumbnailURL: `https://img.youtube.com/vi/${videoDetails.videoId}/hqdefault.jpg`,
+    // ... or we could pick a URL from the videoDetails.thumbnails array
   }
 }
 
