@@ -9,6 +9,14 @@ export type Options = {
   }
 }
 
+type OpenwhydPostRequest = {
+  eId: string
+  url: string
+  name: string
+  img?: string
+  desc?: string
+}
+
 export const parseYouTubeURL = (str: string) => {
   const url = str.match(/https?:\/\/[^\s]+/)?.[0]
   if (!url) return null
@@ -44,36 +52,39 @@ export const postYouTubeTrackOnOpenwhyd = async (
   if (!youtubeVideo) {
     throw new Error('failed to find or parse YouTube URL')
   }
-  const description = message.rest.replace(youtubeVideo.url, '').trim()
+  console.info(`YouTube track id parsed from message: ${youtubeVideo.id}`)
 
-  type OpenwhydPostRequest = {
-    action: 'insert'
-    eId: string
-    url: string
-    name: string
-    desc?: string
-  }
+  const metadata = await extractVideoInfo(youtubeVideo.url)
+  console.info(`YouTube track metadata: ${JSON.stringify(metadata)}`)
 
   const openwhydPostRequest: OpenwhydPostRequest = {
-    action: 'insert',
     eId: `/yt/${youtubeVideo.id}`,
     url: `https://youtube.com/watch?v=${youtubeVideo.id}`,
-    name: `https://youtube.com/watch?v=${youtubeVideo.id}`, // TODO: fetch video title
+    name: metadata.title,
+    img: metadata.thumbnailURL,
+    desc: message.rest.replace(youtubeVideo.url, '').trim(),
   }
-  if (description) openwhydPostRequest.desc = description
+  console.info(`Openwhyd API request: ${JSON.stringify(openwhydPostRequest)}`)
 
-  const res = await fetch('https://openwhyd.org/api/post', {
+  const res = await fetch('https://openwhyd.org/api/v2/postTrack', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json' }, // TODO: add Auth bearer
     body: JSON.stringify(openwhydPostRequest),
   })
 
+  const resBody = await res
+    .json()
+    .catch(async () =>
+      console.warn(`failed to parse JSON response: ${await res.text()}`)
+    )
+
   if (res.status !== 200) {
-    throw new Error(`failed to post track on openwhyd, status: ${res.status}`)
+    throw new Error(
+      `failed to post track on Openwhyd API, status: ${res.status}, error: ${resBody?.error}`
+    )
   }
 
-  const postedTrack = await res.json()
-  const openwhydURL = `https://openwhyd.org/c/${postedTrack._id}`
+  console.info(`Success response from Openwhyd API: ${JSON.stringify(resBody)}`)
 
-  return { text: `✅  Posted track on ${openwhydURL}` }
+  return { text: `✅  Posted track on ${resBody.url}` }
 }

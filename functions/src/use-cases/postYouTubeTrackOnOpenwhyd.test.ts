@@ -78,8 +78,8 @@ describe('openwhyd use cases', () => {
       })
       const postId = 'dummy_post_id'
       nock('https://openwhyd.org')
-        .post((uri) => uri.includes(`/api/post`))
-        .reply(200, { _id: postId })
+        .post((uri) => uri.includes(`/api/v2/postTrack`))
+        .reply(200, { url: `https://openwhyd.org/c/${postId}` })
       const res = await postYouTubeTrackOnOpenwhyd(message, FAKE_CREDS)
       expect(res).toHaveProperty(
         'text',
