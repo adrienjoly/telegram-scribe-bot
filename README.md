@@ -6,6 +6,10 @@ The first version of this bot was developed by following the steps provided in [
 
 ## Supported commands
 
+### Openwhyd commands
+
+- `/openwhyd <youtube_video_url> [description]` post a YouTube video on Openwhyd.org
+
 ### TickTick commands
 
 - `/todo <task> [#tag [#...]]` adds a ToDo/task to TickTick's inbox, for sorting
@@ -167,7 +171,7 @@ The steps are listed in the order I usually follow:
 - ideas of "command" use cases to implement:
   - `/next [#tag]` will list the next `task` for each Trello card associated with `#tag`
   - `/search <text> [#tag [#...]]` will search occurrences of `text` in comments of Trello cards, optionally filtered by `#tags`
-  - `/openwhyd <track> [#tag] [desc]` will add a music track (e.g. YouTube URL) to Openwhyd.org, in a playlist corresponding to the `tag`, and may add a `desc`ription if provided
+  - `/openwhyd <youtube_video_url> [description]` will post a YouTube track to Openwhyd.org, with `desc`ription (optional)
   - `/issue <repo>` will create a github issue on the provided repo
   - `/bk <url> [desc] [#tag]>` will create a Diigo bookmark to that URL
   - `/met "<person name>" [@place] [#tag] [desc]` will create or update a Google Contact
