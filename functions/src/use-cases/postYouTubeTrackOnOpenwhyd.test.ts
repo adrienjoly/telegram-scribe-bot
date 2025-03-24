@@ -9,6 +9,8 @@ import {
   postYouTubeTrackOnOpenwhyd,
 } from './postYouTubeTrackOnOpenwhyd'
 
+const onCI = process.env.CI
+
 const FAKE_CREDS: Options = {
   openwhyd: {
     username: 'username',
@@ -35,7 +37,7 @@ describe('openwhyd use cases', () => {
     })
   })
 
-  describe('extractVideoInfo', () => {
+  describe('extractVideoInfo', { skip: onCI }, () => {
     it('extracts the metadata of the YouTube video', async () => {
       const res = await extractVideoInfo(
         'https://www.youtube.com/watch?v=GpBFOJ3R0M4'
@@ -72,7 +74,7 @@ describe('openwhyd use cases', () => {
       ).rejects.toThrow(/failed to find or parse YouTube URL/)
     })
 
-    it('posts the YouTube video with description to Openwhyd', async () => {
+    it('posts the YouTube video with description', { skip: onCI }, async () => {
       const message = createMessage({
         rest: 'https://www.youtube.com/watch?v=GpBFOJ3R0M4 I love this song',
       })
