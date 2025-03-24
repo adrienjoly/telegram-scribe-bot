@@ -18,7 +18,6 @@
   "author": "Adrien Joly",
   "license": "ISC",
   "dependencies": {
-    "@distube/ytdl-core": "^4.16.5",
     "@octokit/rest": "^19.0.5",
     "@types/cors": "^2.8.13",
     "cors": "^2.8.5",
