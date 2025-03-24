@@ -5,9 +5,9 @@ import ytdl from '@distube/ytdl-core'
 export type Options = {
   openwhyd: {
     /** Credentials of "telegram bot" application, on Openwhyd's Auth0 account */
-    apiClientId: string
+    api_client_id: string
     /** Credentials of "telegram bot" application, on Openwhyd's Auth0 account */
-    apiClientSecret: string
+    api_client_secret: string
     /** Username/handle of the Openwhyd account to which the track must be posted */
     username: string
     /** Password of the Openwhyd account to which the track must be posted */
@@ -88,10 +88,10 @@ export const postYouTubeTrackOnOpenwhyd = async (
   // crude validation of required options: credentials to post on Openwhyd
   if (!options.openwhyd?.username) throw new Error('missing openwhyd.username')
   if (!options.openwhyd?.password) throw new Error('missing openwhyd.password')
-  if (!options.openwhyd?.apiClientId)
-    throw new Error('missing openwhyd.apiClientId')
-  if (!options.openwhyd?.apiClientSecret)
-    throw new Error('missing openwhyd.apiClientSecret')
+  if (!options.openwhyd?.api_client_id)
+    throw new Error('missing openwhyd.api_client_id')
+  if (!options.openwhyd?.api_client_secret)
+    throw new Error('missing openwhyd.api_client_secret')
 
   const youtubeVideo = parseYouTubeURL(message.rest)
   if (!youtubeVideo) {
@@ -111,8 +111,8 @@ export const postYouTubeTrackOnOpenwhyd = async (
   console.info(`Openwhyd API request: ${JSON.stringify(openwhydPostRequest)}`)
 
   const { accessToken } = await requestOpenwhydToken({
-    clientId: options.openwhyd.apiClientId,
-    clientSecret: options.openwhyd.apiClientSecret,
+    clientId: options.openwhyd.api_client_id,
+    clientSecret: options.openwhyd.api_client_secret,
     username: options.openwhyd.username,
     password: options.openwhyd.password,
   })

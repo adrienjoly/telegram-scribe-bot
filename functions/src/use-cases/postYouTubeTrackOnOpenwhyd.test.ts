@@ -13,8 +13,8 @@ const onCI = process.env.CI
 
 const FAKE_CREDS: Options = {
   openwhyd: {
-    apiClientId: 'dummy',
-    apiClientSecret: 'dummy',
+    api_client_id: 'dummy',
+    api_client_secret: 'dummy',
     username: 'username',
     password: 'password',
   },
