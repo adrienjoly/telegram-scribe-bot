@@ -3,7 +3,8 @@
     "api_client_id": "",
     "api_client_secret": "",
     "username": "",
-    "password": ""
+    "password": "",
+    "youtube_api_key": ""
   },
   "spotify": {
     "clientid": "",

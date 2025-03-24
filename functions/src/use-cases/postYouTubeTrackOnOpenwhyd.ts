@@ -1,6 +1,5 @@
 import { MessageHandlerOptions, BotResponse } from './../types'
 import { ParsedMessageEntities } from './../Telegram'
-import ytdl from '@distube/ytdl-core'
 
 export type Options = {
   openwhyd: {
@@ -12,6 +11,8 @@ export type Options = {
     username: string
     /** Password of the Openwhyd account to which the track must be posted */
     password: string
+    /** API key to request the YouTube API: https://console.cloud.google.com/apis/api/youtube.googleapis.com */
+    youtube_api_key: string
   }
 }
 
@@ -48,14 +49,28 @@ export const parseYouTubeURL = (str: string) => {
   return { url, id: match.pop() }
 }
 
-export const extractVideoInfo = async (youtubeURL: string) => {
-  const { videoDetails } = await ytdl.getBasicInfo(youtubeURL)
+export const extractVideoInfo = async (
+  videoId: string,
+  youtubeApiKey: string
+) => {
+  const params = new URLSearchParams({
+    part: 'snippet',
+    id: videoId,
+    key: youtubeApiKey,
+  })
+  const reqURL = `https://www.googleapis.com/youtube/v3/videos?${params.toString()}`
+  const req = await fetch(reqURL)
+  const res = await req.json()
+  if (res.error)
+    throw new Error(
+      `failed to fetch video info from YouTube, cause: ${res.error.message}`
+    )
+  const { snippet } = res.items[0]
   return {
-    id: videoDetails.videoId,
-    title: videoDetails.title,
-    channelName: videoDetails.ownerChannelName,
-    thumbnailURL: `https://img.youtube.com/vi/${videoDetails.videoId}/hqdefault.jpg`,
-    // ... or we could pick a URL from the videoDetails.thumbnails array
+    title: snippet.title,
+    channelName: snippet.channelTitle,
+    thumbnailURL: `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`,
+    // ... or we could pick a URL from the thumbnails array
   }
 }
 
@@ -92,14 +107,19 @@ export const postYouTubeTrackOnOpenwhyd = async (
     throw new Error('missing openwhyd.api_client_id')
   if (!options.openwhyd?.api_client_secret)
     throw new Error('missing openwhyd.api_client_secret')
+  if (!options.openwhyd?.youtube_api_key)
+    throw new Error('missing openwhyd.youtube_api_key')
 
   const youtubeVideo = parseYouTubeURL(message.rest)
-  if (!youtubeVideo) {
+  if (!youtubeVideo?.id) {
     throw new Error('failed to find or parse YouTube URL')
   }
   console.info(`YouTube track id parsed from message: ${youtubeVideo.id}`)
 
-  const metadata = await extractVideoInfo(youtubeVideo.url)
+  const metadata = await extractVideoInfo(
+    youtubeVideo.id,
+    options.openwhyd.youtube_api_key
+  )
   console.info(`YouTube track metadata: ${JSON.stringify(metadata)}`)
 
   const openwhydPostRequest: OpenwhydPostRequest = {

@@ -17,6 +17,7 @@ const FAKE_CREDS: Options = {
     api_client_secret: 'dummy',
     username: 'username',
     password: 'password',
+    youtube_api_key: 'dummy',
   },
 }
 
@@ -39,13 +40,22 @@ describe('openwhyd use cases', () => {
     })
   })
 
-  describe('extractVideoInfo', { skip: onCI }, () => {
+  describe('extractVideoInfo', () => {
     it('extracts the metadata of the YouTube video', async () => {
-      const res = await extractVideoInfo(
-        'https://www.youtube.com/watch?v=GpBFOJ3R0M4'
-      )
+      nock('https://www.googleapis.com')
+        .get((uri) => uri.includes(`/youtube/v3/videos`))
+        .reply(200, {
+          items: [
+            {
+              snippet: {
+                title: 'Garbage - Only Happy When It Rains',
+                channelTitle: 'GarbageVEVO',
+              },
+            },
+          ],
+        })
+      const res = await extractVideoInfo('GpBFOJ3R0M4', 'dummy')
       expect(res).toMatchObject({
-        id: 'GpBFOJ3R0M4',
         title: 'Garbage - Only Happy When It Rains',
         channelName: 'GarbageVEVO',
         thumbnailURL: expect.stringMatching(/^https:\/\/.*GpBFOJ3R0M4.*\.jpg/),
@@ -81,6 +91,18 @@ describe('openwhyd use cases', () => {
         rest: 'https://www.youtube.com/watch?v=GpBFOJ3R0M4 I love this song',
       })
       const postId = 'dummy_post_id'
+      nock('https://www.googleapis.com')
+        .get((uri) => uri.includes(`/youtube/v3/videos`))
+        .reply(200, {
+          items: [
+            {
+              snippet: {
+                title: 'Garbage - Only Happy When It Rains',
+                channelTitle: 'GarbageVEVO',
+              },
+            },
+          ],
+        })
       nock('https://openwhyd.eu.auth0.com')
         .post((uri) => uri.includes(`/oauth/token`))
         .reply(200, { access_token: `dummy` })
