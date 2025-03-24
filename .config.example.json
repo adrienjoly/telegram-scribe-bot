@@ -1,5 +1,7 @@
 {
   "openwhyd": {
+    "apiClientId": "",
+    "apiClientSecret": "",
     "username": "",
     "password": ""
   },

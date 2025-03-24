@@ -13,6 +13,8 @@ const onCI = process.env.CI
 
 const FAKE_CREDS: Options = {
   openwhyd: {
+    apiClientId: 'dummy',
+    apiClientSecret: 'dummy',
     username: 'username',
     password: 'password',
   },
@@ -79,6 +81,9 @@ describe('openwhyd use cases', () => {
         rest: 'https://www.youtube.com/watch?v=GpBFOJ3R0M4 I love this song',
       })
       const postId = 'dummy_post_id'
+      nock('https://openwhyd.eu.auth0.com')
+        .post((uri) => uri.includes(`/oauth/token`))
+        .reply(200, { access_token: `dummy` })
       nock('https://openwhyd.org')
         .post((uri) => uri.includes(`/api/v2/postTrack`))
         .reply(200, { url: `https://openwhyd.org/c/${postId}` })
