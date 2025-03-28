@@ -47,6 +47,9 @@ test-firebase-local: ## Checks that the Firebase Function's responds
 bind-firebase-webhook: ## Binds the Firebase Function to your Telegram bot
 	@curl --silent https://api.telegram.org/bot${BOT_TOKEN}/setWebhook?url=${ROUTER_URL} | grep --color=always "\"ok\":true"
 
+delete-firebase-webhook: ## Clears and deletes the Firebase Function associated to your Telegram bot
+	@curl --silent https://api.telegram.org/bot${BOT_TOKEN}/deleteWebhook?drop_pending_updates=true | grep --color=always "\"ok\":true"
+
 test-firebase-webhook: ## Checks that the Firebase Function's router URL was properly bound to your Telegram bot
 	@curl --silent https://api.telegram.org/bot${BOT_TOKEN}/getWebhookInfo | grep --color=always "\"ok\":true"
 
@@ -57,4 +60,4 @@ help: ## This help.
 	@echo 'Available targets:'
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
-.PHONY: install build test test-bot lint release deploy-firebase setup-firebase test-firebase bind-firebase-webhook test-firebase-webhook firebase-logs help
+.PHONY: install build test test-bot lint release deploy-firebase setup-firebase test-firebase bind-firebase-webhook delete-firebase-webhook test-firebase-webhook firebase-logs help
