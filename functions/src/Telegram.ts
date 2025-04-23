@@ -31,27 +31,6 @@ export type TelegramMessage = {
   entities: MessageEntity[]
 }
 
-type TelegramBody =
-  | {
-      message: TelegramMessage
-    }
-  | {
-      edited_message: TelegramMessage
-    }
-
-export function parseMessage(container: TelegramBody): TelegramMessage {
-  try {
-    const message =
-      'message' in container ? container.message : container.edited_message
-    if (!message.from) throw new Error('missing property: message.from')
-    if (!message.text) throw new Error('missing property: message.text')
-    return message
-  } catch (error) {
-    const err = error as Error
-    throw new Error(`not a telegram message: ${err.message}`)
-  }
-}
-
 type MessageEntityWithText = MessageEntity & {
   text: string
 }

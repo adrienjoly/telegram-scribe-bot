@@ -1,7 +1,7 @@
 import util from 'node:util'
 import express from 'express'
 import cors from 'cors'
-import { parseMessage } from './Telegram'
+import { TelegramMessage } from './Telegram'
 import { processMessage } from './messageHandler'
 import { MessageHandlerOptions, TelegramRequest } from './types'
 
@@ -12,35 +12,29 @@ export function makeMessageHandler(options: MessageHandlerOptions) {
     req: express.Request,
     res: express.Response
   ): Promise<void> {
-    let message
+    let message: TelegramMessage | undefined
+    let responsePayload: TelegramRequest
     try {
       LOGGING &&
         console.log(
           '▶ Request body:',
           util.inspect(req.body, false, null, false)
         )
-      message = parseMessage(req.body) // can throw 'not a telegram message'
-    } catch (error) {
-      const err = error as Error
-      LOGGING && console.error('◀ Telegram Error:', err, err.stack)
-      res
-        .status(err.message.includes('not a telegram message') ? 400 : 500)
-        .send({ status: err.message })
-      return
-    }
-    let responsePayload: TelegramRequest
-    try {
+      message =
+        'message' in req.body ? req.body.message : req.body.edited_message
+      if (!message?.from) throw new Error('missing property: message.from')
+      if (!message?.text) throw new Error('missing property: message.text')
       responsePayload = await processMessage(message, options)
-      LOGGING && console.log('◀ Response payload:', responsePayload)
     } catch (error) {
       const err = error as Error
-      LOGGING && console.error('◀ Use Case Error:', err)
+      LOGGING && console.error('◀ Error:', err, err.stack)
       responsePayload = {
         method: 'sendMessage',
-        chat_id: message.chat.id,
-        text: /*markdown*/ err.message, // we want to return this kind of errors back to the user
+        chat_id: message?.chat?.id ?? -1,
+        text: /*markdown*/ err.message, // note: this error message may be technical
       }
     }
+    LOGGING && console.log('◀ Response payload:', responsePayload)
     res.status(200).send(responsePayload) // cf https://core.telegram.org/bots/api#making-requests-when-getting-updates
   }
 }
