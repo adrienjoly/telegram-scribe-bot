@@ -1,6 +1,8 @@
 # `telegram-scribe-bot`
 
-A chat-bot for Telegram that can add comments to Trello cards, your TickTick todo-list and your Diigo bookmarks, from any Telegram client.
+A chat-bot for Telegram that can add comments to Trello cards, your TickTick todo-list and your Diigo bookmarks, from any Telegram client. (see list of supported commands, below)
+
+This chat-bot consists of a webhook served by Express.js and designed to run on Firebase Functions. It uses Telegram's [`setWebhook` function](https://core.telegram.org/bots/api#setwebhook).
 
 The first version of this bot was developed by following the steps provided in [Serverless Telegram Bot with Firebase - Francisco Gutiérrez - Medium](https://medium.com/@pikilon/serverless-telegram-bot-with-firebase-d11d07579d8a).
 
