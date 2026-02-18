@@ -35,7 +35,7 @@ const config: MessageHandlerOptions = {
     boardid: process.env.TRELLO_BOARD_ID || '',
   },
   bot: {
-    version: require('../package.json').version, // eslint-disable-line @typescript-eslint/no-var-requires
+    version: require(`${__dirname}/../../package.json`).version, // eslint-disable-line @typescript-eslint/no-var-requires
   },
 }
 
