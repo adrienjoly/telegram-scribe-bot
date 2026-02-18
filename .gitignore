@@ -63,7 +63,6 @@ node_modules/
 
 # Configuration
 .env
-.config.json
 
 ## Compiled JavaScript files
 functions/lib/**/*.js
