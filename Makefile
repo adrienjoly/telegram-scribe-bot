@@ -22,7 +22,7 @@ lint: install ## Run ESLint
 release: install test build
 	@echo "Making sure that you're on the main branch..."
 	@git checkout | grep "master"
-	@cd functions; npx release-it --no-npm.publish
+	@cd functions; npx release-it@19.2.4 --no-npm.publish
 	@echo "Now, go to https://github.com/adrienjoly/telegram-scribe-bot/tags, to create the Release"
 
 deploy-firebase: setup-firebase install test build ## Deploy to Firebase Functions
