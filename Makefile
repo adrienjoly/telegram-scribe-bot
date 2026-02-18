@@ -26,12 +26,9 @@ release: install test build
 	@echo "Now, go to https://github.com/adrienjoly/telegram-scribe-bot/tags, to create the Release"
 
 deploy-firebase: setup-firebase install test build ## Deploy to Firebase Functions
-	@cd functions; node tools/bot-config-firebase.js
 	@cd functions; npx firebase-tools deploy
 
 emulate-firebase: build ## Starts a local Firebase server
-	@cd functions; node tools/bot-config-firebase.js
-	@cd functions; npx firebase-tools functions:config:get > .runtimeconfig.json
 	@cd functions; npx firebase-tools emulators:start
 
 setup-firebase: ## Logs you into your Firebase account
