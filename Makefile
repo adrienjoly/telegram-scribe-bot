@@ -31,6 +31,9 @@ deploy-firebase: setup-firebase install test build ## Deploy to Firebase Functio
 emulate-firebase: build ## Starts a local Firebase server
 	@cd functions; npx firebase-tools emulators:start
 
+clean-firebase: ## Logout
+	@cd functions; npx firebase-tools logout
+
 setup-firebase: ## Logs you into your Firebase account
 	@cd functions; npx firebase-tools login
 	@echo "Don't forget to specify your Firebase app id in .firebaserc, cf README.md"

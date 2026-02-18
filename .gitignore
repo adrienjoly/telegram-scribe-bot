@@ -71,3 +71,4 @@ functions/lib/**/*.js.map
 
 dumps/*.json
 .runtimeconfig.json
+.DS_Store
