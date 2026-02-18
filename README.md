@@ -67,6 +67,8 @@ Credentials of your services must be provided in a `.env` file, in the `function
 
 Initialize it based on the provided template: `$ cp functions/.env.example functions/.env`
 
+> **Note for existing users:** If you previously used `.config.json`, you can migrate your settings by copying the values to the corresponding environment variables in `functions/.env`. The `.config.json` file is no longer used.
+
 ### 1. Connect to a Trello board
 
 Trello credentials must be provided in your `.env` file.
