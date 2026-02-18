@@ -63,18 +63,20 @@ Let's see how to set it up.
 
 ### 0. Create the configuration file
 
-Credentials of your services must be provided in a `.config.json` file, at the root directory of the project.
+Credentials of your services must be provided in a `.env` file, in the `functions` directory of the project.
 
-Initialize it based on the provided template: `$ cp .config.example.json .config.json`
+Initialize it based on the provided template: `$ cp functions/.env.example functions/.env`
+
+> **Note for existing users:** If you previously used `.config.json`, you can migrate your settings by copying the values to the corresponding environment variables in `functions/.env`. The `.config.json` file is no longer used.
 
 ### 1. Connect to a Trello board
 
-Trello credentials must be provided in your `.config.json` file.
+Trello credentials must be provided in your `.env` file.
 
-1. Copy your Trello API Key (from [trello.com/app-key](https://trello.com/app-key)) and paste it as the value of the `trello.apikey` variable, in your `.config.json` file
-2. Manually generate a Token (a link is provided on [trello.com/app-key](https://trello.com/app-key), below the Trello API Key) and paste it as the value of the `trello.usertoken` variable, still in your `.config.json` file
+1. Copy your Trello API Key (from [trello.com/app-key](https://trello.com/app-key)) and paste it as the value of the `TRELLO_API_KEY` variable, in your `functions/.env` file
+2. Manually generate a Token (a link is provided on [trello.com/app-key](https://trello.com/app-key), below the Trello API Key) and paste it as the value of the `TRELLO_USER_TOKEN` variable, still in your `functions/.env` file
 3. Run `$ tools/trello-boards.ts` to make sure that these credentials give access to Trello's API and display the list of the Trello boards you have access to
-4. Copy the 24-characters-long identifier of the Trello board that you want your bot to edit, and paste it as the value of the `trello.boardid` variable of your `.config.json` file
+4. Copy the 24-characters-long identifier of the Trello board that you want your bot to edit, and paste it as the value of the `TRELLO_BOARD_ID` variable of your `functions/.env` file
 
 ### 2. Bind tags to Trello cards
 
@@ -98,11 +100,11 @@ After doing that, sending the following chat message should add a comment to tha
 
 ### 3. Provide credentials for other services
 
-Complete your `.config.json` file by providing the credentials of the services you want the bot to interact with:
+Complete your `functions/.env` file by providing the credentials of the services you want the bot to interact with:
 
-- Your Telegram user ID can be retrieved by sending `/start` to https://web.telegram.org/k/#@userinfobot
-- Spotify credentials can be generated from https://developer.spotify.com/dashboard/applications
-- GitHub token (with `public_repo` scope) can be generated from https://github.com/settings/tokens
+- Your Telegram user ID can be retrieved by sending `/start` to https://web.telegram.org/k/#@userinfobot (set as `TELEGRAM_ONLY_FROM_USER_ID` in `functions/.env`)
+- Spotify credentials can be generated from https://developer.spotify.com/dashboard/applications (set as `SPOTIFY_CLIENT_ID` and `SPOTIFY_SECRET` in `functions/.env`)
+- GitHub token (with `public_repo` scope) can be generated from https://github.com/settings/tokens (set as `GITHUB_TOKEN` in `functions/.env`)
 
 ## Production Setup
 
@@ -112,9 +114,10 @@ Follow these steps to deploy your bot to Firebase and make it accessible through
 
 - In your Telegram app, start a conversation with [@BotFather](https://telegram.me/BotFather)
 - Write the command `/newBot` and follow the provided steps
-- Initialize the `.env` file (at the root directory of the project), based on the provided template: `$ cp .env.example .env`
+- Initialize the root `.env` file based on the provided template: `$ cp .env.example .env`
 - In the `.env` file, replace the default `BOT_TOKEN` value by the Secret Token provided by that bot
-- Also, take note of the name of your bot (ends with `bot`), we'll need it later
+- Also initialize the `functions/.env` file: `$ cp functions/.env.example functions/.env`
+- Take note of the bot name (ends with `bot`), we'll need it later
 
 ### 2. Create a Firebase project
 
@@ -126,7 +129,7 @@ Follow these steps to deploy your bot to Firebase and make it accessible through
 
 - `$ make setup-firebase` (to login to your Firebase account)
 - `$ make deploy-firebase` (will upload the source code to your Firebase project)
-- In the `.env` file, replace the default `ROUTER_URL` value by the one printed when deploying (previous step), it must end with `/router/`
+- In the root `.env` file, replace the default `ROUTER_URL` value by the one printed when deploying (previous step), it must end with `/router/`
 - `$ make test-firebase` (to check that the function deployed on Firebase responds)
 - `$ make bind-firebase-webhook` (to bind that function to your Telegram bot)
 - `$ make test-firebase-webhook` (to check that the function's router URL was properly bound to your Telegram bot)
@@ -143,7 +146,7 @@ You can troubleshoot your bot using [your firebase console](https://console.fire
 
 ### Options
 
-Set `telegram.onlyfromuserid` in your `.config.json` file and call `$ make deploy-firebase` again if you want the bot to only respond to that Telegram user identifier.
+Set `TELEGRAM_ONLY_FROM_USER_ID` in your `functions/.env` file and call `$ make deploy-firebase` again if you want the bot to only respond to that Telegram user identifier.
 
 ## How to add a command
 
